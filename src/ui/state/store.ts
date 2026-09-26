@@ -1,7 +1,15 @@
 import { create } from 'zustand';
 import { builtinLayer, defaultLayers } from '../../data/defaults';
 import { applyRatingChanges, type RatingChange } from '../../data/ratings';
-import type { LayerDefinition, LayerKey, Project } from '../../data/schema';
+import type {
+  AttributeFilter,
+  AttributeKey,
+  LayerDefinition,
+  LayerKey,
+  MemberId,
+  Project,
+} from '../../data/schema';
+import type { AnalysisResult } from '../engineClient';
 import { readNoticeSeen, writeNoticeSeen } from './noticeStorage';
 
 export type CentreView = 'map' | 'matrix' | 'table' | 'compare';
@@ -32,6 +40,55 @@ export interface DataState {
   status: StatusMessage | null;
 }
 
+/** Node-size metric, named as in the engine's node table (NodeMetricKey). */
+export type SizeMetric =
+  | 'inStrength'
+  | 'outStrength'
+  | 'strength'
+  | 'inDegree'
+  | 'outDegree'
+  | 'degree'
+  | 'betweenness'
+  | 'harmonicIn'
+  | 'harmonicOut'
+  | 'harmonic'
+  | 'eigenvector'
+  | 'constraint'
+  | 'effectiveSize'
+  | 'clustering';
+
+export type NodeFill = { kind: 'attribute'; key: AttributeKey } | { kind: 'community' };
+
+/** Map encodings, filters and the analysis view (plan §1.3 `analysis` and `map`). */
+export interface MapSettings {
+  view: 'directed' | 'symmetrised';
+  symmetrise: 'mean' | 'min' | 'max';
+  /** The layer that drives layout attraction, edge width, node size and ranks: a layer key or 'composite'. */
+  layer: string;
+  sizeMetric: SizeMetric;
+  fill: NodeFill;
+  /** Display only (plan Q6): ties below this weight on `layer` are hidden. */
+  threshold: number;
+  /** Layers shown as an encoding: the formal and informal layers (edge style) and valence (edge colour). */
+  layerToggles: Record<LayerKey, boolean>;
+  /** When true, a layer switched off also hides its ties (CLAUDE.md D59). */
+  hideOffLayers: boolean;
+  filters: AttributeFilter[];
+  search: string;
+}
+
+export interface SelectionState {
+  /** The member whose panel is open. */
+  member: MemberId | null;
+  hovered: MemberId | null;
+}
+
+export interface ResultsState {
+  status: 'idle' | 'running' | 'ready' | 'error';
+  current: AnalysisResult | null;
+  error: string | null;
+}
+
 interface Actions {
   setCentreView: (view: CentreView) => void;
   setRightPanel: (panel: RightPanel) => void;
@@ -50,9 +107,56 @@ interface Actions {
   restoreLayer: (key: LayerKey) => void;
   applyRatings: (variable: LayerKey, changes: readonly RatingChange[]) => void;
   setCoverageThreshold: (threshold: number) => void;
+
+  setMap: (patch: Partial<MapSettings>) => void;
+  selectMember: (id: MemberId | null) => void;
+  setHovered: (id: MemberId | null) => void;
+  setResults: (patch: Partial<ResultsState>) => void;
 }
 
-export type AppState = { ui: UiState; data: DataState } & Actions;
+export type AppState = {
+  ui: UiState;
+  data: DataState;
+  map: MapSettings;
+  selection: SelectionState;
+  results: ResultsState;
+} & Actions;
+
+export function initialMapSettings(): MapSettings {
+  return {
+    view: 'directed',
+    symmetrise: 'mean',
+    layer: 'composite',
+    sizeMetric: 'betweenness',
+    fill: { kind: 'attribute', key: 'team' },
+    threshold: 0,
+    layerToggles: {},
+    hideOffLayers: false,
+    filters: [],
+    search: '',
+  };
+}
+
+// The same metric in the other view: in- and out- columns become the single
+// symmetrised column and back (CLAUDE.md D39).
+const SYMMETRISED_METRIC: Partial<Record<SizeMetric, SizeMetric>> = {
+  inStrength: 'strength',
+  outStrength: 'strength',
+  inDegree: 'degree',
+  outDegree: 'degree',
+  harmonicIn: 'harmonic',
+  harmonicOut: 'harmonic',
+};
+const DIRECTED_METRIC: Partial<Record<SizeMetric, SizeMetric>> = {
+  strength: 'inStrength',
+  degree: 'inDegree',
+  harmonic: 'harmonicIn',
+};
+
+export function metricForView(metric: SizeMetric, view: MapSettings['view']): SizeMetric {
+  const table = view === 'directed' ? DIRECTED_METRIC : SYMMETRISED_METRIC;
+  return table[metric] ?? metric;
+}
 
 export function initialUiState(noticeSeen: boolean): UiState {
   return {
@@ -98,6 +202,9 @@ export const useAppStore = create<AppState>()((set, get) => {
   return {
     ui: initialUiState(readNoticeSeen()),
     data: initialDataState(),
+    map: initialMapSettings(),
+    selection: { member: null, hovered: null },
+    results: { status: 'idle', current: null, error: null },
 
     // A status message describes the last action; moving to another view
     // starts something new, so the message is cleared rather than left stale.
@@ -130,6 +237,16 @@ export const useAppStore = create<AppState>()((set, get) => {
         revision: get().data.revision + 1,
         matrixLayer: firstEnabled,
         status: status ?? null,
+      });
+      // A new project starts from the default encodings; filters and the
+      // selection name members and categories of the old one.
+      const fill = project?.attribute_definitions.some((a) => a.key === 'team')
+        ? initialMapSettings().fill
+        : ({ kind: 'community' } as const);
+      set({
+        map: { ...initialMapSettings(), fill },
+        selection: { member: null, hovered: null },
+        results: { status: 'idle', current: null, error: null },
       });
     },
     setStatus: (status) => {
@@ -183,6 +300,26 @@ export const useAppStore = create<AppState>()((set, get) => {
     },
     setCoverageThreshold: (coverage_threshold) => {
       change((p) => ({ ...p, settings: { ...p.settings, coverage_threshold } }));
+    },
+
+    setMap: (patch) => {
+      set((s) => {
+        const next = { ...s.map, ...patch };
+        if (patch.view && patch.sizeMetric === undefined) {
+          next.sizeMetric = metricForView(next.sizeMetric, patch.view);
+        }
+        return { map: next };
+      });
+    },
+    selectMember: (member) => {
+      set((s) => ({ selection: { ...s.selection, member } }));
+    },
+    setHovered: (hovered) => {
+      if (get().selection.hovered === hovered) return;
+      set((s) => ({ selection: { ...s.selection, hovered } }));
+    },
+    setResults: (patch) => {
+      set((s) => ({ results: { ...s.results, ...patch } }));
     },
   };
 });

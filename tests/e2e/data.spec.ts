@@ -166,7 +166,11 @@ test('the validation report lists every seeded error with its row', async ({ pag
 test('demo, layer manager, coverage, project files and local persistence', async ({ page }) => {
   await start(page);
   await page.getByRole('button', { name: 'Load demo' }).click();
-  await expect(page.getByRole('heading', { name: 'Demo: Meridian Works' })).toBeVisible();
+  // The map tab now shows the network (Phase 4) rather than a project summary.
+  await expect(page.getByText('Demo: Meridian Works', { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('group', { name: 'Members on the map' }).getByRole('button'),
+  ).toHaveCount(40);
   await expect(page.getByText(/^Coverage \d+%$/)).toBeVisible();
 
   // Layer manager: core layers can be turned off but not deleted.
@@ -185,7 +189,7 @@ test('demo, layer manager, coverage, project files and local persistence', async
   await expectNoAxeViolations(page);
   await shot(page, 'layer-manager');
   // An enabled layer with no ratings lowers coverage below the threshold.
-  await expect(page.getByRole('note')).toContainText('below the 80% threshold');
+  await expect(page.getByRole('note').first()).toContainText('below the 80% threshold');
   await layers.getByRole('switch', { name: 'Advice and information seeking' }).click();
   await expect(page.getByRole('note')).toHaveCount(0);
 
@@ -231,7 +235,7 @@ test('demo, layer manager, coverage, project files and local persistence', async
   await expectNoAxeViolations(page);
   await shot(page, 'coverage');
   await right.getByLabel('Warn below').fill('99');
-  await expect(page.getByRole('note')).toContainText('below the 99% threshold');
+  await expect(page.getByRole('note').first()).toContainText('below the 99% threshold');
   await shot(page, 'coverage-warning');
   await right.getByLabel('Warn below').fill('80');
   await expect(page.getByRole('note')).toHaveCount(0);

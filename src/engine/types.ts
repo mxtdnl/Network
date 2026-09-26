@@ -172,6 +172,13 @@ export interface RefResult {
   network: NetworkMetrics;
   /** Louvain on the symmetrised graph of this layer (plan Q9), null when it has no ties. */
   communities: CommunityResult | null;
+  /**
+   * n × n tie weights (0–1) in the requested view, NaN = not rated: the values
+   * the metrics were computed from, used by the map for edge width, the
+   * threshold and layout attraction (CLAUDE.md D51). A copy, so transferring
+   * it leaves the worker's prepared input intact.
+   */
+  weights: Float64Array;
 }
 
 // ------------------------------------------------------------------ signed

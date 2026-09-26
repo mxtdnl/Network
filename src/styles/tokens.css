@@ -124,6 +124,23 @@
   --matrix-label-width: 184px; /* row labels: member names */
   --matrix-header-height: 136px; /* column labels, set vertically */
   --hatch-gap: 6px; /* spacing of the "not rated" hatch (design-system §2.3) */
+
+  /* Phase 4: map marks (CLAUDE.md D52). Radii, widths and dash lengths at 1× zoom. */
+  --map-node-min: 4px; /* radius of the smallest sized node */
+  --map-node-max: 16px; /* radius of the largest; area is proportional to the metric */
+  --map-node-undefined: 2px; /* radius of a node whose size metric is not defined */
+  --map-edge-min: 1px; /* width of the weakest tie shown; thinner washes out on a projector */
+  --map-edge-max: 3px; /* width of a tie of weight 1 */
+  --map-arrow: 6px; /* arrowhead length (directed view only) */
+  --map-dash: 4px; /* informal ties: 4px dash, 3px gap (design-system §2.3) */
+  --map-gap: 3px;
+  --map-dot: 1px; /* ties that are neither formal nor informal: dotted */
+  --map-pair-offset: 1.5px; /* separation of a reciprocated pair's two directions */
+  --map-fade: 0.3; /* opacity of members outside a highlight (design-system §2.3) */
+  --map-legend-swatch: 24px; /* legend line and colour samples */
+  --map-legend-column: 180px; /* narrowest legend column */
+  --map-zoom-button: 32px; /* same as --control-height */
+  --popover-width: 280px; /* metric explanation popover */
 }
 
 @media (prefers-reduced-motion: reduce) {

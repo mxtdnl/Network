@@ -24,11 +24,6 @@ export const projectCopy = {
     'The open project will be closed. Changes since you last saved it will be lost unless you save it first.',
   replaceConfirm: 'Replace project',
   cancel: 'Cancel',
-  summary: (members: number, ratings: number, layers: number) =>
-    `${count(members, 'member', 'members')}, ${count(ratings, 'rating', 'ratings')} on ${count(layers, 'enabled layer', 'enabled layers')}.`,
-  mapLater:
-    'The network map arrives in a later build. Enter or check ratings in the Matrix tab, and review response rates in the Coverage panel.',
-  openMatrix: 'Open the matrix',
   noMembers: 'This project has no members yet. Import a members file to add them.',
 };
 

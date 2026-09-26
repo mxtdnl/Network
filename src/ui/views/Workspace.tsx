@@ -6,8 +6,10 @@ import { useAppStore, type CentreView, type RightPanel } from '../state/store';
 import { CoveragePanel } from './CoveragePanel';
 import { ImportDialog } from './ImportDialog';
 import { LayerPanel } from './LayerPanel';
+import { MapControls } from './MapControls';
+import { MapView } from './MapView';
 import { MatrixView } from './MatrixView';
-import { ProjectSummary } from './ProjectSummary';
+import { MemberPanel } from './MemberPanel';
 import { StatusLine } from './StatusLine';
 import { TopBar } from './TopBar';
 
@@ -16,7 +18,7 @@ function Placeholder({ text }: { text: string }) {
 }
 
 const centreItems: readonly TabItem<CentreView>[] = [
-  { key: 'map', label: shellCopy.centreTabs.map, panel: <ProjectSummary /> },
+  { key: 'map', label: shellCopy.centreTabs.map, panel: <MapView /> },
   { key: 'matrix', label: shellCopy.centreTabs.matrix, panel: <MatrixView /> },
   {
     key: 'table',
@@ -31,11 +33,7 @@ const centreItems: readonly TabItem<CentreView>[] = [
 ];
 
 const rightItems: readonly TabItem<RightPanel>[] = [
-  {
-    key: 'member',
-    label: shellCopy.rightTabs.member,
-    panel: <Placeholder text={shellCopy.rightEmpty.member} />,
-  },
+  { key: 'member', label: shellCopy.rightTabs.member, panel: <MemberPanel /> },
   {
     key: 'insights',
     label: shellCopy.rightTabs.insights,
@@ -51,14 +49,28 @@ export function Workspace() {
   const setCentreView = useAppStore((s) => s.setCentreView);
   const setRightPanel = useAppStore((s) => s.setRightPanel);
   const closeNotice = useAppStore((s) => s.closeNotice);
+  const hasProject = useAppStore((s) => (s.data.project?.members.length ?? 0) > 0);
+  const showMapControls = hasProject && ui.centreView === 'map';
 
   return (
     <div className="workspace">
       <TopBar />
       <StatusLine />
       <aside className="workspace__left" aria-label={shellCopy.regions.left}>
-        <h2 className="panel-heading">{shellCopy.left.heading}</h2>
-        <LayerPanel />
+        {showMapControls && (
+          <section className="workspace__section" aria-labelledby="map-controls-heading">
+            <h2 id="map-controls-heading" className="panel-heading">
+              {shellCopy.left.map}
+            </h2>
+            <MapControls />
+          </section>
+        )}
+        <section aria-labelledby="layers-heading">
+          <h2 id="layers-heading" className="panel-heading">
+            {shellCopy.left.heading}
+          </h2>
+          <LayerPanel />
+        </section>
       </aside>
       <main className="workspace__centre" aria-label={shellCopy.regions.centre}>
         <Tabs

@@ -16,6 +16,7 @@ export const shellCopy = {
   },
   left: {
     heading: 'Layers',
+    map: 'Map',
   },
   centreTabs: {
     map: 'Map',

@@ -1,0 +1,352 @@
+import { useId, useMemo, useState, type KeyboardEvent } from 'react';
+import { DEFAULT_WAVE, isCategorical, type LayerDefinition, type Project } from '../../data/schema';
+import type { AnalysisResult } from '../engineClient';
+import { Icon } from '../components/Icon';
+import { formatValue, mapCopy } from '../copy/map';
+import { DIRECTED_METRICS, SYMMETRISED_METRICS, flagCopy, metricCopy } from '../copy/metrics';
+import { shellCopy } from '../copy/shell';
+import { focusMapMember } from '../map/focus';
+import { rankOf } from '../map/rank';
+import { drawableLayers, useMapData } from '../map/useMapModel';
+import { useAppStore, type SizeMetric } from '../state/store';
+
+const P = mapCopy.panel;
+
+function MetricInfo({ metric, flag }: { metric: SizeMetric; flag: string | null }) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  const copy = metricCopy[metric];
+  return (
+    <span className="metric-info">
+      <button
+        type="button"
+        className="metric-info__button"
+        aria-label={P.about(copy.label)}
+        aria-expanded={open}
+        aria-describedby={open ? id : undefined}
+        onClick={() => {
+          setOpen((o) => !o);
+        }}
+        onMouseEnter={() => {
+          setOpen(true);
+        }}
+        onMouseLeave={() => {
+          setOpen(false);
+        }}
+        onFocus={() => {
+          setOpen(true);
+        }}
+        onBlur={() => {
+          setOpen(false);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && open) {
+            e.stopPropagation();
+            setOpen(false);
+          }
+        }}
+      >
+        <Icon name="info" />
+      </button>
+      {open && (
+        <span id={id} role="tooltip" className="metric-info__popover">
+          <span className="metric-info__meaning">{copy.meaning}</span>
+          <span className="metric-info__caveat">{copy.caveat}</span>
+          {flag && <span className="metric-info__flag">{flag}</span>}
+          <span className="metric-info__technical">{P.technical(copy.technical)}</span>
+        </span>
+      )}
+    </span>
+  );
+}
+
+interface TieRow {
+  id: string;
+  name: string;
+  given: number | null;
+  received: number | null;
+}
+
+function tiesFor(project: Project, memberId: string, layer: LayerDefinition): TieRow[] {
+  const names = new Map(project.members.map((m) => [m.id, m.display_name]));
+  const rows = new Map<string, TieRow>();
+  const row = (id: string) => {
+    let r = rows.get(id);
+    if (!r) {
+      r = { id, name: names.get(id) ?? id, given: null, received: null };
+      rows.set(id, r);
+    }
+    return r;
+  };
+  for (const t of project.ties) {
+    if (t.variable !== layer.key || t.wave !== DEFAULT_WAVE || typeof t.value !== 'number')
+      continue;
+    if (t.rater_id === memberId && names.has(t.ratee_id)) row(t.ratee_id).given = t.value;
+    else if (t.ratee_id === memberId && names.has(t.rater_id)) row(t.rater_id).received = t.value;
+  }
+  return [...rows.values()].sort(
+    (a, b) =>
+      (b.given ?? -Infinity) - (a.given ?? -Infinity) ||
+      (b.received ?? -Infinity) - (a.received ?? -Infinity) ||
+      a.name.localeCompare(b.name, 'en-GB'),
+  );
+}
+
+const rating = (v: number | null) => (v === null ? P.notRated : formatValue(v));
+
+function TiesByLayer({
+  project,
+  memberId,
+  active,
+}: {
+  project: Project;
+  memberId: string;
+  active: string;
+}) {
+  const layers = project.layers.filter((l) => l.enabled && !isCategorical(l));
+  const [open, setOpen] = useState<Record<string, boolean>>({});
+  const headingId = useId();
+  const firstOpen = layers.some((l) => l.key === active) ? active : layers[0]?.key;
+  return (
+    <section className="member__section" aria-labelledby={headingId}>
+      <h3 id={headingId} className="member__heading">
+        {P.ties}
+      </h3>
+      {layers.map((layer) => {
+        const expanded = open[layer.key] ?? layer.key === firstOpen;
+        const rows = expanded ? tiesFor(project, memberId, layer) : [];
+        const panelId = `${headingId}-${layer.key}`;
+        return (
+          <div key={layer.key} className="member__layer">
+            <button
+              type="button"
+              className="member__disclosure"
+              aria-expanded={expanded}
+              aria-controls={panelId}
+              onClick={() => {
+                setOpen((o) => ({ ...o, [layer.key]: !expanded }));
+              }}
+            >
+              <Icon name={expanded ? 'collapse' : 'expand'} />
+              {layer.label}
+            </button>
+            <div id={panelId} hidden={!expanded}>
+              {expanded &&
+                (rows.length === 0 ? (
+                  <p className="member__none">{P.noTies}</p>
+                ) : (
+                  <table className="member__table">
+                    <thead>
+                      <tr>
+                        <th scope="col">
+                          <span className="visually-hidden">{mapCopy.table.member}</span>
+                        </th>
+                        <th scope="col" className="numeric">
+                          {P.given}
+                        </th>
+                        <th scope="col" className="numeric">
+                          {P.received}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((r) => (
+                        <tr key={r.id}>
+                          <th scope="row">{r.name}</th>
+                          <td className="numeric">{rating(r.given)}</td>
+                          <td className="numeric">{rating(r.received)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ))}
+            </div>
+          </div>
+        );
+      })}
+      <p className="member__note">{P.notRatedNote}</p>
+    </section>
+  );
+}
+
+function Position({
+  project,
+  result,
+  memberIndex,
+  layer,
+  onLayer,
+}: {
+  project: Project;
+  result: AnalysisResult;
+  memberIndex: number;
+  layer: string;
+  onLayer: (layer: string) => void;
+}) {
+  const headingId = useId();
+  const selectId = useId();
+  const ref = result.refs[layer];
+  const metrics = (result.view === 'directed' ? DIRECTED_METRICS : SYMMETRISED_METRICS).filter(
+    (m) => ref?.node.columns[m] !== undefined,
+  );
+  const layers = drawableLayers(project, result);
+  const label = (key: string) =>
+    key === 'composite'
+      ? mapCopy.panel.composite
+      : (project.layers.find((l) => l.key === key)?.label ?? key);
+  return (
+    <section className="member__section" aria-labelledby={headingId}>
+      <div className="member__heading-row">
+        <h3 id={headingId} className="member__heading">
+          {P.position}
+        </h3>
+        <label htmlFor={selectId} className="visually-hidden">
+          {mapCopy.controls.layer}
+        </label>
+        <select
+          id={selectId}
+          className="select member__layer-select"
+          value={layer}
+          onChange={(e) => {
+            onLayer(e.currentTarget.value);
+          }}
+        >
+          {layers.map((key) => (
+            <option key={key} value={key}>
+              {label(key)}
+            </option>
+          ))}
+        </select>
+      </div>
+      <table className="member__table member__metrics">
+        <thead>
+          <tr>
+            <th scope="col">
+              <span className="visually-hidden">{mapCopy.table.member}</span>
+            </th>
+            <th scope="col" className="numeric">
+              {P.value}
+            </th>
+            <th scope="col" className="numeric">
+              {P.rank}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {metrics.map((m) => {
+            const column = ref?.node.columns[m];
+            if (!column) return null;
+            const value = column[memberIndex] as number;
+            const flagKey = ref.node.flags[m]?.[memberIndex] ?? null;
+            const flag = flagKey ? flagCopy[flagKey] : null;
+            return (
+              <tr key={m}>
+                <th scope="row">
+                  <span className="member__metric">
+                    {metricCopy[m].label}
+                    <MetricInfo metric={m} flag={flag} />
+                  </span>
+                </th>
+                <td className="numeric">{formatValue(value)}</td>
+                <td className="numeric">{rankOf(column, memberIndex)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <p className="member__note">{P.rankNote(result.memberIds.length)}</p>
+    </section>
+  );
+}
+
+// Member panel (design-system §5.2): identity, attributes, position in the
+// network with plain-English explanations, and ties by layer. Nothing here
+// characterises the person (spec §2).
+export function MemberPanel() {
+  const data = useMapData();
+  const memberId = useAppStore((s) => s.selection.member);
+  const selectMember = useAppStore((s) => s.selectMember);
+  const [panelLayer, setPanelLayer] = useState<{ follow: string; layer: string } | null>(null);
+  const headingId = useId();
+  const member = useMemo(
+    () => data?.project.members.find((m) => m.id === memberId) ?? null,
+    [data, memberId],
+  );
+
+  if (!data || !member)
+    return <p className="placeholder">{data ? P.empty : shellCopy.rightEmpty.member}</p>;
+  const { project, result, settings } = data;
+  const index = project.members.indexOf(member);
+  // The panel follows the map's layer until the user picks another here.
+  const layer =
+    panelLayer && panelLayer.follow === settings.layer ? panelLayer.layer : settings.layer;
+  const names = new Map(project.members.map((m) => [m.id, m.display_name]));
+
+  const close = () => {
+    selectMember(null);
+    focusMapMember(member.id);
+  };
+  const onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      close();
+    }
+  };
+
+  return (
+    // Escape anywhere in the panel closes it (keyboard operation, spec §12).
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    <article className="member" aria-labelledby={headingId} onKeyDown={onKeyDown}>
+      <div className="member__title-row">
+        <h2 id={headingId} className="member__name">
+          {member.display_name}
+        </h2>
+        <button
+          type="button"
+          className="button button--text member__close"
+          aria-label={P.close}
+          onClick={close}
+        >
+          <Icon name="close" />
+        </button>
+      </div>
+      <dl className="definition-list member__attributes">
+        {project.attribute_definitions.map((a) => {
+          const v = member.attributes[a.key] ?? null;
+          return (
+            <div key={a.key} className="definition-list__row">
+              <dt>{a.label}</dt>
+              <dd>
+                {v === null ? (
+                  mapCopy.legend.notRecorded
+                ) : a.type === 'member_ref' && names.has(v) ? (
+                  <button
+                    type="button"
+                    className="link-button"
+                    aria-label={P.selectManager(names.get(v) ?? v)}
+                    onClick={() => {
+                      selectMember(v);
+                    }}
+                  >
+                    {names.get(v)}
+                  </button>
+                ) : (
+                  v
+                )}
+              </dd>
+            </div>
+          );
+        })}
+      </dl>
+      <Position
+        project={project}
+        result={result}
+        memberIndex={index}
+        layer={layer}
+        onLayer={(l) => {
+          setPanelLayer({ follow: settings.layer, layer: l });
+        }}
+      />
+      <TiesByLayer project={project} memberId={member.id} active={layer} />
+    </article>
+  );
+}

@@ -31,6 +31,7 @@ export type {
   ResilienceResult,
 } from '../engine/types';
 export { buildAnalysisInput };
+export { FI_CLASS } from '../engine/types';
 
 export interface WorkerLike {
   postMessage(message: EngineRequest, transfer: Transferable[]): void;
