@@ -8,6 +8,7 @@ import {
   type KeyboardEvent,
 } from 'react';
 import { Icon } from '../components/Icon';
+import { durationToken } from '../durations';
 import { percent } from '../copy/data';
 import { formatValue, mapCopy } from '../copy/map';
 import { metricCopy } from '../copy/metrics';
@@ -15,8 +16,9 @@ import { MapController } from '../map/controller';
 import { registerMapFocus } from '../map/focus';
 import { layerName } from '../map/legend';
 import { nextMember, type MapModel } from '../map/model';
-import { useMapData, type MapData } from '../map/useMapModel';
+import { sharedLayout, useMapData, type MapData } from '../map/useMapModel';
 import { useAppStore } from '../state/store';
+import { clearPath, endSimulation } from '../state/tools';
 import { EmptyState } from './EmptyState';
 import { MapLegend } from './MapLegend';
 
@@ -56,10 +58,18 @@ export function MapView() {
 }
 
 function MapCanvas({ data }: { data: MapData }) {
-  const { model, theme, result, settings } = data;
-  const revision = useAppStore((s) => s.data.revision);
+  const { mapModel: model, theme, result, settings, layout } = data;
   const selected = useAppStore((s) => s.selection.member);
+  const group = useAppStore((s) => s.selection.group);
+  const path = useAppStore((s) => s.tools.path);
+  const simulation = useAppStore((s) => s.tools.resilience);
+  const removal = useAppStore((s) => s.tools.removal);
+  const showRemoval = useAppStore((s) => s.tools.showRemoval);
+  const setTools = useAppStore((s) => s.setTools);
   const selectMember = useAppStore((s) => s.selectMember);
+  const setGroup = useAppStore((s) => s.setGroup);
+  const toggleGroupMember = useAppStore((s) => s.toggleGroupMember);
+  const setMap = useAppStore((s) => s.setMap);
   const setRightPanel = useAppStore((s) => s.setRightPanel);
   const running = useAppStore((s) => s.results.status === 'running');
   const coverage = result.coverage;
@@ -67,7 +77,8 @@ function MapCanvas({ data }: { data: MapData }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const legendRef = useRef<HTMLElement>(null);
-  const noteRef = useRef<HTMLParagraphElement>(null);
+  const noteRef = useRef<HTMLDivElement>(null);
+  const toolsRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<MapController | null>(null);
   const buttons = useRef(new Map<number, HTMLButtonElement>());
   const [focused, setFocused] = useState<number | null>(null);
@@ -86,42 +97,68 @@ function MapCanvas({ data }: { data: MapData }) {
     },
     [model, selectMember, setRightPanel],
   );
-  const openRef = useRef(open);
+  const toggle = useCallback(
+    (index: number) => {
+      const id = model.nodes[index]?.id;
+      if (id !== undefined) toggleGroupMember(id);
+    },
+    [model, toggleGroupMember],
+  );
+  const lasso = useCallback(
+    (indices: number[], add: boolean) => {
+      const ids = indices.map((i) => model.nodes[i]?.id).filter((x): x is string => !!x);
+      const current = useAppStore.getState().selection.group;
+      setGroup(add ? [...current, ...ids] : ids);
+      if (ids.length > 0) setRightPanel('explore');
+    },
+    [model, setGroup, setRightPanel],
+  );
+  const openRef = useRef({ open, toggle, lasso });
   useEffect(() => {
-    openRef.current = open;
-  }, [open]);
+    openRef.current = { open, toggle, lasso };
+  }, [open, toggle, lasso]);
 
   // Controller lifetime: one per mounted canvas.
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
-    const idle = Number.parseFloat(
-      getComputedStyle(document.documentElement).getPropertyValue('--m-base'),
-    );
-    const controller = new MapController(canvas, theme, Number.isFinite(idle) ? idle : 0, {
-      select: (i) => {
-        openRef.current(i);
+    const idle = durationToken('--m-base');
+    const controller = new MapController(
+      canvas,
+      theme,
+      idle,
+      {
+        select: (i) => {
+          openRef.current.open(i);
+        },
+        pinned: setPinned,
+        toggleGroup: (i) => {
+          openRef.current.toggle(i);
+        },
+        lasso: (indices, add) => {
+          openRef.current.lasso(indices, add);
+        },
       },
-      pinned: setPinned,
-    });
+      sharedLayout,
+    );
+    controller.setTool(useAppStore.getState().map.tool);
     controllerRef.current = controller;
     const observer = new ResizeObserver(() => {
       const rect = container.getBoundingClientRect();
       // Fit to view keeps members clear of the legend.
       const legend = legendRef.current?.getBoundingClientRect();
-      const note = noteRef.current?.getBoundingClientRect();
-      if (legend) {
-        controller.setReserved(
-          legend.right - rect.left,
-          legend.top - rect.top,
-          note ? note.bottom - rect.top : 0,
-        );
-      }
+      // …and below the notes and the selection tools along the top edge.
+      const top = [noteRef.current, toolsRef.current].reduce((m, el) => {
+        const r = el?.getBoundingClientRect();
+        return r && r.height > 0 ? Math.max(m, r.bottom - rect.top) : m;
+      }, 0);
+      if (legend) controller.setReserved(legend.right - rect.left, legend.top - rect.top, top);
       controller.resize(rect.width, rect.height, window.devicePixelRatio || 1);
     });
     observer.observe(container);
     if (legendRef.current) observer.observe(legendRef.current);
+    if (noteRef.current) observer.observe(noteRef.current);
     return () => {
       observer.disconnect();
       controller.dispose();
@@ -129,15 +166,34 @@ function MapCanvas({ data }: { data: MapData }) {
     };
   }, [theme]);
 
-  const weights = result.refs[settings.layer]?.weights;
-  const layoutKey = `${String(revision)}|${result.inputKey}|${settings.layer}`;
   useEffect(() => {
-    controllerRef.current?.setModel(model, layoutKey, weights);
-  }, [model, layoutKey, weights]);
+    controllerRef.current?.setModel(model, layout);
+  }, [model, layout]);
 
+  const groupSet = useMemo(() => {
+    const s = new Set<number>();
+    for (const id of group) {
+      const i = indexOf.get(id);
+      if (i !== undefined) s.add(i);
+    }
+    return s;
+  }, [group, indexOf]);
+  const inGroup = useMemo(() => new Set(group), [group]);
+  const pathIndices = useMemo(() => {
+    const members = path?.status === 'ready' ? path.result?.members : undefined;
+    if (!members) return null;
+    return members.map((id) => indexOf.get(id)).filter((i): i is number => i !== undefined);
+  }, [path, indexOf]);
   useEffect(() => {
-    controllerRef.current?.setHighlight({ selected: selectedIndex });
-  }, [selectedIndex]);
+    controllerRef.current?.setHighlight({
+      selected: selectedIndex,
+      group: groupSet,
+      path: pathIndices,
+    });
+  }, [selectedIndex, groupSet, pathIndices]);
+  useEffect(() => {
+    controllerRef.current?.setTool(settings.tool);
+  }, [settings.tool]);
 
   const focusMember = useCallback((index: number) => {
     const el = buttons.current.get(index);
@@ -198,7 +254,8 @@ function MapCanvas({ data }: { data: MapData }) {
       case 'Enter':
       case ' ':
         event.preventDefault();
-        open(index);
+        if (event.shiftKey) toggle(index);
+        else open(index);
         return;
       case 'Escape':
         if (selected !== null) {
@@ -237,17 +294,97 @@ function MapCanvas({ data }: { data: MapData }) {
         <canvas ref={canvasRef} className="map__canvas" aria-hidden="true" />
       </div>
 
-      {coverage?.belowThreshold && (
-        <p ref={noteRef} className="map__coverage" role="note">
-          <Icon name="warning" />
-          {mapCopy.coverage(percent(coverage.rate), percent(coverage.threshold))}
-        </p>
-      )}
-      {(visibleCount === 0 || model.edges.length === 0 || running) && (
-        <p className="map__notice" role="status">
-          {running ? mapCopy.calculating : visibleCount === 0 ? mapCopy.noMembers : mapCopy.noTies}
-        </p>
-      )}
+      <div ref={noteRef} className="map__notes">
+        {coverage?.belowThreshold && (
+          <p className="map__coverage" role="note">
+            <Icon name="warning" />
+            {mapCopy.coverage(percent(coverage.rate), percent(coverage.threshold))}
+          </p>
+        )}
+        {model.ego && (
+          <p className="map__mode">
+            <span>{mapCopy.modes.ego(model.ego.name, model.ego.depth)}</span>
+            <button
+              type="button"
+              className="button button--text"
+              onClick={() => {
+                setMap({ ego: null });
+              }}
+            >
+              {mapCopy.modes.exitEgo}
+            </button>
+          </p>
+        )}
+        {path && path.status !== 'running' && (
+          <p className="map__mode">
+            <span>
+              {path.status === 'ready' && path.result
+                ? mapCopy.modes.path(
+                    model.nodes[indexOf.get(path.from) ?? -1]?.name ?? '',
+                    model.nodes[indexOf.get(path.to) ?? -1]?.name ?? '',
+                  )
+                : mapCopy.modes.noPath}
+            </span>
+            <button type="button" className="button button--text" onClick={clearPath}>
+              {mapCopy.modes.clearPath}
+            </button>
+          </p>
+        )}
+        {simulation && (
+          <p className="map__mode">
+            <span>
+              {showRemoval
+                ? mapCopy.modes.removed(removal.length)
+                : mapCopy.modes.removedShown(removal.length)}
+            </span>
+            <button
+              type="button"
+              className="button button--text"
+              onClick={() => {
+                setTools({ showRemoval: !showRemoval });
+              }}
+            >
+              {showRemoval ? mapCopy.modes.showRemoved : mapCopy.modes.hideRemoved}
+            </button>
+            <button type="button" className="button button--text" onClick={endSimulation}>
+              {mapCopy.modes.endSimulation}
+            </button>
+          </p>
+        )}
+        {(visibleCount === 0 || model.edges.length === 0 || running) && (
+          <p className="map__notice" role="status">
+            {running
+              ? mapCopy.calculating
+              : visibleCount === 0
+                ? mapCopy.noMembers
+                : mapCopy.noTies}
+          </p>
+        )}
+      </div>
+
+      <div ref={toolsRef} className="map__tools" role="group" aria-label={mapCopy.tools.group}>
+        <button
+          type="button"
+          className="map__tool"
+          aria-pressed={settings.tool === 'lasso'}
+          onClick={() => {
+            setMap({ tool: settings.tool === 'lasso' ? 'pan' : 'lasso' });
+          }}
+        >
+          {mapCopy.tools.lasso}
+        </button>
+        {group.length > 0 && (
+          <button
+            type="button"
+            className="map__tool"
+            onClick={() => {
+              setGroup([]);
+            }}
+          >
+            {mapCopy.tools.clearGroup(group.length)}
+          </button>
+        )}
+      </div>
 
       <p id={instructionsId} className="visually-hidden">
         {mapCopy.nodes.instructions}
@@ -285,11 +422,23 @@ function MapCanvas({ data }: { data: MapData }) {
               groupLabel(model, node.index),
               model.neighbours[node.index]?.length ?? 0,
             )}
+            {inGroup.has(node.id) ? mapCopy.nodes.inGroup : ''}
           </button>
         ))}
       </div>
 
-      <MapLegend ref={legendRef} model={model} theme={theme} />
+      <MapLegend
+        ref={legendRef}
+        model={model}
+        theme={theme}
+        extras={{
+          layout: settings.layout,
+          groupBy:
+            data.project.attribute_definitions.find((a) => a.key === settings.groupBy)?.label ?? '',
+          group: groupSet.size,
+          path: pathIndices !== null && pathIndices.length > 1,
+        }}
+      />
 
       <div className="map__zoom" role="group" aria-label={mapCopy.zoom.group}>
         {pinned > 0 && (

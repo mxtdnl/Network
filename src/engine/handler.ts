@@ -1,7 +1,11 @@
 // Request router for the engine worker, separate from the worker entry so it
 // can be tested without a Worker. It keeps the last prepared input (keyed by
 // inputKey) for resilience and bootstrap requests, and one AbortController per
-// running request so 'cancel' can stop it between steps.
+// running request so 'cancel' can stop it between steps. It also keeps the
+// last analysis result: when the next input has the same `baseKey` (only the
+// composite weights changed), every other result is reused. Only the
+// composite's buffers are transferred; the rest are copied, so the kept result
+// stays usable.
 
 import {
   analysePrepared,
@@ -13,11 +17,13 @@ import {
 } from './analyse';
 import { transferables, type EngineRequest, type EngineResponse, type RequestId } from './protocol';
 import { CancelledError } from './schedule';
+import { COMPOSITE, type AnalysisResult } from './types';
 
 export type Post = (message: EngineResponse, transfer: ArrayBuffer[]) => void;
 
 export function createEngineHandler(post: Post): (request: EngineRequest) => Promise<void> {
   let prepared: Prepared | null = null;
+  let last: { baseKey: string; result: AnalysisResult } | null = null;
   const running = new Map<RequestId, AbortController>();
 
   const send = (message: EngineResponse, transfer = false) => {
@@ -43,8 +49,12 @@ export function createEngineHandler(post: Post): (request: EngineRequest) => Pro
         case 'analyse': {
           const p = prepare(request.input);
           prepared = p;
-          const result = await analysePrepared(p, control);
-          send({ id, kind: 'analysis', result }, true);
+          const { baseKey } = request.input;
+          const reuse = baseKey !== undefined && last?.baseKey === baseKey ? last.result : null;
+          const result = await analysePrepared(p, control, reuse);
+          last = baseKey === undefined ? null : { baseKey, result };
+          const composite = result.refs[COMPOSITE];
+          post({ id, kind: 'analysis', result }, composite ? transferables(composite) : []);
           break;
         }
         case 'resilience': {

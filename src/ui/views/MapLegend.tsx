@@ -1,6 +1,6 @@
 import { forwardRef, useId } from 'react';
 import { mapCopy } from '../copy/map';
-import { legendSections, type LegendSection } from '../map/legend';
+import { legendSections, type LegendExtras, type LegendSection } from '../map/legend';
 import type { MapModel } from '../map/model';
 import type { MapTheme } from '../map/theme';
 
@@ -185,6 +185,55 @@ function Sample({ section, theme }: { section: LegendSection; theme: MapTheme })
           })}
         </ul>
       );
+    case 'position':
+      if (!section.reportingLines) return null;
+      return (
+        <ul className="legend__samples">
+          <li className="legend__sample">
+            <svg className="legend__svg" width={lineW} height={box} aria-hidden="true">
+              <polyline
+                className="legend__reporting"
+                points={`${String(theme.line)},${String(theme.line)} ${String(theme.line)},${String(box / 2)} ${String(lineW)},${String(box / 2)}`}
+                strokeWidth={theme.line}
+              />
+            </svg>
+            <span>{section.reportingLines}</span>
+          </li>
+        </ul>
+      );
+    case 'marks':
+      return (
+        <ul className="legend__samples legend__samples--list">
+          {section.items.map((item) => (
+            <li key={item.mark} className="legend__sample">
+              <svg className="legend__svg" width={box} height={box} aria-hidden="true">
+                {item.mark === 'path' ? (
+                  <line
+                    className="legend__path"
+                    x1={0}
+                    y1={box / 2}
+                    x2={box}
+                    y2={box / 2}
+                    strokeWidth={theme.focusWidth}
+                  />
+                ) : (
+                  <>
+                    <circle className="legend__node" cx={box / 2} cy={box / 2} r={theme.nodeMin} />
+                    <circle
+                      className="legend__ring"
+                      cx={box / 2}
+                      cy={box / 2}
+                      r={theme.nodeMin + theme.line + theme.focusWidth}
+                      strokeWidth={theme.line}
+                    />
+                  </>
+                )}
+              </svg>
+              <span>{item.label}</span>
+            </li>
+          ))}
+        </ul>
+      );
     case 'arrows': {
       const w = lineW;
       const y = lineH / 2;
@@ -215,31 +264,32 @@ function Sample({ section, theme }: { section: LegendSection; theme: MapTheme })
 
 // Persistent legend, overlaid at the lower left of the map (design-system
 // §5.1): one entry per encoding in use, rebuilt from the same model as the map.
-export const MapLegend = forwardRef<HTMLElement, { model: MapModel; theme: MapTheme }>(
-  function MapLegend({ model, theme }, ref) {
-    const headingId = useId();
-    const sections = legendSections(model, theme);
-    return (
-      <section ref={ref} className="legend" aria-labelledby={headingId}>
-        <h2 id={headingId} className="visually-hidden">
-          {mapCopy.legend.heading}
-        </h2>
-        {sections.map((section) => (
-          <div key={section.kind} className="legend__section">
-            <p className="legend__heading">
-              <span className="legend__title">{section.title}</span>{' '}
-              <span className="legend__variable">{section.variable}</span>
-            </p>
-            <Sample section={section} theme={theme} />
-            {section.kind === 'width' &&
-              section.notes.map((note) => (
-                <p key={note} className="legend__note num">
-                  {note}
-                </p>
-              ))}
-          </div>
-        ))}
-      </section>
-    );
-  },
-);
+export const MapLegend = forwardRef<
+  HTMLElement,
+  { model: MapModel; theme: MapTheme; extras?: LegendExtras | null }
+>(function MapLegend({ model, theme, extras = null }, ref) {
+  const headingId = useId();
+  const sections = legendSections(model, theme, extras);
+  return (
+    <section ref={ref} className="legend" aria-labelledby={headingId}>
+      <h2 id={headingId} className="visually-hidden">
+        {mapCopy.legend.heading}
+      </h2>
+      {sections.map((section) => (
+        <div key={section.kind} className="legend__section">
+          <p className="legend__heading">
+            <span className="legend__title">{section.title}</span>{' '}
+            <span className="legend__variable">{section.variable}</span>
+          </p>
+          <Sample section={section} theme={theme} />
+          {section.kind === 'width' &&
+            section.notes.map((note) => (
+              <p key={note} className="legend__note num">
+                {note}
+              </p>
+            ))}
+        </div>
+      ))}
+    </section>
+  );
+});

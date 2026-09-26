@@ -6,9 +6,10 @@ import { formatValue, mapCopy } from '../copy/map';
 import { DIRECTED_METRICS, SYMMETRISED_METRICS, flagCopy, metricCopy } from '../copy/metrics';
 import { shellCopy } from '../copy/shell';
 import { focusMapMember } from '../map/focus';
-import { rankOf } from '../map/rank';
+import { rankInterval, rankOf } from '../map/rank';
 import { drawableLayers, useMapData } from '../map/useMapModel';
 import { useAppStore, type SizeMetric } from '../state/store';
+import { simulateRemoval } from '../state/tools';
 
 const P = mapCopy.panel;
 
@@ -184,6 +185,13 @@ function Position({
 }) {
   const headingId = useId();
   const selectId = useId();
+  const bootstrap = useAppStore((s) => s.tools.bootstrap);
+  const interval =
+    bootstrap?.status === 'ready' &&
+    bootstrap.ref === layer &&
+    bootstrap.inputKey === result.inputKey
+      ? bootstrap.result
+      : null;
   const ref = result.refs[layer];
   const metrics = (result.view === 'directed' ? DIRECTED_METRICS : SYMMETRISED_METRICS).filter(
     (m) => ref?.node.columns[m] !== undefined,
@@ -247,13 +255,21 @@ function Position({
                   </span>
                 </th>
                 <td className="numeric">{formatValue(value)}</td>
-                <td className="numeric">{rankOf(column, memberIndex)}</td>
+                <td className="numeric">
+                  {interval && interval.metric === m
+                    ? rankInterval(interval.rankLow[memberIndex], interval.rankHigh[memberIndex])
+                    : rankOf(column, memberIndex)}
+                </td>
               </tr>
             );
           })}
         </tbody>
       </table>
-      <p className="member__note">{P.rankNote(result.memberIds.length)}</p>
+      <p className="member__note">
+        {interval
+          ? P.rankIntervalNote(metricCopy[interval.metric].label, interval.replicates)
+          : P.rankNote(result.memberIds.length)}
+      </p>
     </section>
   );
 }
@@ -265,6 +281,11 @@ export function MemberPanel() {
   const data = useMapData();
   const memberId = useAppStore((s) => s.selection.member);
   const selectMember = useAppStore((s) => s.selectMember);
+  const group = useAppStore((s) => s.selection.group);
+  const toggleGroupMember = useAppStore((s) => s.toggleGroupMember);
+  const setMap = useAppStore((s) => s.setMap);
+  const setRightPanel = useAppStore((s) => s.setRightPanel);
+  const setTools = useAppStore((s) => s.setTools);
   const [panelLayer, setPanelLayer] = useState<{ follow: string; layer: string } | null>(null);
   const headingId = useId();
   const member = useMemo(
@@ -337,6 +358,39 @@ export function MemberPanel() {
           );
         })}
       </dl>
+      <div className="member__actions">
+        <button
+          type="button"
+          className="button button--text"
+          onClick={() => {
+            setMap({ ego: { member: member.id, depth: settings.ego?.depth ?? 1 } });
+          }}
+        >
+          {P.showEgo}
+        </button>
+        <button
+          type="button"
+          className="button button--text"
+          onClick={() => {
+            toggleGroupMember(member.id);
+          }}
+        >
+          {group.includes(member.id) ? P.leaveGroup : P.joinGroup}
+        </button>
+        <button
+          type="button"
+          className="button button--text"
+          onClick={() => {
+            const removal = useAppStore.getState().tools.removal;
+            const ids = removal.includes(member.id) ? removal : [...removal, member.id];
+            setTools({ removal: ids });
+            simulateRemoval(ids);
+            setRightPanel('explore');
+          }}
+        >
+          {P.simulateRemoval}
+        </button>
+      </div>
       <Position
         project={project}
         result={result}

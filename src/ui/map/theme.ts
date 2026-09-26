@@ -29,6 +29,9 @@ export interface MapTheme {
   fade: number;
   labelFont: string;
   labelSize: number;
+  /** Group names in the grouped and circular layouts. */
+  groupFont: string;
+  groupSize: number;
   labelGap: number;
   /** Length of a legend line sample. */
   swatch: number;
@@ -79,6 +82,8 @@ export function readMapTheme(element: Element = document.documentElement): MapTh
     fade: number('--map-fade'),
     labelFont: `${text('--weight-medium')} ${text('--t--1-size')} ${text('--font-condensed')}`,
     labelSize: number('--t--1-size'),
+    groupFont: `${text('--weight-semibold')} ${text('--t-0-size')} ${text('--font-sans')}`,
+    groupSize: number('--t-0-size'),
     labelGap: number('--s-1'),
     swatch: number('--map-legend-swatch'),
   };

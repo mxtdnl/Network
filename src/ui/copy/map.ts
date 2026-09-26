@@ -80,6 +80,44 @@ export const mapCopy = {
     notRecorded: 'Not recorded',
   },
 
+  modes: {
+    ego: (name: string, depth: 1 | 2) =>
+      `Ego view: ${name} and members within ${depth === 1 ? 'one step' : 'two steps'}.`,
+    exitEgo: 'Show everyone',
+    path: (from: string, to: string) => `Shortest path from ${from} to ${to}.`,
+    noPath: 'No path connects the two members on this layer.',
+    clearPath: 'Clear path',
+    removed: (n: number) =>
+      `Simulating the removal of ${count(n, 'member', 'members')}; they are hidden.`,
+    removedShown: (n: number) =>
+      `Simulating the removal of ${count(n, 'member', 'members')}; they are shown.`,
+    showRemoved: 'Show them',
+    hideRemoved: 'Hide them',
+    endSimulation: 'End simulation',
+  },
+
+  tools: {
+    group: 'Selection tools',
+    lasso: 'Lasso select',
+    clearGroup: (n: number) => `Clear subgroup (${num(n)})`,
+  },
+
+  layouts: {
+    label: 'Layout',
+    force: 'Force-directed',
+    grouped: 'Grouped',
+    circular: 'Circular',
+    hierarchy: 'Formal hierarchy',
+    groupBy: 'Group by',
+    hierarchyHelp:
+      'Members placed by reporting line, with informal collaboration ties drawn over it.',
+    hierarchyUnavailable:
+      'Formal hierarchy needs formal manager ids. Add a manager_id column to the members file and import it again.',
+    groupedHelp: 'Members pulled together by group; ties inside a group still attract.',
+    circularHelp: 'Members on a circle, one arc per group.',
+    forceHelp: 'Ties pull members together in proportion to their strength.',
+  },
+
   zoom: {
     group: 'Map view',
     in: 'Zoom in',
@@ -116,14 +154,24 @@ export const mapCopy = {
     neither: 'Neither, or not rated',
     arrows: 'Arrowheads',
     arrowsText: 'Point from rater to rated member',
+    position: 'Position',
+    groupedBy: (attribute: string) => `Grouped by ${attribute}`,
+    circleBy: (attribute: string) => `On a circle by ${attribute}`,
+    hierarchy: 'Formal hierarchy',
+    reportingLines: 'Reporting line, manager above',
+    marks: 'Marks',
+    selected: 'Selected member',
+    group: (n: number) => `Subgroup (${count(n, 'member', 'members')})`,
+    path: 'Shortest path',
   },
 
   nodes: {
     group: 'Members on the map',
     instructions:
-      'Arrow keys move to the nearest connected member in that direction. Enter opens the member panel; Escape closes it. Plus and minus zoom; 0 fits the map to view.',
+      'Arrow keys move to the nearest connected member in that direction. Enter opens the member panel; Escape closes it. Shift and Enter adds the member to the subgroup or takes them out. Plus and minus zoom; 0 fits the map to view.',
     label: (name: string, group: string, ties: number) =>
       `${name}, ${group}, ${count(ties, 'tie shown', 'ties shown')}`,
+    inGroup: ', in the subgroup',
   },
 
   table: {
@@ -144,7 +192,13 @@ export const mapCopy = {
     value: 'Value',
     rank: 'Rank',
     rankNote: (n: number) =>
-      `Rank 1 is the highest value of ${num(n)} members; a range means tied values. Rank ranges from resampling are not calculated yet.`,
+      `Rank 1 is the highest value of ${num(n)} members; a range means tied values. Rank ranges from resampling are calculated on request in the metrics table.`,
+    rankIntervalNote: (metric: string, replicates: number) =>
+      `The rank of ${metric} is the range from resampling (95 %, ${num(replicates)} resamples); other ranks are single ranks, and a range there means tied values.`,
+    showEgo: 'Show ego network',
+    joinGroup: 'Add to subgroup',
+    leaveGroup: 'Take out of subgroup',
+    simulateRemoval: 'Remove in simulation',
     about: (label: string) => `About ${label}`,
     technical: (name: string) => `Technical name: ${name}.`,
     ties: 'Ties by layer',

@@ -164,9 +164,16 @@ function refResult(p: Prepared, r: PreparedRef, warnings: EngineWarning[]): RefR
   };
 }
 
+/**
+ * Runs every metric on a prepared input. `reuse`, an earlier result for the
+ * same ratings, view and rule (the same `baseKey`), supplies every layer's
+ * results, the signed results and multiplexity; only the composite, the one
+ * thing weights change, is then recomputed.
+ */
 export async function analysePrepared(
   p: Prepared,
   control: RunControl = {},
+  reuse: AnalysisResult | null = null,
 ): Promise<AnalysisResult> {
   const s = new Scheduler(control);
   const { input, n } = p;
@@ -178,23 +185,35 @@ export async function analysePrepared(
   const refs: Record<LayerRef, RefResult> = {};
   for (const r of p.refs) {
     s.progress(done / steps, r.ref);
-    await s.pause();
-    refs[r.ref] = refResult(p, r, warnings);
+    const earlier = r.kind === 'composite' ? undefined : reuse?.refs[r.ref];
+    if (earlier) {
+      // Warnings belong to the layer's own metrics, so they are carried over too.
+      for (const w of reuse?.warnings ?? [])
+        if (w.code === 'eigenvectorUndefined' && w.ref === r.ref) warnings.push(w);
+      refs[r.ref] = earlier;
+    } else {
+      await s.pause();
+      refs[r.ref] = refResult(p, r, warnings);
+    }
     done += 1;
   }
 
   s.progress(done / steps, 'signed');
   await s.pause();
-  const signed: AnalysisResult['signed'] = {};
-  for (const [key, sc] of p.signedScaled)
-    signed[key] = signedResult(key, sc, n, input.settings.symmetrise);
+  let signed: AnalysisResult['signed'] = {};
+  if (reuse) signed = reuse.signed;
+  else
+    for (const [key, sc] of p.signedScaled)
+      signed[key] = signedResult(key, sc, n, input.settings.symmetrise);
   done += 1;
 
   s.progress(done / steps, 'multiplex');
   await s.pause();
   const layerRefs = p.refs.filter((r) => r.kind !== 'composite');
   let mx: AnalysisResult['multiplex'] = null;
-  if (layerRefs.length > 1) {
+  if (reuse) {
+    mx = reuse.multiplex;
+  } else if (layerRefs.length > 1) {
     const find = (role: 'formal' | 'informal') =>
       input.layers.find((l) => l.role === role && !l.signed);
     const formal = find('formal');

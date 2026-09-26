@@ -55,6 +55,8 @@ test('import the templates, read the validation report and open the matrix', asy
   await expect(page.getByRole('status').filter({ hasText: 'Imported 9 rows.' })).toBeVisible();
 
   await page.getByRole('tab', { name: 'Matrix' }).click();
+  // Phase 5: the Matrix tab opens on the adjacency matrix; rating entry is the second mode.
+  await page.getByRole('radio', { name: 'Enter ratings' }).check();
   const grid = page.getByRole('grid', { name: 'Connection strength ratings, raters in rows' });
   await expect(grid).toBeVisible();
   await expect(grid.getByRole('row')).toHaveCount(4);
@@ -218,6 +220,7 @@ test('demo, layer manager, coverage, project files and local persistence', async
 
   // Matrix on a signed layer.
   await page.getByRole('tab', { name: 'Matrix' }).click();
+  await page.getByRole('radio', { name: 'Enter ratings' }).check();
   await page.getByLabel('Layer', { exact: true }).selectOption('valence');
   await expect(page.getByRole('grid', { name: 'Valence ratings, raters in rows' })).toBeVisible();
   await expect(

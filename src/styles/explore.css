@@ -1,0 +1,651 @@
+/* Phase 5: weight panel and formula, layouts, explore tools, adjacency
+   matrix, metrics table and comparison views. Every value comes from
+   tokens.css. */
+
+/* Weight panel (design-system §5.1): label and share on one line, the slider
+   beneath at full width, so tracks line up and shares share one right edge. */
+.weights__sliders {
+  display: flex;
+  flex-direction: column;
+}
+
+.weights__share-heading {
+  align-self: flex-end;
+  color: var(--graphite);
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+  font-weight: var(--weight-medium);
+}
+
+.weights__layer {
+  margin-bottom: var(--s-3);
+}
+
+.weights__share {
+  min-width: var(--s-7);
+  text-align: end;
+}
+
+.weights__treatment {
+  margin: var(--s-1) 0 0;
+}
+
+.weights .select {
+  width: 100%;
+}
+
+/* The formula sits directly beneath the sliders, in the same order. */
+.formula {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  margin-top: var(--s-2);
+}
+
+.formula__heading {
+  font-weight: var(--weight-medium);
+}
+
+.formula__lines {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.formula__line {
+  display: grid;
+  grid-template-columns: var(--s-4) auto var(--s-4) 1fr;
+  align-items: baseline;
+  column-gap: var(--s-1);
+}
+
+.formula__line--multiplier,
+.formula__line--filter,
+.formula__line--cap {
+  grid-template-columns: 1fr;
+  padding-inline-start: calc(var(--s-4) + var(--s-1));
+  color: var(--graphite);
+}
+
+.formula__op,
+.formula__times {
+  color: var(--graphite);
+  text-align: center;
+}
+
+.formula__weight {
+  text-align: end;
+}
+
+.formula__qualifier {
+  color: var(--graphite);
+}
+
+.formula__note {
+  color: var(--graphite);
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+}
+
+/* Layout choice: a list of radios (four options do not fit a segmented control). */
+.radio-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.radio-list__option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--target-min);
+  cursor: pointer;
+}
+
+.radio-list__option input {
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.radio-list__option:has(input:disabled) {
+  color: var(--graphite);
+  cursor: not-allowed;
+}
+
+.map-controls__group > .field {
+  margin-top: var(--s-2);
+}
+
+/* Map selection tools: top right, clear of the zoom group. */
+.map__tools {
+  position: absolute;
+  top: var(--s-4);
+  inset-inline-end: var(--s-4);
+  display: flex;
+  gap: var(--s-2);
+}
+
+.map__tool {
+  min-height: var(--control-height);
+  padding-inline: var(--s-3);
+  background: var(--paper);
+  border: var(--line-width) solid var(--stone);
+  border-radius: var(--r-control);
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+.map__tool[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.map__canvas--lasso {
+  cursor: crosshair;
+}
+
+/* Legend marks added in Phase 5 */
+.legend__reporting {
+  fill: none;
+  stroke: var(--stone);
+}
+
+.legend__path {
+  stroke: var(--ink);
+}
+
+.legend__ring {
+  fill: none;
+  stroke: var(--ink);
+}
+
+/* Explore panel (right column) */
+.explore {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+}
+
+.explore__layer {
+  color: var(--graphite);
+}
+
+.explore__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.explore__section .field {
+  margin-bottom: var(--s-2);
+}
+
+.explore__section .select {
+  width: 100%;
+}
+
+.explore__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.explore__inline {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s-2);
+}
+
+.explore__inline .field {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.explore__result:empty {
+  display: none;
+}
+
+.explore__figures {
+  margin: 0 0 var(--s-2);
+}
+
+.explore__route {
+  margin: 0;
+  padding-inline-start: var(--s-5);
+}
+
+.explore__route li {
+  min-height: var(--target-min);
+}
+
+.explore__caption {
+  text-align: start;
+  padding-bottom: var(--s-1);
+}
+
+.explore__count {
+  color: var(--graphite);
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+}
+
+.explore__resilience thead th:first-child {
+  text-align: start;
+}
+
+.member__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-2);
+  margin-inline-start: calc(var(--s-2) * -1);
+}
+
+/* Toolbars above the matrix, table and comparison views */
+.matrix-tab,
+.table-view,
+.compare {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  height: 100%;
+  min-height: 0;
+}
+
+.tabs__panel:has(.matrix-tab),
+.tabs__panel:has(.table-view),
+.tabs__panel:has(.compare) {
+  display: flex;
+  flex-direction: column;
+}
+
+.matrix-tab > .matrix {
+  flex: 1;
+  min-height: 0;
+}
+
+.view-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-5);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.view-toolbar__help {
+  flex-basis: 100%;
+}
+
+/* Adjacency matrix: square cells at the minimum target size, no text. */
+.adjacency__grid {
+  --adjacency-cell: var(--target-min);
+  position: relative;
+  width: calc(var(--matrix-label-width) + var(--cols) * var(--adjacency-cell));
+  height: calc(var(--matrix-header-height) + var(--rows) * var(--adjacency-cell));
+}
+
+.adjacency__grid:focus-visible {
+  outline-offset: calc(var(--focus-width) * -1);
+}
+
+.adjacency__col-header {
+  position: absolute;
+  top: 0;
+  left: calc(var(--matrix-label-width) + var(--c) * var(--adjacency-cell));
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: var(--adjacency-cell);
+  height: 100%;
+  padding-block: var(--s-2);
+  font-family: var(--font-condensed);
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+  font-weight: var(--weight-medium);
+  color: var(--graphite);
+}
+
+.adjacency__row {
+  position: absolute;
+  left: 0;
+  top: calc(var(--matrix-header-height) + var(--r) * var(--adjacency-cell));
+  width: 100%;
+  height: var(--adjacency-cell);
+}
+
+.adjacency__row-header {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  width: var(--matrix-label-width);
+  height: 100%;
+  padding-inline: var(--s-2);
+  background: var(--paper);
+  color: var(--graphite);
+  font-family: var(--font-condensed);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+.adjacency__row-header .legend__dot {
+  width: var(--s-2);
+  height: var(--s-2);
+}
+
+.adjacency__name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.adjacency__row-header.is-active,
+.adjacency__col-header.is-active {
+  color: var(--ink);
+}
+
+/* The selected member: ink text, and a thin ink line along their row and column. */
+.adjacency__row.is-selected .adjacency__row-header,
+.adjacency__col-header.is-selected {
+  color: var(--ink);
+  font-weight: var(--weight-semibold);
+}
+
+.adjacency__row-header.is-grouped {
+  border-inline-start: var(--indicator-width) solid var(--ink);
+}
+
+.adjacency__col-header.is-grouped {
+  border-bottom: var(--indicator-width) solid var(--ink);
+}
+
+.adjacency__row.starts-group {
+  border-top: var(--line-width) solid var(--ink);
+}
+
+.adjacency__cell {
+  position: absolute;
+  top: 0;
+  left: calc(var(--matrix-label-width) + var(--c) * var(--adjacency-cell));
+  width: var(--adjacency-cell);
+  height: var(--adjacency-cell);
+  border: var(--line-width) solid var(--field);
+  border-radius: var(--r-none);
+  cursor: pointer;
+}
+
+.adjacency__cell.starts-group-col {
+  border-inline-start-color: var(--ink);
+}
+
+.adjacency__cell--not-rated {
+  background-color: var(--paper);
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--stone) 0 var(--line-width),
+    transparent var(--line-width) var(--hatch-gap)
+  );
+}
+
+.adjacency__cell--self {
+  background-color: var(--field);
+}
+
+.adjacency__cell.is-crossed {
+  border-color: var(--graphite);
+}
+
+.adjacency__cell.is-active {
+  outline: var(--line-width) solid var(--ink);
+  outline-offset: calc(var(--line-width) * -1);
+  z-index: 1;
+}
+
+.adjacency__grid:focus-visible .adjacency__cell.is-active {
+  outline-width: var(--focus-width);
+  outline-offset: calc(var(--focus-width) * -1);
+}
+
+/* Metrics table */
+.stability {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  max-width: calc(var(--measure) * 1.5);
+}
+
+.stability__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-4);
+}
+
+.stability__progress {
+  width: calc(var(--s-8) * 3);
+  height: var(--s-2);
+  accent-color: var(--accent);
+}
+
+.stability p:empty {
+  display: none;
+}
+
+.table-view__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.data-table {
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table__caption {
+  caption-side: top;
+  text-align: start;
+  padding-bottom: var(--s-2);
+  color: var(--graphite);
+}
+
+.data-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--paper);
+  font-weight: var(--weight-medium);
+  vertical-align: bottom;
+  padding: var(--s-1) 0 var(--s-2) var(--s-4);
+  color: var(--graphite);
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+}
+
+.data-table thead th:first-child,
+.data-table tbody td:first-child {
+  padding-inline-start: 0;
+}
+
+.data-table tbody th,
+.data-table tbody td {
+  padding: var(--s-1) 0 var(--s-1) var(--s-4);
+  white-space: nowrap;
+}
+
+.data-table tbody th {
+  text-align: start;
+  font-weight: var(--weight-regular);
+}
+
+.data-table tbody tr:nth-child(odd) {
+  background: var(--field);
+}
+
+.data-table tbody tr.is-selected {
+  outline: var(--line-width) solid var(--ink);
+  outline-offset: calc(var(--line-width) * -1);
+}
+
+.data-table tbody tr.is-selected th,
+.data-table tbody tr.is-selected td {
+  font-weight: var(--weight-medium);
+}
+
+.data-table__sort {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: var(--s-1);
+  min-height: var(--target-min);
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+.data-table th.numeric .data-table__sort {
+  justify-content: flex-end;
+  text-align: end;
+}
+
+th[aria-sort] .data-table__sort {
+  color: var(--ink);
+}
+
+.data-table__check {
+  width: var(--s-7);
+  text-align: center;
+}
+
+.data-table__check input {
+  width: var(--s-4);
+  height: var(--s-4);
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.data-table__member {
+  min-height: var(--target-min);
+  text-align: start;
+}
+
+.data-table__undefined {
+  color: var(--graphite);
+}
+
+/* Comparison views */
+.compare {
+  overflow-y: auto;
+}
+
+.compare__intro {
+  max-width: calc(var(--measure) * 1.5);
+}
+
+.compare__maps {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.compare__maps--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.compare__maps--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.compare__maps--three .minimap__stage {
+  aspect-ratio: 1 / 1;
+}
+
+.compare__heading {
+  font-size: var(--t-0-size);
+  line-height: var(--t-0-line);
+  font-weight: var(--weight-medium);
+}
+
+.minimap {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.minimap__stage {
+  aspect-ratio: 4 / 3;
+  border: var(--line-width) solid var(--stone);
+  border-radius: var(--r-control);
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.minimap__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.minimap__caption {
+  font-weight: var(--weight-medium);
+}
+
+.compare__tables {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4) var(--s-7);
+  align-items: flex-start;
+}
+
+.compare__table {
+  width: auto;
+  min-width: calc(var(--col-left) * 1.25);
+}
+
+.compare__caption {
+  text-align: start;
+  padding-bottom: var(--s-1);
+}
+
+.compare__note {
+  flex-basis: 100%;
+}
+
+.compare__table thead th:first-child,
+.explore__resilience thead th:first-child {
+  text-align: start;
+}
+
+.compare__per-member {
+  max-width: calc(var(--measure) * 1.5);
+}
+
+.compare__per-member tr.is-selected th,
+.compare__per-member tr.is-selected td {
+  font-weight: var(--weight-semibold);
+}
+
+/* Member names in tables select the member: ink text, underlined on hover and focus. */
+.data-table__member,
+.compare__per-member .link-button {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.data-table__member:hover,
+.data-table__member:focus-visible,
+.compare__per-member .link-button:hover,
+.compare__per-member .link-button:focus-visible {
+  text-decoration: underline;
+}

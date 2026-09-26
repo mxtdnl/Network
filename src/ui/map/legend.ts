@@ -40,7 +40,23 @@ export type LegendSection =
       notRated: string | null;
     }
   | { kind: 'style'; title: string; variable: string; items: { style: EdgeStyle; label: string }[] }
-  | { kind: 'arrows'; title: string; variable: string };
+  | { kind: 'arrows'; title: string; variable: string }
+  | { kind: 'position'; title: string; variable: string; reportingLines: string | null }
+  | {
+      kind: 'marks';
+      title: string;
+      variable: string;
+      items: { mark: 'group' | 'path'; label: string }[];
+    };
+
+/** Layout and selection marks the legend explains besides the encodings. */
+export interface LegendExtras {
+  layout: 'force' | 'grouped' | 'circular' | 'hierarchy';
+  /** Label of the attribute the grouped or circular layout uses. */
+  groupBy: string;
+  group: number;
+  path: boolean;
+}
 
 export interface LegendRadii {
   nodeMin: number;
@@ -54,7 +70,11 @@ export function layerName(model: MapModel): string {
   return model.layer === 'composite' ? mapCopy.controls.composite : model.layerLabel;
 }
 
-export function legendSections(model: MapModel, r: LegendRadii): LegendSection[] {
+export function legendSections(
+  model: MapModel,
+  r: LegendRadii,
+  extras: LegendExtras | null = null,
+): LegendSection[] {
   const sections: LegendSection[] = [];
   const { lo, hi } = model.size;
   const defined = Number.isFinite(lo) && Number.isFinite(hi);
@@ -94,7 +114,9 @@ export function legendSections(model: MapModel, r: LegendRadii): LegendSection[]
   sections.push({
     kind: 'width',
     title: L.width,
-    variable: L.widthScale(layerName(model)),
+    variable: L.widthScale(
+      model.edgeLayer === model.layer ? layerName(model) : model.edgeLayerLabel,
+    ),
     samples: [0.2, 0.6, 1].map((w) => ({
       width: r.edgeMin + (r.edgeMax - r.edgeMin) * w,
       label: formatWeight(w),
@@ -138,5 +160,30 @@ export function legendSections(model: MapModel, r: LegendRadii): LegendSection[]
   }
 
   if (model.directed) sections.push({ kind: 'arrows', title: L.arrows, variable: L.arrowsText });
+
+  if (extras && extras.layout !== 'force') {
+    sections.push({
+      kind: 'position',
+      title: L.position,
+      variable:
+        extras.layout === 'grouped'
+          ? L.groupedBy(extras.groupBy)
+          : extras.layout === 'circular'
+            ? L.circleBy(extras.groupBy)
+            : L.hierarchy,
+      reportingLines: extras.layout === 'hierarchy' ? L.reportingLines : null,
+    });
+  }
+  if (extras && (extras.group > 0 || extras.path)) {
+    sections.push({
+      kind: 'marks',
+      title: L.marks,
+      variable: '',
+      items: [
+        ...(extras.path ? [{ mark: 'path' as const, label: L.path }] : []),
+        ...(extras.group > 0 ? [{ mark: 'group' as const, label: L.group(extras.group) }] : []),
+      ],
+    });
+  }
   return sections;
 }

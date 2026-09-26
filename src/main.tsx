@@ -6,6 +6,7 @@ import './styles/global.css';
 import './styles/shell.css';
 import './styles/data.css';
 import './styles/map.css';
+import './styles/explore.css';
 import { startAnalysisSync } from './ui/state/analysisSync';
 import { restoreLocalProject } from './ui/state/persistenceSync';
 import { Workspace } from './ui/views/Workspace';
