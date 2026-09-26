@@ -2,7 +2,7 @@
 // This is a UI flag, not project data; it lives in localStorage so the notice
 // is shown once per browser. Storage can be unavailable (private windows,
 // blocked site data), in which case the notice is shown on every load.
-// Phase 2's "clear all locally stored data" action must also remove this key.
+// "Clear local data" (src/data/persistence.ts) removes this key with the rest.
 
 export const NOTICE_SEEN_KEY = 'graticule.firstRunNoticeSeen';
 

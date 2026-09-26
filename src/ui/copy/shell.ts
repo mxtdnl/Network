@@ -12,11 +12,10 @@ export const shellCopy = {
   regions: {
     left: 'Layers and filters',
     centre: 'Views',
-    right: 'Member and insights',
+    right: 'Member, insights and coverage',
   },
   left: {
     heading: 'Layers',
-    empty: 'Layer weights and filters appear here once you add data.',
   },
   centreTabs: {
     map: 'Map',
@@ -27,6 +26,7 @@ export const shellCopy = {
   rightTabs: {
     member: 'Member',
     insights: 'Insights',
+    coverage: 'Coverage',
   },
   empty: {
     heading: 'Import data or load the demo',
@@ -34,7 +34,6 @@ export const shellCopy = {
     privacy: 'Files are processed in this browser and are not uploaded anywhere.',
     importData: 'Import data',
     loadDemo: 'Load demo',
-    unavailable: 'Import and the demo are not available in this preview build yet.',
   },
   centreEmpty: {
     matrix: 'The adjacency matrix appears here once you add data.',

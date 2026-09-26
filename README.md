@@ -17,6 +17,20 @@ npm test            # Vitest unit tests
 npm run build
 npm run preview     # serves dist/ at http://localhost:4173/network/
 npm run test:e2e    # Playwright against the production build (run `npx playwright install chromium` once)
+npm run demo        # regenerates src/demo/demo.ona.json from scripts/generate-demo.ts (seeded)
 ```
+
+## Importing data
+
+Import templates, in CSV and XLSX, are in `public/templates/` and can be downloaded from the Import data dialog:
+
+- `members.csv` / `members.xlsx`: one row per member. Required columns `id` and `display_name`; optional `team`, `level`, `location`, `tenure_band`, `manager_id`. Any other column becomes a member attribute.
+- `ties.csv` / `ties.xlsx`: one row per rating, `rater_id, ratee_id, variable, value[, wave]`. `variable` is a layer key such as `connection_strength`. Leave `value` empty for a rating that was not given; it is stored as not rated, never as 0.
+
+Every file is checked before import. The validation report lists each problem with its spreadsheet row number (row 1 is the header); valid rows can be imported and invalid rows skipped. XLSX files are read from their first sheet. `npm run templates` rebuilds the XLSX templates from the CSV ones.
+
+`npm ci` downloads SheetJS from `cdn.sheetjs.com` (pinned by URL and integrity hash), so that host must be reachable.
+
+Projects are saved and opened as `.ona.json` files. Keeping a copy in the browser (IndexedDB) is off by default; Project → Clear local data removes everything Graticule stored.
 
 `spec.md` is the specification; `CLAUDE.md` records build decisions.

@@ -113,6 +113,17 @@
   --measure: 60ch; /* longest line for running text and captions */
   --dialog-width: 560px;
   --menu-min-width: 224px;
+
+  /* Phase 2: data entry */
+  --dialog-width-wide: 800px; /* import dialog and validation report */
+  --icon-size: 16px; /* functional glyphs, drawn on a 16-unit grid */
+  --field-max-width: 480px; /* text inputs in dialogs */
+  --number-input-width: 64px; /* three digits and padding */
+  --matrix-cell-width: 40px; /* "+3" in tabular figures with padding */
+  --matrix-cell-height: 32px; /* same as --control-height */
+  --matrix-label-width: 184px; /* row labels: member names */
+  --matrix-header-height: 136px; /* column labels, set vertically */
+  --hatch-gap: 6px; /* spacing of the "not rated" hatch (design-system §2.3) */
 }
 
 @media (prefers-reduced-motion: reduce) {

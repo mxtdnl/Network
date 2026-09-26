@@ -1,0 +1,4 @@
+id,display_name,team,level,location,tenure_band,manager_id
+M01,Example Person One,Finance,L4,Leeds,Over 5 years,
+M02,Example Person Two,Finance,L2,Leeds,1 to 3 years,M01
+M03,Example Person Three,Operations,L3,Bristol,3 to 5 years,M01
