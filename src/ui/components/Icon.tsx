@@ -1,7 +1,17 @@
 // Functional glyphs only (design-system §7, item 7). Drawn in currentColor.
 
 interface IconProps {
-  name: 'warning' | 'info' | 'check' | 'plus' | 'minus' | 'fit' | 'close' | 'expand' | 'collapse';
+  name:
+    | 'warning'
+    | 'info'
+    | 'check'
+    | 'plus'
+    | 'minus'
+    | 'fit'
+    | 'close'
+    | 'expand'
+    | 'collapse'
+    | 'chevron-up';
 }
 
 export function Icon({ name }: IconProps) {
@@ -47,6 +57,15 @@ export function Icon({ name }: IconProps) {
       {name === 'collapse' && (
         <path
           d="M3.5 6 8 10.5 12.5 6"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      )}
+      {name === 'chevron-up' && (
+        <path
+          d="M3.5 10 8 5.5 12.5 10"
           fill="none"
           stroke="currentColor"
           strokeLinecap="round"

@@ -56,6 +56,13 @@ export interface AttributeColumn {
 export interface AnalysisInput {
   /** Identifies the project revision and settings this input was built from. */
   inputKey: string;
+  /**
+   * Identifies the ratings, view and symmetrisation rule without the composite
+   * weights. When it matches the previous input, the worker reuses every
+   * result except the composite's, so a weight change recomputes only the
+   * composite (plan §5 risk 4).
+   */
+  baseKey?: string;
   memberIds: MemberId[];
   attributes: Record<AttributeKey, AttributeColumn>;
   /** Enabled, non-categorical layers. */

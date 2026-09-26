@@ -36,12 +36,27 @@
   color: var(--graphite);
 }
 
-/* Coverage warning: top left, inside the map so it travels with it. */
-.map__coverage,
-.map__notice {
+/* Notes over the map, top left: the coverage warning, the explore modes (ego
+   view, path, simulation) and status notices, stacked so none overlaps. */
+.map__notes {
   position: absolute;
+  top: var(--s-4);
   inset-inline-start: var(--s-4);
-  max-width: var(--measure);
+  max-width: min(var(--measure), calc(100% - var(--s-4) * 2 - var(--map-zoom-button) * 5));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-2);
+  pointer-events: none;
+}
+
+.map__notes:empty {
+  display: none;
+}
+
+.map__coverage,
+.map__notice,
+.map__mode {
   display: flex;
   align-items: flex-start;
   gap: var(--s-2);
@@ -49,10 +64,10 @@
   background: var(--paper);
   border: var(--line-width) solid var(--stone);
   border-radius: var(--r-control);
+  pointer-events: auto;
 }
 
 .map__coverage {
-  top: var(--s-4);
   font-weight: var(--weight-medium);
 }
 
@@ -61,12 +76,17 @@
 }
 
 .map__notice {
-  top: calc(var(--s-4) + var(--s-8));
   color: var(--graphite);
 }
 
-.map__coverage + .map__notice {
-  top: calc(var(--s-4) + var(--s-8) + var(--s-5));
+.map__mode {
+  align-items: center;
+  flex-wrap: wrap;
+  padding-block: var(--s-1);
+}
+
+.map__mode .button {
+  min-height: var(--target-min);
 }
 
 /* Focusable members: visually hidden; focus is drawn on the canvas as an ink

@@ -19,3 +19,12 @@ export function rankOf(column: ArrayLike<number>, i: number): string {
   const hi = above + equal;
   return lo === hi ? String(lo) : `${String(lo)}–${String(hi)}`;
 }
+
+/** A resampled rank interval, rounded outwards to whole ranks. */
+export function rankInterval(low: number | undefined, high: number | undefined): string {
+  if (low === undefined || high === undefined || !Number.isFinite(low) || !Number.isFinite(high))
+    return '–';
+  const a = Math.floor(low);
+  const b = Math.ceil(high);
+  return a === b ? String(a) : `${String(a)}–${String(b)}`;
+}

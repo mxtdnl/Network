@@ -73,6 +73,13 @@ export interface MapModel {
   directed: boolean;
   layer: string;
   layerLabel: string;
+  /** The layer whose ties are drawn: `layer`, or the informal layer over the formal hierarchy. */
+  edgeLayer: string;
+  edgeLayerLabel: string;
+  /** Ego view in force: the member at the centre and the depth. */
+  ego: { index: number; name: string; depth: 1 | 2 } | null;
+  /** Members hidden on the map by the resilience simulation. */
+  removed: number;
   nodes: MapNode[];
   edges: MapEdge[];
   /** Neighbours through the drawn ties, either direction, visible members only. */
@@ -306,17 +313,50 @@ function edgeStyle(cls: number, f: number, g: number): EdgeStyle {
   }
 }
 
+export interface ModelOptions {
+  /** Draw ties from this layer instead of `settings.layer` (the formal hierarchy's informal overlay). */
+  edgeLayer?: string;
+  /** Members hidden by the resilience simulation (map only). */
+  removed?: ReadonlySet<string>;
+}
+
+/** Plain label of a layer reference: a layer, a signed sub-layer or the composite. */
+export function refLabel(project: Project, ref: string): string {
+  const key = ref.endsWith('+') || ref.endsWith('-') ? ref.slice(0, -1) : ref;
+  return project.layers.find((l) => l.key === key)?.label ?? ref;
+}
+
+/** Members within `depth` steps of `centre` along the given neighbour lists. */
+export function egoSet(neighbours: readonly (readonly number[])[], centre: number, depth: number) {
+  const seen = new Set<number>([centre]);
+  let frontier = [centre];
+  for (let d = 0; d < depth; d++) {
+    const next: number[] = [];
+    for (const v of frontier)
+      for (const w of neighbours[v] ?? [])
+        if (!seen.has(w)) {
+          seen.add(w);
+          next.push(w);
+        }
+    frontier = next;
+  }
+  return seen;
+}
+
 export function buildMapModel(
   project: Project,
   result: AnalysisResult,
   settings: MapSettings,
   radii: Radii,
+  options: ModelOptions = {},
 ): MapModel {
   const n = project.members.length;
   const directed = result.view === 'directed';
   const ref = result.refs[settings.layer];
   const layerDef = project.layers.find((l) => l.key === settings.layer);
   const layerLabel = layerDef?.label ?? settings.layer;
+  const edgeLayer = options.edgeLayer ?? settings.layer;
+  const edgeLayerLabel = refLabel(project, edgeLayer);
 
   // Node size: area proportional to the metric between the smallest and largest defined value.
   const column = ref?.node.columns[settings.sizeMetric];
@@ -355,9 +395,7 @@ export function buildMapModel(
       group: fill.memberGroup[i] ?? 0,
     };
   });
-  if (searchMatches) for (const i of searchMatches) if (!nodes[i]?.visible) searchMatches.delete(i);
-
-  const weights = ref?.weights;
+  const weights = result.refs[edgeLayer]?.weights;
   const valenceOn = isToggledOn(settings, 'valence');
   const valence = valenceOn ? valenceMatrix(project, settings) : null;
   const formal = roleLayer(project, 'formal');
@@ -372,8 +410,6 @@ export function buildMapModel(
   const fW = formal ? result.refs[formal.key]?.weights : undefined;
   const gW = informal ? result.refs[informal.key]?.weights : undefined;
 
-  const edges: MapEdge[] = [];
-  const neighbours: number[][] = Array.from({ length: n }, () => []);
   const present = new Set<EdgeStyle>();
   let anyValenceMissing = false;
   const hidden = hiddenLayerWeights(project, result, settings);
@@ -383,7 +419,12 @@ export function buildMapModel(
     const w = weights ? (weights[k] as number) : NaN;
     return w > 0 && w >= settings.threshold;
   };
-  if (weights) {
+  const buildEdges = () => {
+    const edges: MapEdge[] = [];
+    const neighbours: number[][] = Array.from({ length: n }, () => []);
+    present.clear();
+    anyValenceMissing = false;
+    if (!weights) return { edges, neighbours };
     for (let i = 0; i < n; i++) {
       if (!nodes[i]?.visible) continue;
       for (let j = directed ? 0 : i + 1; j < n; j++) {
@@ -416,7 +457,36 @@ export function buildMapModel(
         if (!nj.includes(i)) nj.push(i);
       }
     }
+    return { edges, neighbours };
+  };
+  let { edges, neighbours } = buildEdges();
+
+  // Ego view: the member and everyone within the chosen number of steps along
+  // the ties shown (either direction); the rest are hidden like a filter.
+  let ego: MapModel['ego'] = null;
+  const egoIndex = settings.ego
+    ? project.members.findIndex((m) => m.id === settings.ego?.member)
+    : -1;
+  if (settings.ego && egoIndex >= 0 && nodes[egoIndex]?.visible) {
+    const keep = egoSet(neighbours, egoIndex, settings.ego.depth);
+    for (const node of nodes) if (!keep.has(node.index)) node.visible = false;
+    ego = {
+      index: egoIndex,
+      name: project.members[egoIndex]?.display_name ?? '',
+      depth: settings.ego.depth,
+    };
+    ({ edges, neighbours } = buildEdges());
   }
+  let removed = 0;
+  if (options.removed && options.removed.size > 0) {
+    for (const node of nodes)
+      if (node.visible && options.removed.has(node.id)) {
+        node.visible = false;
+        removed += 1;
+      }
+    if (removed > 0) ({ edges, neighbours } = buildEdges());
+  }
+  if (searchMatches) for (const i of searchMatches) if (!nodes[i]?.visible) searchMatches.delete(i);
   const order: EdgeStyle[] = ['formal', 'informal', 'both', 'neither'];
 
   return {
@@ -424,6 +494,10 @@ export function buildMapModel(
     directed,
     layer: settings.layer,
     layerLabel,
+    edgeLayer,
+    edgeLayerLabel,
+    ego,
+    removed,
     nodes,
     edges,
     neighbours,

@@ -14,16 +14,34 @@
 
 import { select, type Selection } from 'd3-selection';
 import { zoom, zoomIdentity, type D3ZoomEvent, type ZoomBehavior } from 'd3-zoom';
+import { parseDuration } from '../durations';
 import { paint } from './canvas';
-import { ForceLayout } from './layout';
+import { parseEasing, type ForceLayout } from './layout';
 import type { MapModel } from './model';
 import type { RenderRequest, RenderResponse } from './renderWorker';
-import { buildScene, highlightSet, type Highlight, type Point, type Transform } from './scene';
+import {
+  NO_HIGHLIGHT,
+  buildScene,
+  highlightSet,
+  insidePolygon,
+  type Highlight,
+  type Point,
+  type Transform,
+} from './scene';
 import type { MapTheme } from './theme';
+import type { LayoutRequest } from './useMapModel';
 
 export interface ControllerEvents {
   select: (index: number | null) => void;
   pinned: (count: number) => void;
+  /** Shift-click: add the member to the subgroup, or take them out. */
+  toggleGroup: (index: number) => void;
+  /** A lasso was drawn round these members; `add` when Shift was held. */
+  lasso: (indices: number[], add: boolean) => void;
+}
+
+function reducedMotion(): boolean {
+  return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 const CLICK_SLOP = 4;
@@ -50,7 +68,6 @@ function createRenderWorker(): Worker | null {
 }
 
 export class MapController {
-  readonly layout = new ForceLayout();
   private readonly ctx: CanvasRenderingContext2D;
   /** Main-thread drawing surface for the full picture. */
   private readonly offscreen = document.createElement('canvas');
@@ -65,7 +82,10 @@ export class MapController {
   private readonly selection: Selection<HTMLCanvasElement, unknown, null, undefined>;
   private model: MapModel | null = null;
   private transform: Transform = { x: 0, y: 0, k: 1 };
-  private highlight: Highlight = { hovered: null, focused: null, selected: null };
+  private highlight: Highlight = { ...NO_HIGHLIGHT };
+  private tool: 'pan' | 'lasso' = 'pan';
+  private lassoPath: Point[] | null = null;
+  private layoutKind = '';
   private width = 0;
   private height = 0;
   private dpr = 1;
@@ -92,6 +112,7 @@ export class MapController {
     private theme: MapTheme,
     private readonly idleMs: number,
     private readonly events: ControllerEvents,
+    readonly layout: ForceLayout,
   ) {
     const ctx = canvas.getContext('2d');
     const localCtx = this.offscreen.getContext('2d');
@@ -117,6 +138,8 @@ export class MapController {
       .filter((event: Event) => {
         if (event.type === 'wheel') return true;
         if ((event as MouseEvent).button) return false;
+        // With the lasso, a drag draws round members instead of panning.
+        if (this.tool === 'lasso') return false;
         // A press on a member drags it instead of panning.
         const p = this.eventPoint(event);
         return p === null || this.hit(p.x, p.y) === null;
@@ -158,11 +181,31 @@ export class MapController {
     this.invalidate();
   }
 
-  setModel(model: MapModel, layoutKey: string, weights: Float64Array | undefined): void {
+  /**
+   * Shows a new model. When the layout changes (another layout, layer or
+   * weights), members move from where they were drawn to their new positions
+   * over `--m-layout`, or at once under reduced motion (plan Q16). A change of
+   * layout kind also fits the new arrangement into view.
+   */
+  setModel(model: MapModel, request: LayoutRequest): void {
     this.model = model;
     const radii = model.nodes.map((n) => n.radius);
-    this.layout.update(layoutKey, model.n, weights, radii);
-    if (!this.fitted && this.width > 0) {
+    const first = this.layout.nodes.length !== model.n || this.layoutKind === '';
+    const before = first ? null : this.layout.positions.map((p) => ({ x: p.x, y: p.y }));
+    const changed = this.layout.update(request.key, model.n, request.weights, radii, request.spec);
+    const kindChanged = this.layoutKind !== '' && this.layoutKind !== request.spec.kind;
+    this.layoutKind = request.spec.kind;
+    if (changed && before && this.fitted) {
+      const style = getComputedStyle(document.documentElement);
+      const duration = reducedMotion() ? 0 : parseDuration(style.getPropertyValue('--m-layout'));
+      this.layout.animateFrom(
+        before,
+        duration,
+        parseEasing(style.getPropertyValue('--ease-layout')),
+        performance.now(),
+      );
+    }
+    if ((!this.fitted || kindChanged) && this.width > 0) {
       this.fit();
       this.fitted = true;
     }
@@ -174,10 +217,22 @@ export class MapController {
     if (
       next.hovered === this.highlight.hovered &&
       next.focused === this.highlight.focused &&
-      next.selected === this.highlight.selected
+      next.selected === this.highlight.selected &&
+      next.group === this.highlight.group &&
+      next.path === this.highlight.path
     )
       return;
+    const persistent = next.group !== this.highlight.group || next.path !== this.highlight.path;
     this.highlight = next;
+    // The subgroup and the path are part of the full picture (rings), so it is redrawn.
+    if (persistent) this.invalidate();
+    else this.requestPaint();
+  }
+
+  setTool(tool: 'pan' | 'lasso'): void {
+    this.tool = tool;
+    this.lassoPath = null;
+    this.canvas.classList.toggle('map__canvas--lasso', tool === 'lasso');
     this.requestPaint();
   }
 
@@ -234,7 +289,7 @@ export class MapController {
     let y1 = -Infinity;
     for (const node of model.nodes) {
       if (!node.visible) continue;
-      const p = this.layout.positions[node.index];
+      const p = this.layout.settled[node.index];
       if (!p) continue;
       x0 = Math.min(x0, p.x);
       y0 = Math.min(y0, p.y);
@@ -243,12 +298,14 @@ export class MapController {
     }
     if (!Number.isFinite(x0)) return;
     const pad = this.theme.nodeMax * 2 + this.theme.labelSize * 2;
+    // Labels on the circle point outwards, so the circle needs room for names beside it.
+    const padX = this.layoutKind === 'circular' ? pad + this.theme.labelSize * 6 : pad;
     const bw = Math.max(x1 - x0, 1);
     const bh = Math.max(y1 - y0, 1);
     const area = this.freeArea(bw, bh);
     const k = Math.min(
       SCALE_EXTENT[1],
-      Math.max(SCALE_EXTENT[0], Math.min((area.w - 2 * pad) / bw, (area.h - 2 * pad) / bh)),
+      Math.max(SCALE_EXTENT[0], Math.min((area.w - 2 * padX) / bw, (area.h - 2 * pad) / bh)),
     );
     const t = zoomIdentity
       .translate(
@@ -314,18 +371,24 @@ export class MapController {
     });
   }
 
-  private fullScene(t: Transform) {
-    const none: Highlight = { hovered: null, focused: null, selected: null };
+  private fullScene(t: Transform, model = this.model as MapModel) {
+    // The subgroup and the path are drawn into the full picture; hover and focus are not.
+    const base: Highlight = {
+      ...NO_HIGHLIGHT,
+      group: this.highlight.group ?? null,
+      path: this.highlight.path ?? null,
+    };
     const size = { width: this.width, height: this.height };
     return buildScene(
-      this.model as MapModel,
+      model,
       this.layout.positions,
       t,
       size,
       this.theme,
-      none,
+      base,
       'all',
       this.measure,
+      this.layout.annotation,
     );
   }
 
@@ -334,7 +397,16 @@ export class MapController {
     const model = this.model;
     if (!model) return;
     const t = { ...this.transform };
-    const worker = model.edges.length >= WORKER_MIN_TIES ? this.worker : null;
+    const large = model.edges.length >= WORKER_MIN_TIES;
+    if (this.layout.animating) {
+      // Every frame of a transition is drawn here. On large maps members move
+      // without their ties, which are drawn again once they arrive.
+      paint(this.localCtx, this.fullScene(t, large ? { ...model, edges: [] } : model), this.dpr);
+      if (this.base?.image instanceof ImageBitmap) this.base.image.close();
+      this.base = { image: this.offscreen, t, version: this.version };
+      return;
+    }
+    const worker = large ? this.worker : null;
     // The first picture is drawn here too, so the map never starts blank.
     if (!worker || !this.base) {
       paint(this.localCtx, this.fullScene(t), this.dpr);
@@ -375,6 +447,15 @@ export class MapController {
     if (!model || this.width === 0) return;
 
     const t = this.transform;
+    if (this.layout.animating) {
+      this.layout.advance(performance.now());
+      this.version += 1;
+      // One more frame after the last, at the settled positions.
+      this.requestPaint();
+    }
+    // Exposed for tests and assistive tooling: whether members are moving.
+    const moving = this.layout.animating ? 'running' : 'idle';
+    if (this.canvas.dataset.transition !== moving) this.canvas.dataset.transition = moving;
     const base = this.base;
     const idle = this.idleSince() >= this.idleMs;
     const outdated = !base || base.version !== this.version;
@@ -402,9 +483,25 @@ export class MapController {
           this.highlight,
           'lit',
           this.measure,
+          this.layout.annotation,
         ),
         dpr,
       );
+    }
+    if (this.lassoPath && this.lassoPath.length > 1) {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = this.theme.line;
+      ctx.strokeStyle = this.theme.ink;
+      ctx.setLineDash([this.theme.dash, this.theme.gap]);
+      ctx.beginPath();
+      this.lassoPath.forEach((p, i) => {
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      });
+      ctx.closePath();
+      ctx.stroke();
+      ctx.setLineDash([]);
     }
   }
 
@@ -450,7 +547,17 @@ export class MapController {
 
   private readonly onPointerDown = (e: PointerEvent) => {
     if (e.button !== 0) return;
+    // A press skips a running transition to the settled positions.
+    if (this.layout.animating) {
+      this.layout.finish();
+      this.invalidate();
+    }
     const p = this.local(e);
+    if (this.tool === 'lasso') {
+      this.lassoPath = [p];
+      this.canvas.setPointerCapture(e.pointerId);
+      return;
+    }
     const index = this.hit(p.x, p.y);
     if (index === null) {
       this.down = p;
@@ -462,6 +569,14 @@ export class MapController {
 
   private readonly onPointerMove = (e: PointerEvent) => {
     const p = this.local(e);
+    if (this.lassoPath) {
+      const last = this.lassoPath[this.lassoPath.length - 1];
+      if (!last || Math.hypot(p.x - last.x, p.y - last.y) >= CLICK_SLOP) {
+        this.lassoPath.push(p);
+        this.requestPaint();
+      }
+      return;
+    }
     if (this.drag && e.pointerId === this.drag.id) {
       if (!this.drag.moved && Math.hypot(p.x - this.drag.x, p.y - this.drag.y) < CLICK_SLOP) return;
       if (!this.drag.moved) {
@@ -488,6 +603,28 @@ export class MapController {
 
   private readonly onPointerUp = (e: PointerEvent) => {
     const p = this.local(e);
+    if (this.lassoPath) {
+      const path = this.lassoPath;
+      this.lassoPath = null;
+      if (this.canvas.hasPointerCapture(e.pointerId))
+        this.canvas.releasePointerCapture(e.pointerId);
+      this.requestPaint();
+      if (e.type !== 'pointerup' || !this.model) return;
+      if (path.length < 3) {
+        // A click with the lasso toggles the member under it.
+        const index = this.hit(p.x, p.y);
+        if (index !== null) this.events.toggleGroup(index);
+        return;
+      }
+      const inside = this.model.nodes
+        .filter((node) => {
+          const q = node.visible ? this.screenOf(node.index) : null;
+          return q !== null && insidePolygon(q, path);
+        })
+        .map((node) => node.index);
+      this.events.lasso(inside, e.shiftKey);
+      return;
+    }
     if (this.drag && e.pointerId === this.drag.id) {
       const { index, moved } = this.drag;
       this.drag = null;
@@ -497,7 +634,8 @@ export class MapController {
         this.layout.cool();
         this.events.pinned(this.layout.pinned);
       } else if (e.type === 'pointerup') {
-        this.events.select(index);
+        if (e.shiftKey) this.events.toggleGroup(index);
+        else this.events.select(index);
       }
       return;
     }

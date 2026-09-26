@@ -5,6 +5,8 @@
 
 import condensedLatin from '../../assets/fonts/fira-sans-condensed-latin-500-normal.woff2?url';
 import condensedLatinExt from '../../assets/fonts/fira-sans-condensed-latin-ext-500-normal.woff2?url';
+import sansLatin from '../../assets/fonts/fira-sans-latin-600-normal.woff2?url';
+import sansLatinExt from '../../assets/fonts/fira-sans-latin-ext-600-normal.woff2?url';
 import { paint } from './canvas';
 import type { Scene } from './scene';
 
@@ -21,10 +23,15 @@ export interface RenderResponse {
 
 const scope = self as unknown as DedicatedWorkerGlobalScope;
 
-// Map labels use Fira Sans Condensed 500 (design-system §3.2); workers do not
-// see the page's @font-face rules, so the same files are loaded here.
+// Map labels use Fira Sans Condensed 500 and group names Fira Sans 600
+// (design-system §3.2); workers do not see the page's @font-face rules, so the
+// same files are loaded here.
+const LATIN = 'U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212';
+const LATIN_EXT = 'U+0100-02BA, U+02BD-02FF, U+1E00-1EFF, U+A720-A7FF';
 const fontsReady = (async () => {
   const faces = [
+    new FontFace('Fira Sans', `url(${sansLatin})`, { weight: '600', unicodeRange: LATIN }),
+    new FontFace('Fira Sans', `url(${sansLatinExt})`, { weight: '600', unicodeRange: LATIN_EXT }),
     new FontFace('Fira Sans Condensed', `url(${condensedLatin})`, {
       weight: '500',
       unicodeRange: 'U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212',

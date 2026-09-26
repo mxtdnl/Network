@@ -280,6 +280,21 @@ The engine returns the formula as a structure (terms, weights, filters, multipli
 
 **Caveats.** The composite is only as meaningful as the weights: it is a statement of priorities, not a measurement. Re-normalising over rated layers means a pair rated on one layer only is scored on that layer alone.
 
+### Presets
+
+**Meaning.** Starting points for the weights, named for the question being asked. Each names raw slider values for the layers it uses; every other enabled layer gets weight 0 and is left out. The engine normalises the summed layers' weights to 1, so only their proportions matter, and a layer a preset names but the project has not enabled is simply absent.
+
+| Preset | Raw weights | Signed layers |
+|---|---|---|
+| Formal structure | formal collaboration 0.6, connection strength 0.2, workflow dependency 0.2 | none used |
+| Informal network | informal collaboration 0.4, connection strength 0.2, advice 0.2, idea sharing 0.2 | none used |
+| Relationship health | valence 0.4, connection strength 0.2, benevolence-based trust 0.2, interpersonal safety 0.2, energy 0.2 | valence and energy as positive ratings |
+| Custom | the analyst's own slider values; a layer never moved uses its default weight (1) | as chosen |
+
+With only the four core layers enabled, Formal structure gives formal collaboration 0.75 and connection strength 0.25; Informal network gives informal collaboration 0.67 and connection strength 0.33; Relationship health gives valence (positive ratings) 0.67 and connection strength 0.33.
+
+**Caveats.** The presets are conventions chosen for this tool, not published standards. Moving a slider under a preset switches to Custom, starting from the preset's values.
+
 ### Shortest path
 
 **Meaning.** The strongest route between two members: the chain of ties along which the total distance is smallest.
@@ -287,6 +302,26 @@ The engine returns the formula as a structure (terms, weights, filters, multipli
 **Formula.** Dijkstra's algorithm with tie length 1/w in the current view (following tie direction in the directed view). The result gives the members along one shortest path, its distance (Σ 1/w), its number of steps, and how many different paths share that shortest distance. When several do, the one whose members, read back from the destination, come earliest in the member list is shown.
 
 **Caveats.** A shortest path is one route among possibly several; the count of equally short paths says how many. Paths of equal length are detected by floating-point equality, as in NetworkX. Not computed on negative sub-layers.
+
+### Subgroup density
+
+**Meaning.** For a group of members chosen on the map (multi-select or lasso), how densely they are tied to each other compared with how densely they are tied to everyone else.
+
+**Formula.** Binary ties (w > 0) of the layer the map draws, in the current view, among the members shown (after filters and the ego view). For a subgroup S of k members and the r other members shown:
+
+- directed view: internal density = ties within S / (k (k − 1)); external density = ties from S to the rest and from the rest to S / (2 k r);
+- symmetrised view: internal density = ties within S / (k (k − 1) / 2); external density = ties between S and the rest / (k r);
+- E-I index = (E − I) / (E + I), with E the external and I the internal tie count.
+
+**Caveats.** Counts ties, not their strength. A small subgroup has few possible internal ties, so one tie moves its internal density a great deal. Computed on the main thread from the weights the engine returned (`subgroupDensity` in `src/engine/metrics/subgroup.ts`), so it always uses the ties the map shows.
+
+### Layer overlap (side-by-side comparison)
+
+**Meaning.** How many ties two layers share.
+
+**Formula.** For every pair (ordered in the directed view, unordered in the symmetrised view), whether it has a tie (w > 0) on the first layer, the second, or both; the share in common is the Jaccard overlap, both / (both + first only + second only), the same measure as in multiplexity above.
+
+**Caveats.** A pair not rated on one of the layers counts as having no tie there. The formal–informal comparison, by contrast, sets such pairs aside as not classified.
 
 ### Data coverage
 

@@ -115,7 +115,7 @@ test('load demo, map renders, filter, select a member, open the panel, traverse 
   await expect(page.getByLabel('Combine the two directions by')).toBeVisible();
   await page.getByLabel('Node size').selectOption({ label: 'Local clustering' });
   await expect(legend.getByText('Local clustering', { exact: true })).toBeVisible();
-  await page.getByRole('radio', { name: 'Directed' }).check();
+  await page.getByRole('radio', { name: 'Directed', exact: true }).check();
   await expect(legend.getByText('Arrowheads', { exact: true })).toBeVisible();
   await page.getByRole('switch', { name: 'Valence on the map' }).click();
   await expect(legend.getByText('Not used: valence is hidden')).toBeVisible();

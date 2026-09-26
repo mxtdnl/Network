@@ -58,6 +58,8 @@ const theme: MapTheme = {
   fade: 0.3,
   labelFont: '500 12px sans-serif',
   labelSize: 12,
+  groupFont: '600 14px Fira Sans',
+  groupSize: 14,
   labelGap: 4,
   swatch: 24,
 };

@@ -76,6 +76,20 @@ export function paint(
     ctx.stroke();
   }
 
+  // Subgroup members: a thin ink ring outside a paper halo.
+  for (const r of scene.groupRings) {
+    ctx.lineWidth = theme.focusWidth;
+    ctx.strokeStyle = theme.paper;
+    ctx.beginPath();
+    ctx.arc(r.x, r.y, r.r + theme.line + theme.focusWidth / 2, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.lineWidth = theme.line;
+    ctx.strokeStyle = theme.ink;
+    ctx.beginPath();
+    ctx.arc(r.x, r.y, r.r + theme.line + theme.focusWidth, 0, 2 * Math.PI);
+    ctx.stroke();
+  }
+
   ctx.font = theme.labelFont;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'alphabetic';
@@ -83,10 +97,19 @@ export function paint(
   ctx.lineWidth = theme.focusWidth * 2;
   for (const l of scene.labels) {
     ctx.globalAlpha = l.alpha;
+    ctx.textAlign = l.align ?? 'center';
     ctx.strokeStyle = theme.paper;
     ctx.strokeText(l.text, l.x, l.y);
     ctx.fillStyle = theme.ink;
     ctx.fillText(l.text, l.x, l.y);
   }
   ctx.globalAlpha = 1;
+  ctx.font = theme.groupFont;
+  ctx.textAlign = 'center';
+  for (const l of scene.groupLabels) {
+    ctx.strokeStyle = theme.paper;
+    ctx.strokeText(l.text, l.x, l.y);
+    ctx.fillStyle = theme.graphite;
+    ctx.fillText(l.text, l.x, l.y);
+  }
 }

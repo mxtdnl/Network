@@ -7,11 +7,17 @@ import { CoveragePanel } from './CoveragePanel';
 import { ImportDialog } from './ImportDialog';
 import { LayerPanel } from './LayerPanel';
 import { MapControls } from './MapControls';
+import { CompareView } from './CompareView';
+import { ExplorePanel } from './ExplorePanel';
 import { MapView } from './MapView';
-import { MatrixView } from './MatrixView';
+import { MatrixTab } from './MatrixTab';
 import { MemberPanel } from './MemberPanel';
 import { StatusLine } from './StatusLine';
+import { TableView } from './TableView';
 import { TopBar } from './TopBar';
+import { WeightPanel } from './WeightPanel';
+import { exploreCopy } from '../copy/explore';
+import { weightsCopy } from '../copy/weights';
 
 function Placeholder({ text }: { text: string }) {
   return <p className="placeholder">{text}</p>;
@@ -19,21 +25,14 @@ function Placeholder({ text }: { text: string }) {
 
 const centreItems: readonly TabItem<CentreView>[] = [
   { key: 'map', label: shellCopy.centreTabs.map, panel: <MapView /> },
-  { key: 'matrix', label: shellCopy.centreTabs.matrix, panel: <MatrixView /> },
-  {
-    key: 'table',
-    label: shellCopy.centreTabs.table,
-    panel: <Placeholder text={shellCopy.centreEmpty.table} />,
-  },
-  {
-    key: 'compare',
-    label: shellCopy.centreTabs.compare,
-    panel: <Placeholder text={shellCopy.centreEmpty.compare} />,
-  },
+  { key: 'matrix', label: shellCopy.centreTabs.matrix, panel: <MatrixTab /> },
+  { key: 'table', label: shellCopy.centreTabs.table, panel: <TableView /> },
+  { key: 'compare', label: shellCopy.centreTabs.compare, panel: <CompareView /> },
 ];
 
 const rightItems: readonly TabItem<RightPanel>[] = [
   { key: 'member', label: shellCopy.rightTabs.member, panel: <MemberPanel /> },
+  { key: 'explore', label: exploreCopy.tab, panel: <ExplorePanel /> },
   {
     key: 'insights',
     label: shellCopy.rightTabs.insights,
@@ -57,6 +56,14 @@ export function Workspace() {
       <TopBar />
       <StatusLine />
       <aside className="workspace__left" aria-label={shellCopy.regions.left}>
+        {hasProject && (
+          <section className="workspace__section" aria-labelledby="weights-heading">
+            <h2 id="weights-heading" className="panel-heading">
+              {weightsCopy.heading}
+            </h2>
+            <WeightPanel />
+          </section>
+        )}
         {showMapControls && (
           <section className="workspace__section" aria-labelledby="map-controls-heading">
             <h2 id="map-controls-heading" className="panel-heading">

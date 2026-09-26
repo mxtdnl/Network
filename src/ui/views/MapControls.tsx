@@ -11,8 +11,11 @@ import {
   toggleLayers,
   isToggledOn,
 } from '../map/model';
-import { drawableLayers, useMapData } from '../map/useMapModel';
-import { useAppStore, type MapSettings, type SizeMetric } from '../state/store';
+import { drawableLayers, hierarchyAvailable, useMapData } from '../map/useMapModel';
+import { useAppStore, type LayoutKind, type MapSettings, type SizeMetric } from '../state/store';
+
+const LAYOUTS: readonly LayoutKind[] = ['force', 'grouped', 'circular', 'hierarchy'];
+const LY = mapCopy.layouts;
 
 const C = mapCopy.controls;
 const MAX_MATCHES = 8;
@@ -39,6 +42,9 @@ export function MapControls() {
     filterValue: useId(),
     search: useId(),
     searchHelp: useId(),
+    layout: useId(),
+    layoutHelp: useId(),
+    groupBy: useId(),
   };
   const [filterAttr, setFilterAttr] = useState<string>('');
   const [filterValue, setFilterValue] = useState<string>('');
@@ -116,6 +122,59 @@ export function MapControls() {
           {C.layerHelp}
         </p>
       </div>
+
+      <fieldset className="map-controls__group" aria-describedby={ids.layoutHelp}>
+        <legend className="field__label">{LY.label}</legend>
+        <div className="radio-list">
+          {LAYOUTS.map((kind) => {
+            const disabled = kind === 'hierarchy' && !hierarchyAvailable(project);
+            return (
+              <label key={kind} className="radio-list__option">
+                <input
+                  type="radio"
+                  name={`${ids.layout}-kind`}
+                  checked={settings.layout === kind}
+                  disabled={disabled}
+                  aria-describedby={disabled ? `${ids.layout}-unavailable` : undefined}
+                  onChange={() => {
+                    setMap({ layout: kind });
+                  }}
+                />
+                <span>{LY[kind]}</span>
+              </label>
+            );
+          })}
+        </div>
+        <p id={ids.layoutHelp} className="field__help">
+          {LY[`${settings.layout}Help`]}
+        </p>
+        {!hierarchyAvailable(project) && (
+          <p id={`${ids.layout}-unavailable`} className="field__help">
+            {LY.hierarchyUnavailable}
+          </p>
+        )}
+        {(settings.layout === 'grouped' || settings.layout === 'circular') && (
+          <div className="field">
+            <label htmlFor={ids.groupBy} className="field__label">
+              {LY.groupBy}
+            </label>
+            <select
+              id={ids.groupBy}
+              className="select"
+              value={settings.groupBy ?? ''}
+              onChange={(e) => {
+                setMap({ groupBy: e.currentTarget.value });
+              }}
+            >
+              {groupAttributes(project).map((a) => (
+                <option key={a.key} value={a.key}>
+                  {a.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </fieldset>
 
       {toggles.length > 0 && (
         <fieldset className="map-controls__group">

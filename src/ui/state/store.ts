@@ -9,11 +9,25 @@ import type {
   MemberId,
   Project,
 } from '../../data/schema';
-import type { AnalysisResult } from '../engineClient';
+import type {
+  AnalysisResult,
+  BootstrapResult,
+  PathResult,
+  ResilienceResult,
+} from '../engineClient';
 import { readNoticeSeen, writeNoticeSeen } from './noticeStorage';
+import {
+  effectiveWeights,
+  initialWeightState,
+  type Preset,
+  type SignedTreatment,
+  type WeightState,
+} from './presets';
 
 export type CentreView = 'map' | 'matrix' | 'table' | 'compare';
-export type RightPanel = 'member' | 'insights' | 'coverage';
+export type RightPanel = 'member' | 'explore' | 'insights' | 'coverage';
+export type MatrixMode = 'explore' | 'enter';
+export type CompareMode = 'layers' | 'formalInformal';
 
 export interface UiState {
   centreView: CentreView;
@@ -22,6 +36,9 @@ export interface UiState {
   firstRunNoticeSeen: boolean;
   noticeOpen: boolean;
   importOpen: boolean;
+  /** The Matrix tab shows the adjacency matrix (explore) or the rating grid (enter). */
+  matrixMode: MatrixMode;
+  compareMode: CompareMode;
 }
 
 export interface StatusMessage {
@@ -59,6 +76,9 @@ export type SizeMetric =
 
 export type NodeFill = { kind: 'attribute'; key: AttributeKey } | { kind: 'community' };
 
+/** Map layouts (spec §8). The hierarchy needs formal manager ids. */
+export type LayoutKind = 'force' | 'grouped' | 'circular' | 'hierarchy';
+
 /** Map encodings, filters and the analysis view (plan §1.3 `analysis` and `map`). */
 export interface MapSettings {
   view: 'directed' | 'symmetrised';
@@ -75,12 +95,41 @@ export interface MapSettings {
   hideOffLayers: boolean;
   filters: AttributeFilter[];
   search: string;
+  layout: LayoutKind;
+  /** Attribute for the grouped and circular layouts; null = team, else the first attribute. */
+  groupBy: AttributeKey | null;
+  /** Pointer mode on the map: pan (and click to select) or draw a lasso around members. */
+  tool: 'pan' | 'lasso';
+  /** Ego view: only the member and those within `depth` steps on the ties shown. */
+  ego: { member: MemberId; depth: 1 | 2 } | null;
 }
 
 export interface SelectionState {
   /** The member whose panel is open. */
   member: MemberId | null;
   hovered: MemberId | null;
+  /** A subgroup chosen by multi-select or lasso, shared by every view. */
+  group: MemberId[];
+}
+
+type Run<T> =
+  | { status: 'running'; inputKey: string; result: null; error: null }
+  | { status: 'ready'; inputKey: string; result: T; error: null }
+  | { status: 'error'; inputKey: string; result: null; error: string };
+
+/** Engine requests made from the explore tools; each result names the analysis it belongs to. */
+export interface ToolsState {
+  path: ({ from: MemberId; to: MemberId; ref: string } & Run<PathResult | null>) | null;
+  /** Members chosen for the resilience simulation. */
+  removal: MemberId[];
+  resilience: ({ ref: string } & Run<ResilienceResult>) | null;
+  /** Whether the map hides the removed members. */
+  showRemoval: boolean;
+  bootstrap:
+    | ({ ref: string; metric: string; progress: number } & (
+        Run<BootstrapResult> | { status: 'cancelled'; inputKey: string; result: null; error: null }
+      ))
+    | null;
 }
 
 export interface ResultsState {
@@ -112,6 +161,15 @@ interface Actions {
   selectMember: (id: MemberId | null) => void;
   setHovered: (id: MemberId | null) => void;
   setResults: (patch: Partial<ResultsState>) => void;
+
+  setMatrixMode: (mode: MatrixMode) => void;
+  setCompareMode: (mode: CompareMode) => void;
+  setPreset: (preset: Preset) => void;
+  setLayerWeight: (key: LayerKey, value: number) => void;
+  setTreatment: (key: LayerKey, treatment: SignedTreatment) => void;
+  setGroup: (ids: MemberId[]) => void;
+  toggleGroupMember: (id: MemberId) => void;
+  setTools: (patch: Partial<ToolsState>) => void;
 }
 
 export type AppState = {
@@ -120,7 +178,13 @@ export type AppState = {
   map: MapSettings;
   selection: SelectionState;
   results: ResultsState;
+  weights: WeightState;
+  tools: ToolsState;
 } & Actions;
+
+export function initialToolsState(): ToolsState {
+  return { path: null, removal: [], resilience: null, showRemoval: true, bootstrap: null };
+}
 
 export function initialMapSettings(): MapSettings {
   return {
@@ -134,6 +198,10 @@ export function initialMapSettings(): MapSettings {
     hideOffLayers: false,
     filters: [],
     search: '',
+    layout: 'force',
+    groupBy: null,
+    tool: 'pan',
+    ego: null,
   };
 }
 
@@ -166,6 +234,8 @@ export function initialUiState(noticeSeen: boolean): UiState {
     firstRunNoticeSeen: noticeSeen,
     noticeOpen: !noticeSeen,
     importOpen: false,
+    matrixMode: 'explore',
+    compareMode: 'layers',
   };
 }
 
@@ -174,6 +244,13 @@ export function initialDataState(): DataState {
 }
 
 const now = () => new Date().toISOString();
+
+/** The weight state as Custom, starting from the current preset's values. */
+function toCustom(s: { data: DataState; weights: WeightState }): WeightState {
+  if (s.weights.preset === 'custom' || !s.data.project) return { ...s.weights, preset: 'custom' };
+  const current = effectiveWeights(s.data.project, s.weights);
+  return { preset: 'custom', custom: current.weights, customTreatment: current.signedTreatment };
+}
 
 export const useAppStore = create<AppState>()((set, get) => {
   const setUi = (patch: Partial<UiState>) => {
@@ -203,8 +280,10 @@ export const useAppStore = create<AppState>()((set, get) => {
     ui: initialUiState(readNoticeSeen()),
     data: initialDataState(),
     map: initialMapSettings(),
-    selection: { member: null, hovered: null },
+    selection: { member: null, hovered: null, group: [] },
     results: { status: 'idle', current: null, error: null },
+    weights: initialWeightState(),
+    tools: initialToolsState(),
 
     // A status message describes the last action; moving to another view
     // starts something new, so the message is cleared rather than left stale.
@@ -245,8 +324,10 @@ export const useAppStore = create<AppState>()((set, get) => {
         : ({ kind: 'community' } as const);
       set({
         map: { ...initialMapSettings(), fill },
-        selection: { member: null, hovered: null },
+        selection: { member: null, hovered: null, group: [] },
         results: { status: 'idle', current: null, error: null },
+        weights: initialWeightState(),
+        tools: initialToolsState(),
       });
     },
     setStatus: (status) => {
@@ -320,6 +401,43 @@ export const useAppStore = create<AppState>()((set, get) => {
     },
     setResults: (patch) => {
       set((s) => ({ results: { ...s.results, ...patch } }));
+    },
+
+    setMatrixMode: (matrixMode) => {
+      setUi({ matrixMode });
+    },
+    setCompareMode: (compareMode) => {
+      setUi({ compareMode });
+    },
+    setPreset: (preset) => {
+      set((s) => ({ weights: { ...s.weights, preset } }));
+    },
+    // Moving a slider or changing a treatment under a preset starts a Custom
+    // weighting from that preset's values, so nothing jumps.
+    setLayerWeight: (key, value) => {
+      set((s) => ({
+        weights: { ...toCustom(s), custom: { ...toCustom(s).custom, [key]: value } },
+      }));
+    },
+    setTreatment: (key, treatment) => {
+      set((s) => {
+        const w = toCustom(s);
+        return { weights: { ...w, customTreatment: { ...w.customTreatment, [key]: treatment } } };
+      });
+    },
+    setGroup: (group) => {
+      set((s) => ({ selection: { ...s.selection, group: [...new Set(group)] } }));
+    },
+    toggleGroupMember: (id) => {
+      set((s) => {
+        const group = s.selection.group.includes(id)
+          ? s.selection.group.filter((m) => m !== id)
+          : [...s.selection.group, id];
+        return { selection: { ...s.selection, group } };
+      });
+    },
+    setTools: (patch) => {
+      set((s) => ({ tools: { ...s.tools, ...patch } }));
     },
   };
 });
