@@ -97,6 +97,84 @@ Phase 0 decisions D1–D13, Phase 1 decisions D14–D25 and Phase 3 decisions D3
 | D81 | 2026-09-26 | Phase 6 tests: `insights.test.ts` (each threshold at its boundary; the demo's structures found in both views), `insightsCopy.test.ts` (D74), `anonymise.test.ts` (codes, collisions, small groups, caption replacement, the names layer), `savedViews.test.ts` (capture of every field, pins, revision unchanged, rename, reorder, update, delete, round trip through the file, restore, positions applied after layout), `projectFile.test.ts` (version 2 and the 1 → 2 migration). `tests/e2e/present.spec.ts` covers the insights panel and its view links, the views manager, saving to and reopening from the file, presentation with keys, Escape and type sizes checked against the scale (title 42 px, caption 35 px, legend, counter and map labels 17 px, caption at most 61 characters wide), and an anonymisation sweep that renders every view (map with member panel and every ties layer, search, explore tools, both matrix modes, table, both comparisons, insights and each insight's view, views, coverage, all four layouts, presentation) with names hidden and asserts that no `display_name` appears in the DOM (markup, attributes, form values, options) or in any text drawn on the canvas. `SCREENSHOT_DIR=docs/screenshots/phase-6 npx playwright test tests/e2e/present.spec.ts` regenerates the screenshots | Proposed | `tests/` |
 | D82 | 2026-09-26 | Spec §10 checked in Phase 6. The first-run notice (unchanged since Phase 1) states all four points: data stays in the browser, informed consent and how results will be used, no use for individual performance evaluation, and data protection advice for named employee data; it reopens from Help → Data and consent notice, and shows over presentation mode too. Anonymisation is one click from every view: the Hide names switch in the top bar, and in presentation mode the same switch on the controls bar. The CSP `<meta>` still restricts `connect-src` to `'self'`. Not met yet: the signed-layer exclusion option, which the owner placed in Phase 7 (Q28) | Proposed | `src/ui/copy/notice.ts`, `index.html` |
 
+## Respondent mode (spec §15)
+
+Added to the spec on 2026-09-26 at the owner's request. Decisions D83–D92 below interpret it; they are Proposed until the owner approves the spec change.
+
+| # | Date | Decision | Status | Where |
+|---|---|---|---|---|
+| D83 | 2026-09-26 | Respondent mode is a new phase, 6R, built now. Its requirements that fall in later phases are listed under "Requirements by phase" below and carried into those phases' scope | Proposed | spec §14 |
+| D84 | 2026-09-26 | Link-length budget 2,000 characters for the whole link, from the research below: Outlook desktop builds before the 2023 fix truncate at about 2,048, and a link rewritten by Safe Links grows by the rewriter's prefix and parameters. "Always use a survey package" is offered for organisations whose mail passes through a link rewriter. Measured lengths are in "Research" | Proposed | spec §15.3 |
+| D85 | 2026-09-26 | Compression: `CompressionStream('deflate')` (zlib), not `'deflate-raw'`. deflate-raw saved 8 characters per link in the measurements; the zlib Adler-32 checksum detects a truncated or altered link, which matters more. Both are supported in the browsers listed below | Proposed | spec §15.3 |
+| D86 | 2026-09-26 | Cryptography as the owner specified: ECDH P-256 (ephemeral per response), HKDF-SHA-256, AES-256-GCM, with survey id, version and key fingerprint as additional authenticated data. Alternatives considered and not taken: X25519 (smaller keys, but supported only from Chrome/Edge 133, Firefox 130, Safari 17, against P-256's much older support); Argon2id for the passphrase (stronger against GPU guessing, but not in WebCrypto, so it would add a WebAssembly dependency). PBKDF2-HMAC-SHA-256 at 600,000 iterations follows the OWASP Password Storage Cheat Sheet; it took about 100 ms in headless Chromium 141 and Node 22 here (phones were not measured) | Proposed | spec §15.2 |
+| D87 | 2026-09-26 | "Cannot finish until the backup is downloaded": a browser cannot confirm that a download was saved, so the analyst confirms by opening the downloaded backup, which Graticule decrypts with the passphrase. This proves both the file and the passphrase | Proposed | spec §15.2 |
+| D88 | 2026-09-26 | Nomination: a colleague not selected is stored as 0 on unsigned layers and as not rated on signed layers by default, configurable per layer. The owner's brief says "stored as 0"; on a signed layer 0 means neutral, which would record a relationship quality nobody reported (see Q29) | Proposed | spec §15.1 |
+| D89 | 2026-09-26 | Package links carry a fingerprint of the package, and the page refuses a package that does not match, so a substituted package cannot redirect responses to another public key. In link mode the roster is identified by position, and the survey version records the member ids in order, which keeps links short | Proposed | spec §15.3 |
+| D90 | 2026-09-26 | "Works offline once loaded" means that completing and submitting needs no network after the welcome screen: the route's code is loaded up front. Reloading while offline is not covered; that would need a service worker, which the CSP and GitHub Pages allow but which adds caching risk to the analyst app (see Q30) | Proposed | spec §15.4 |
+| D91 | 2026-09-26 | Ties gain `source` (`self_report`, `imported`, `entered`); ties from before the field existed have none and show "Not recorded" rather than a guessed value. Schema version 3 with a 2 → 3 migration that adds `surveys: []` and leaves existing ties' source absent | Proposed | spec §4 |
+| D92 | 2026-09-26 | "Import survey data" in the empty state is the existing CSV/XLSX import; "Enter as observer" is not shown, because no observer mode is specified | Proposed | spec §15.5 |
+
+### Requirements by phase
+
+| Requirement (spec §15 unless noted) | Phase |
+|---|---|
+| Survey model, versions, tokens, import log; `email` attribute and `shareable` flag (§4.1); tie `source` (§4.2); schema 3 and migration (§4.3–4.4) | 6R (reopens Phase 2's data model) |
+| Keys, passphrase wrapping, key backup, hybrid encryption, import validation and rejection rules (§15.2) | 6R |
+| Link and package codec, budget, copy link, mail-merge CSV, non-responder list (§15.3) | 6R |
+| Respondent flow, local progress, return by file and text, receipt, offline, browser check (§15.4) | 6R |
+| Collection dashboard, version mapping, close and reopen, deletion reminder, empty state (§15.5) | 6R |
+| `ResponseTransport` with the file implementation (§15.6) | 6R |
+| Ethics notice additions (§10) | 6R (reopens Phase 6's notice) |
+| Method notes: what the encryption does and does not protect; completion-time estimate constants | 6R |
+| Survey administration files labelled as personal data and exempt from anonymisation (§11) | 6R builds them; Phase 7 confirms the exemption |
+| PDF report coverage section includes survey response rates (§14) | 7 |
+| Real-device checks on iOS Safari and Android Chrome, VoiceOver and TalkBack; phone performance of PBKDF2 and encryption (§14) | 8 |
+| Guide to running a survey; one-page respondent help; README (§14) | 9 |
+
+### Server transport (future, nothing built)
+
+`ResponseTransport` separates the survey experience from how a response travels. The respondent flow ends by calling `submit(envelope)`, where `envelope` is the encrypted response (header: format version, survey id, version, key fingerprint; body: ephemeral public key, salt, IV, ciphertext). The file transport returns a manual result (a file to download, a text block to copy, the receipt code). The dashboard reads envelopes through the same type, whatever carried them.
+
+A server transport would plug in as a second implementation:
+
+- **Submit:** `POST` the envelope to a collection endpoint. The server stores ciphertext only; it never holds the private key, so encryption stays end to end.
+- **Acknowledge:** the server replies with a receipt (the same receipt code, computed from the envelope, plus the server's receipt time). The respondent screen shows it in place of the download and copy options.
+- **Status polling:** the dashboard calls `status(surveyId)` for counts by token and `collect(surveyId, cursor)` to fetch new envelopes, which then go through the existing decryption, validation and import path unchanged.
+- **What changes:** the CSP's `connect-src` must name the server's origin (and the "data stays in the browser" copy must change with it); tokens could be consumed server-side, and the server could authenticate respondents, which the file transport cannot.
+
+### Research (2026-09-26)
+
+Egress from this environment blocks learn.microsoft.com, answers.microsoft.com, developer.mozilla.org, docs.slack.dev and neowin.net. Where a finding rests on a search-result excerpt of such a page rather than the page itself, it says so. Browser source code was read from the projects' GitHub mirrors, and MDN's compatibility data from its npm package.
+
+**(a) URL length.**
+
+| Client | Finding | Confidence and source |
+|---|---|---|
+| Chrome (all platforms) | URLs limited to 2 MB (`kMaxURLChars = 2 * 1024 * 1024`); omnibox display limited to 32 kB | Established from source: [url_constants.h](https://raw.githubusercontent.com/chromium/chromium/main/url/url_constants.h), [URL display guidelines](https://raw.githubusercontent.com/chromium/chromium/main/docs/security/url_display_guidelines/url_display_guidelines.md). A claim that Android limits URLs to 8,192 characters appears only on secondary sites and was not verified |
+| Edge | Chromium-based; same limit expected | Inferred from shared engine, not verified separately |
+| Firefox | `network.standard-url.max-length` = 1,048,576 | Established from source: [StaticPrefList.yaml](https://raw.githubusercontent.com/mozilla-firefox/firefox/main/modules/libpref/init/StaticPrefList.yaml) |
+| Safari (macOS, iOS) | Not established. Secondary sites cite about 80,000 characters without a primary source | Not established |
+| Outlook desktop (Windows) | Links longer than 2,048 (reported also as 2,084 or 2,085) were truncated; build 16116.10000 and later raised the limit to 8,192, at 100 % of Current Channel from 4 April 2023. Older builds and other channels may still truncate | Search-result excerpts of [Microsoft Q&A 5790802](https://learn.microsoft.com/en-us/answers/questions/5790802/restriction-on-outlook-as-how-many-characters-can), [Microsoft Q&A 1063670](https://learn.microsoft.com/en-us/answers/questions/1063670/outlook-for-microsoft-365-truncating-long-urls) and [Safelinks truncated after 2048 characters](https://answers.microsoft.com/en-us/outlook_com/forum/all/safelinks-are-truncated-after-2048-characters-in/cfb07d34-f8d8-4a09-8e00-f0ee7fa05518); pages not readable here |
+| Outlook on the web | Reported to handle longer URLs than desktop | Search-result excerpt only |
+| Gmail (web and app), Apple Mail, Outlook mobile | Not established. No primary source found | Not established |
+| Microsoft Teams | No documented URL limit; message size about 100 KB (an older 28 KB figure also appears). User reports say Teams shortens long URLs in messages and that the underlying link can break; no length threshold is given | Search-result excerpts of [Teams limits](https://learn.microsoft.com/en-us/microsoftteams/limits-specifications-teams), [Q&A 5612182](https://learn.microsoft.com/en-us/answers/questions/5612182/please-disable-url-truncation-in-teams), [Q&A 5636237](https://learn.microsoft.com/en-us/answers/questions/5636237/how-to-prevent-teams-from-ruining-my-urls-by-trunc) |
+| Slack | Clients should limit messages to 4,000 characters; the text field is capped at 40,000; the message server disconnects clients sending over 16 KB | Search-result excerpt of [Slack changelog, 2018](https://docs.slack.dev/changelog/2018-truncating-really-long-messages/) |
+
+**Link scanners and the fragment.** Safe Links rewrites links in email to a `safelinks.protection.outlook.com` address whose `url` parameter carries the original URL percent-encoded, followed by `data`, `sdata` and `reserved` parameters (secondary sources: [University of Edinburgh](https://information-services.ed.ac.uk/help-consultancy/it-help/email-and-office365/microsoft-365-safe-links), [AskVG](https://www.askvg.com/why-outlook-adding-safelinks-protection-outlook-com-to-all-urls-in-your-emails-and-how-to-disable-it/)). Clicks are recorded in the Defender `UrlClickEvents` table, whose `Url` column is described as the full URL clicked (search-result excerpt of [UrlClickEvents](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-urlclickevents-table)). Safe Links also covers Teams and Office apps. **Not established:** whether the `#` fragment is kept inside the encoded `url` parameter; no primary source was readable here and no Microsoft tenant was available to test. If it is kept, the fragment reaches Microsoft's service as part of a query string and is logged in the tenant. Graticule's design therefore assumes the whole link, fragment included, can be seen and logged by the organisation's security tooling (spec §15.3): the payload holds nothing the organisation does not already hold except the token, and the method notes say that anyone who can see a link can answer as its recipient. Proofpoint URL Defense rewrites links similarly; its fragment handling was not established either. A scanner that fetches the page receives no fragment from GitHub Pages and cannot submit anything, because there is no server.
+
+**Measured link lengths** (compact JSON, zlib deflate, base64url; 4 core layers with the demo's wording and scale labels; introduction about 300, confidentiality about 330 and return instructions about 75 characters; 65-byte public key; 16-byte token; names generated at random from 3–7 and 4–9 letter parts, which compress worse than real names): **40 members 1,652, 100 members 2,343, 250 members 4,107 characters**. The demo's own 40 names gave 1,624. Layer wording and texts account for about 912 characters at every size. A package link is about 110 characters. The phase 6R tests measure the real codec and replace these figures.
+
+**(b) WebCrypto and related APIs.** From MDN browser-compat-data 8.1.3 (npm, published 2026-09-24): `SubtleCrypto` `generateKey`, `importKey` (including ECDH), `exportKey`, `deriveBits`, `deriveKey`, `encrypt` and `decrypt` are supported in Chrome and Chrome Android from 37–41, Edge from 79, Firefox and Firefox Android from 34, Safari and iOS Safari from 7–11. `crypto.getRandomValues` is supported everywhere relevant. `CompressionStream`/`DecompressionStream` with `deflate`: Chrome and Edge 80, Firefox 113, Safari and iOS 16.4 (`deflate-raw`: Chrome and Edge 103). `navigator.clipboard.writeText`: Chrome 66, Firefox 63, Safari 13.1, iOS 13.4, needing a user gesture. `Uint8Array.toBase64` is too recent (Chrome 140, Safari 18.2) and will not be used. Current versions in that data: Chrome 154, Edge 153, Firefox 156, Safari 27, so every listed feature is supported in current versions on desktop and mobile.
+
+MDN's data does not break support down by algorithm (P-256, HKDF as a base key, PBKDF2, AES-GCM). For those:
+- WebKit implements ECDH, HKDF, PBKDF2 and AES-GCM and the P-256 curve (source: [CryptoAlgorithmECDH.cpp](https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WebCore/crypto/algorithms/CryptoAlgorithmECDH.cpp), [CryptoAlgorithmHKDF.cpp](https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WebCore/crypto/algorithms/CryptoAlgorithmHKDF.cpp), [CryptoAlgorithmPBKDF2.cpp](https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WebCore/crypto/algorithms/CryptoAlgorithmPBKDF2.cpp), [CryptoAlgorithmAESGCM.cpp](https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WebCore/crypto/algorithms/CryptoAlgorithmAESGCM.cpp), [CryptoKeyEC.cpp](https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WebCore/crypto/keys/CryptoKeyEC.cpp)). Source shows implementation on the main branch; the Safari release that first shipped each was not established here.
+- Firefox implements the same in [WebCryptoTask.cpp](https://raw.githubusercontent.com/mozilla-firefox/firefox/main/dom/crypto/WebCryptoTask.cpp).
+- Tested live: the full chain (P-256 key pair, raw and PKCS #8 export, ephemeral ECDH, HKDF-SHA-256, AES-256-GCM round trip, rejection of one flipped ciphertext bit, PBKDF2 600,000-iteration key wrapping and unwrapping) succeeded in headless Chromium 141.0.7390.37 on Linux and Node 22.22.2. Safari, Firefox, Edge and mobile browsers were not tested live here; Phase 8 does that on devices.
+
+Minimum versions for the respondent route, from the above: Chrome and Edge 80, Firefox 113, Safari and iOS Safari 16.4 (the `CompressionStream` requirement is the binding one).
+
+Other sources: [OWASP Password Storage Cheat Sheet](https://raw.githubusercontent.com/OWASP/CheatSheetSeries/master/cheatsheets/Password_Storage_Cheat_Sheet.md) (PBKDF2-HMAC-SHA-256, 600,000 iterations); [@mdn/browser-compat-data 8.1.3](https://www.npmjs.com/package/@mdn/browser-compat-data).
+
 ## Insight wording
 
 Insights are questions for inquiry, never verdicts on people (spec §2, §9). The copy test `tests/unit/insightsCopy.test.ts` reads the list below from this file and fails if any insight string (titles, rules, questions, view descriptions, status lines, button labels) contains one of these words or phrases, matched as whole words and ignoring case. Add to the list rather than removing from it; if a word is needed for a neutral reason, rephrase instead.
@@ -138,7 +216,13 @@ On 2026-09-26 the owner approved `docs/plan.md` §6 Q1–Q17 with their proposed
 
 ## Open questions
 
-None.
+Q29 (nomination and signed layers): the brief says colleagues not selected are stored as 0. On valence and energy, 0 means neutral. Proposed: 0 on unsigned layers, not rated on signed layers, configurable per layer (D88). Approve, or store 0 everywhere?
+
+Q30 (offline): is "works offline once loaded" met by loading everything up front (D90), or should a reload while offline also work, which needs a service worker?
+
+Q31 (completion-time estimate): proposed constants, not measured: 60 s for welcome and consent, 5 s per rating, 2 s per colleague scanned in nomination, 12 expected nominations, burden limit 15 minutes. Replace with your own figures if you have them.
+
+Q32 (branch): the brief asks for a branch named `feature/respondent-mode`; this session is configured to push to `claude/respondent-mode-spec-pfnjuh`. The spec change is committed there. For step 2, push `feature/respondent-mode` as well, or keep to the configured branch?
 
 ## Phase status
 
@@ -151,6 +235,7 @@ None.
 | 4 | Map view, encodings, legend, member panel | Built; awaiting owner acceptance | — |
 | 5 | Composite weighting, layouts, linked views, ego view, path, resilience, multi-select | Built; awaiting owner acceptance | — |
 | 6 | Insights, saved views, presentation mode, anonymisation, ethics notice | Built; awaiting owner acceptance | — |
+| 6R | Respondent mode (spec §15) | Spec drafted; awaiting owner approval | — |
 | 7 | Exports | Not started | — |
 | 8 | Design, accessibility and performance pass | Not started | — |
 | 9 | Documentation and release | Not started | — |
