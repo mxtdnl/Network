@@ -231,9 +231,12 @@ export const MapLegend = forwardRef<HTMLElement, { model: MapModel; theme: MapTh
               <span className="legend__variable">{section.variable}</span>
             </p>
             <Sample section={section} theme={theme} />
-            {section.kind === 'width' && section.note && (
-              <p className="legend__note num">{section.note}</p>
-            )}
+            {section.kind === 'width' &&
+              section.notes.map((note) => (
+                <p key={note} className="legend__note num">
+                  {note}
+                </p>
+              ))}
           </div>
         ))}
       </section>

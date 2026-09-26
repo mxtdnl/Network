@@ -157,6 +157,33 @@ describe('map model', () => {
     expect(one.edges.every((e) => e.style === 'plain')).toBe(true);
   });
 
+  it('hides the ties of a switched-off layer only when asked to', async () => {
+    const off = { formal_collaboration: false };
+    const keep = await model({ layerToggles: off });
+    const all = await model();
+    expect(keep.edges.length).toBe(all.edges.length);
+    expect(keep.hiddenLayers).toEqual([]);
+    const hide = await model({ layerToggles: off, hideOffLayers: true });
+    expect(hide.hiddenLayers).toEqual(['formal_collaboration']);
+    expect(hide.edges.length).toBeLessThan(all.edges.length);
+    const r = await resultFor(demo, initialMapSettings());
+    const f = r.refs.formal_collaboration?.weights ?? new Float64Array();
+    const n = demo.members.length;
+    expect(hide.edges.every((e) => !((f[e.source * n + e.target] as number) > 0))).toBe(true);
+    // A signed layer switched off hides ties of either sign.
+    const noValence = await model({ layerToggles: { valence: false }, hideOffLayers: true });
+    const vp = r.refs['valence+']?.weights ?? new Float64Array();
+    const vn = r.refs['valence-']?.weights ?? new Float64Array();
+    for (const e of noValence.edges) {
+      const k = e.source * n + e.target;
+      expect((vp[k] as number) > 0 || (vn[k] as number) > 0).toBe(false);
+    }
+    const legend = legendSections(hide, theme).find((x) => x.kind === 'width');
+    expect(legend?.kind === 'width' && legend.notes).toEqual([
+      'Ties on Formal collaboration hidden',
+    ]);
+  });
+
   it('hides members outside the filters, and their ties', async () => {
     const m = await model({ filters: [{ key: 'team', values: ['Finance'] }] });
     const finance = new Set(
@@ -257,7 +284,7 @@ describe('legend', () => {
     expect(s.find((x) => x.kind === 'fill')?.variable).toBe('Team or function');
     const width = s.find((x) => x.kind === 'width');
     expect(width?.variable).toBe('Connection strength');
-    expect(width?.kind === 'width' && width.note).toBe('Ties below 0.40 hidden');
+    expect(width?.kind === 'width' && width.notes).toEqual(['Ties below 0.40 hidden']);
   });
 
   it('shows the valence scale, and a separate entry for valence not rated', async () => {

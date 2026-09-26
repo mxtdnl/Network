@@ -299,6 +299,18 @@
   min-width: 0;
 }
 
+.map-controls__subgroup {
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.map-controls__subgroup > legend {
+  padding: 0;
+  margin-bottom: var(--s-1);
+}
+
 .map-controls__group > legend {
   padding: 0;
   margin-bottom: var(--s-1);

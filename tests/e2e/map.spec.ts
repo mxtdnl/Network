@@ -121,6 +121,14 @@ test('load demo, map renders, filter, select a member, open the panel, traverse 
   await expect(legend.getByText('Not used: valence is hidden')).toBeVisible();
   await page.getByRole('switch', { name: 'Valence on the map' }).click();
 
+  // Layer toggles can also hide a layer's ties.
+  await page.getByRole('radio', { name: 'Hide its ties' }).check();
+  await page.getByRole('switch', { name: 'Formal collaboration on the map', exact: true }).click();
+  await expect(legend.getByText('Ties on Formal collaboration hidden')).toBeVisible();
+  await page.getByRole('switch', { name: 'Formal collaboration on the map', exact: true }).click();
+  await page.getByRole('radio', { name: 'Keep its ties' }).check();
+  await expect(legend.getByText(/Ties on .* hidden/)).toHaveCount(0);
+
   // Threshold: the legend states it; fewer ties are shown.
   const tiesOf = async (name: RegExp) =>
     Number(

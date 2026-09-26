@@ -48,7 +48,7 @@ export function MapControls() {
   const layers = drawableLayers(project, result);
   const layerLabel = (key: string) =>
     key === 'composite' ? C.composite : (project.layers.find((l) => l.key === key)?.label ?? key);
-  const toggles = toggleLayers(project);
+  const toggles = toggleLayers(project, settings.hideOffLayers);
   const columns = result.refs[settings.layer]?.node.columns ?? {};
   const metrics = (settings.view === 'directed' ? DIRECTED_METRICS : SYMMETRISED_METRICS).filter(
     (m) => m in columns,
@@ -138,6 +138,25 @@ export function MapControls() {
             {toggles.some((l) => l.role) && `${C.styleHelp} `}
             {toggles.some((l) => l.signed) && C.colourHelp}
           </p>
+          <fieldset className="map-controls__subgroup">
+            <legend className="field__help">{C.whenOff}</legend>
+            <div className="segmented">
+              {([false, true] as const).map((hide) => (
+                <label key={String(hide)} className="segmented__option">
+                  <input
+                    type="radio"
+                    className="segmented__input"
+                    name={`${ids.show}-off`}
+                    checked={settings.hideOffLayers === hide}
+                    onChange={() => {
+                      setMap({ hideOffLayers: hide });
+                    }}
+                  />
+                  <span className="segmented__label">{hide ? C.hideTies : C.keepTies}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
         </fieldset>
       )}
 

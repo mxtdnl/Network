@@ -29,7 +29,7 @@ export type LegendSection =
       title: string;
       variable: string;
       samples: { width: number; label: string }[];
-      note: string | null;
+      notes: string[];
     }
   | {
       kind: 'colour';
@@ -99,7 +99,10 @@ export function legendSections(model: MapModel, r: LegendRadii): LegendSection[]
       width: r.edgeMin + (r.edgeMax - r.edgeMin) * w,
       label: formatWeight(w),
     })),
-    note: model.threshold > 0 ? L.threshold(formatWeight(model.threshold)) : null,
+    notes: [
+      ...(model.threshold > 0 ? [L.threshold(formatWeight(model.threshold))] : []),
+      ...(model.hiddenLayers.length > 0 ? [L.hiddenLayers(model.hiddenLabels)] : []),
+    ],
   });
 
   sections.push({

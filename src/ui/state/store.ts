@@ -71,6 +71,8 @@ export interface MapSettings {
   threshold: number;
   /** Layers shown as an encoding: the formal and informal layers (edge style) and valence (edge colour). */
   layerToggles: Record<LayerKey, boolean>;
+  /** When true, a layer switched off also hides its ties (CLAUDE.md D59). */
+  hideOffLayers: boolean;
   filters: AttributeFilter[];
   search: string;
 }
@@ -129,6 +131,7 @@ export function initialMapSettings(): MapSettings {
     fill: { kind: 'attribute', key: 'team' },
     threshold: 0,
     layerToggles: {},
+    hideOffLayers: false,
     filters: [],
     search: '',
   };

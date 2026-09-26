@@ -72,8 +72,13 @@ Phase 0 decisions D1–D13, Phase 1 decisions D14–D25 and Phase 3 decisions D3
 | D56 | 2026-09-26 | Member panel (design-system §5.2): attributes with the manager as a link; "Position in the network" with a layer selector that follows the map until changed; value and rank per metric in the view's panel order; ranks are single ranks, 1 = highest, tied values shown as a range ("22–24"), undefined values unranked ("–"), with a note that resampled rank ranges are not calculated yet (the bootstrap runs on request in Phase 5). Each metric has an info button with a tooltip giving the meaning and caveat from `docs/method-notes.md` §3 (copied into `ui/copy/metrics.ts`), the reason when not defined, and the technical name. Ties by layer: one disclosure per enabled scaled layer (the selected layer open), given and received ratings, "–" for not rated | Proposed | `src/ui/views/MemberPanel.tsx` |
 | D57 | 2026-09-26 | The coverage warning is shown inside the map (top left) as well as in the status line. Fit to view keeps members clear of the legend (choosing the larger of the area beside or above it) and below the coverage note | Proposed | `src/ui/map/controller.ts` |
 | D58 | 2026-09-26 | Phase 4 tests: `tests/fixtures/synthetic.ts` generates a seeded 250-member project (5 teams, ~10,200 connection-strength ties, each with formal, informal and valence ratings; coverage 16 %), opened through Project → Open in the e2e test. Frame time is the interval between animation frames recorded in the page during a 60-step drag and 40 wheel steps. The projector screenshot is the normal screenshot redrawn with `contrast(55%) brightness(115%) saturate(80%)` (a simulation, not a measurement of any projector). `data.spec.ts` now expects the map instead of the removed Phase 2 project summary, and the first of two coverage notes | Proposed | `tests/` |
+| D59 | 2026-09-26 | Layer toggles can also remove ties (owner, Q22): "When a layer is switched off" offers Keep its ties (default, D54) or Hide its ties. With Hide, the switches list every enabled rated layer, and a pair is hidden when it has a tie on any switched-off layer in the current view (a signed layer counts ties of either sign); the legend lists the hidden layers under edge width. Switching off the layer chosen in "Ties from" therefore hides every tie | Proposed | `src/ui/map/model.ts`, `src/ui/views/MapControls.tsx` |
 
 ## Resolved questions
+
+Q22 (layer toggles): on 2026-09-26 the owner asked for an option to remove ties as well; built as D59.
+
+Q21 (edge style when a rating is missing): on 2026-09-26 the owner accepted the dotted style for now and said no style is perhaps best. Kept dotted (D53) for the time being. To revisit: "no style" would draw these ties as plain solid lines, which is the formal-only style, so it needs a distinct unstyled look (for example thinner, or excluded from the style legend with a note) before it can replace dotted.
 
 Q20 (SheetJS source in the cloud environment): on 2026-09-26 the owner re-approved `cdn.sheetjs.com`; `npm ci` succeeds and the committed lock file installs SheetJS 0.20.3 unchanged (`npm install` leaves it byte-identical).
 
@@ -83,9 +88,7 @@ On 2026-09-26 the owner approved `docs/plan.md` §6 Q1–Q17 with their proposed
 
 ## Open questions
 
-Q21 (edge style when a rating is missing): a pair tied on the selected layer whose formal or informal rating is missing, and with no positive rating on the other, is drawn dotted like "neither", under the legend label "Neither, or not rated". This groups "rated 0 on both" with "not rated" in one line style. Alternatives: a fifth line style, or no style for such pairs. Default if not answered: keep as built (D53).
-
-Q22 (meaning of "layer toggles"): built as switches for the layers that carry an encoding (formal and informal → line style, valence → colour); which pairs are edges is set by "Ties from". The alternative reading is that each toggle adds or removes that layer's ties from the map. Default if not answered: keep as built (D54).
+None.
 
 ## Phase status
 

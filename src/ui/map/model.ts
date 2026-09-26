@@ -12,7 +12,12 @@
 //   arrowheads  → directed view only
 
 import { FI_CLASS, type AnalysisResult } from '../engineClient';
-import type { AttributeDefinition, LayerDefinition, Project } from '../../data/schema';
+import {
+  isCategorical,
+  type AttributeDefinition,
+  type LayerDefinition,
+  type Project,
+} from '../../data/schema';
 import type { MapSettings, SizeMetric } from '../state/store';
 
 export const NOT_RECORDED = '\u0000not-recorded';
@@ -84,6 +89,9 @@ export interface MapModel {
   styleShown: boolean;
   stylesPresent: EdgeStyle[];
   threshold: number;
+  /** Layers switched off whose ties are hidden (keys). */
+  hiddenLayers: string[];
+  hiddenLabels: string[];
   searchMatches: Set<number> | null;
 }
 
@@ -104,13 +112,35 @@ export function roleLayer(project: Project, role: 'formal' | 'informal') {
   return project.layers.find((l) => l.role === role && l.enabled && !l.signed);
 }
 
-/** Layers whose map toggle is offered: formal and informal (style) and valence (colour). */
-export function toggleLayers(project: Project): LayerDefinition[] {
+/**
+ * Layers whose map toggle is offered. By default, the layers that carry an
+ * encoding: formal and informal (style) and valence (colour). When switching a
+ * layer off hides its ties (CLAUDE.md D59), every enabled rated layer.
+ */
+export function toggleLayers(project: Project, hideOff = false): LayerDefinition[] {
+  if (hideOff) return project.layers.filter((l) => l.enabled && !isCategorical(l));
   return [
     roleLayer(project, 'formal'),
     roleLayer(project, 'informal'),
     valenceLayer(project),
   ].filter((l): l is LayerDefinition => l !== undefined);
+}
+
+/** Tie weights (view) of the layers switched off whose ties are hidden; a signed layer counts both signs. */
+function hiddenLayerWeights(
+  project: Project,
+  result: AnalysisResult,
+  settings: MapSettings,
+): { key: string; weights: Float64Array[] }[] {
+  if (!settings.hideOffLayers) return [];
+  return toggleLayers(project, true)
+    .filter((l) => !isToggledOn(settings, l.key))
+    .map((l) => ({
+      key: l.key,
+      weights: (l.signed ? [`${l.key}+`, `${l.key}-`] : [l.key])
+        .map((ref) => result.refs[ref]?.weights)
+        .filter((w): w is Float64Array => w !== undefined),
+    }));
 }
 
 export function isToggledOn(settings: MapSettings, key: string): boolean {
@@ -346,7 +376,10 @@ export function buildMapModel(
   const neighbours: number[][] = Array.from({ length: n }, () => []);
   const present = new Set<EdgeStyle>();
   let anyValenceMissing = false;
+  const hidden = hiddenLayerWeights(project, result, settings);
+  const hiddenWeights = hidden.flatMap((h) => h.weights);
   const shown = (k: number) => {
+    if (hiddenWeights.some((hw) => (hw[k] as number) > 0)) return false;
     const w = weights ? (weights[k] as number) : NaN;
     return w > 0 && w >= settings.threshold;
   };
@@ -406,6 +439,8 @@ export function buildMapModel(
     styleShown,
     stylesPresent: order.filter((s) => present.has(s)),
     threshold: settings.threshold,
+    hiddenLayers: hidden.map((h) => h.key),
+    hiddenLabels: hidden.map((h) => project.layers.find((l) => l.key === h.key)?.label ?? h.key),
     searchMatches,
   };
 }
