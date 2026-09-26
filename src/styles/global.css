@@ -1,0 +1,64 @@
+/* Base styles. Every value comes from tokens.css. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--field);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--t-0-size);
+  line-height: var(--t-0-line);
+  font-weight: var(--weight-regular);
+  font-kerning: normal;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p,
+ul {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* Tabular figures for all numeric data (design-system §3.1). */
+.num,
+td,
+th,
+output {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: var(--m-instant) !important;
+    animation-duration: var(--m-instant) !important;
+  }
+}
