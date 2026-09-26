@@ -1,6 +1,6 @@
 # Graticule design system
 
-Status: proposal, awaiting owner approval. Once approved, these values are transcribed into `src/styles/tokens.css` and become the only source of colour, type, spacing, radius, elevation and motion in the codebase (spec §12).
+Status: approved by the owner on 2026-09-26. These values are transcribed into `src/styles/tokens.css` and become the only source of colour, type, spacing, radius, elevation and motion in the codebase (spec §12).
 
 **Premise.** Graticule is a surveying instrument for organisations. The reference points are topographic maps and survey instruments rather than dashboards: a light, neutral ground on which the data carries all the colour; labels set in a legible humanist sans; structure expressed by position, size and weight. The name is the grid of latitude and longitude on a map, which is plotted but not decorative. The same discipline applies here, so there are no decorative grids.
 

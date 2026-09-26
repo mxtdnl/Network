@@ -1,6 +1,6 @@
 # Graticule: Phase 0 build plan
 
-Status: proposal, awaiting owner approval. `spec.md` is the source of truth; where this plan interprets or extends it, the item is marked **Proposed** and, if it changes behaviour, is repeated as a question in section 6.
+Status: approved by the owner on 2026-09-26, with the section 6 defaults. `spec.md` is the source of truth; where this plan interprets or extends it, the item is marked **Proposed** and, if it changes behaviour, is repeated as a question in section 6.
 
 Library behaviour cited below was checked on 2026-09-26 against graphology 0.26.0, graphology-metrics 2.4.2, graphology-communities-louvain 2.0.2, graphology-shortest-path 2.1.0 and NetworkX 3.6.1, by running both libraries on Zachary's karate club (undirected, weighted) and on a directed, weighted variant of it with two strongly connected components. Differences reported as "verified" are measured, not assumed.
 
