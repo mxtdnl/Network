@@ -53,7 +53,7 @@ None.
 | Phase | Content | Status | Accepted |
 |---|---|---|---|
 | 0 | Plan and design system proposal (no code) | Complete | 2026-09-26 |
-| 1 | Scaffold, tooling, CI/CD, tokens, app shell | Built; awaiting deployment and owner acceptance | — |
+| 1 | Scaffold, tooling, CI/CD, tokens, app shell | Complete | 2026-09-26 |
 | 2 | Data model, import and validation, matrix entry, project files, demo dataset | Not started | — |
 | 3 | Analysis engine and fixtures | Not started | — |
 | 4 | Map view, encodings, legend, member panel | Not started | — |
