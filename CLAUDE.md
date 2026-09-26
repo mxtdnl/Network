@@ -38,6 +38,7 @@ Phase 0 decisions D1–D13 were approved by the owner on 2026-09-26.
 | D22 | 2026-09-26 | GitHub Actions pinned by major tag (checkout v7, setup-node v7, configure-pages v6, upload-pages-artifact v5, deploy-pages v5, upload-artifact v7; latest tags checked on 2026-09-26), not by commit SHA | Proposed | `.github/workflows/` |
 | D23 | 2026-09-26 | E2E tests run against `vite preview` of the production build, so the CSP and `/network/` base path are exercised. `PW_CHROMIUM_EXECUTABLE` optionally points Playwright at a preinstalled Chromium. `SCREENSHOT_DIR=docs/screenshots/phase-1 npm run test:e2e` regenerates the documentation screenshots | Proposed | `playwright.config.ts` |
 | D24 | 2026-09-26 | Shell details not fixed by the wireframe: the top bar uses the `field` ground (continuous with the side columns); the ⋯ overflow menu is omitted until it has actions; Present, Import data and Load demo are disabled with an explanatory line until later phases; Hide names toggles state only | Proposed | `src/ui/views/` |
+| D25 | 2026-09-26 | The repository was renamed from `Network` to `network` so that the Pages path matches Vite `base` `/network/`: the first deploy served a blank page. `deploy.yml` also accepts `workflow_dispatch` for manual redeploys | Approved | `.github/workflows/deploy.yml` |
 
 ## Resolved questions
 
