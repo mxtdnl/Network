@@ -18,9 +18,15 @@
     "test:e2e": "playwright test",
     "fonts": "node scripts/copy-fonts.mjs",
     "demo": "tsx scripts/generate-demo.ts",
-    "templates": "tsx scripts/make-templates.ts"
+    "templates": "tsx scripts/make-templates.ts",
+    "fixtures": "python3 scripts/generate_fixtures.py"
   },
   "dependencies": {
+    "graphology": "^0.26.0",
+    "graphology-communities-louvain": "^2.0.2",
+    "graphology-components": "^1.5.4",
+    "graphology-metrics": "^2.4.2",
+    "graphology-types": "^0.24.8",
     "papaparse": "^5.7.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

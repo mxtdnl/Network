@@ -8,3 +8,4 @@ docs/screenshots
 spec.md
 **/*.md
 src/demo
+tests/fixtures/*.json
