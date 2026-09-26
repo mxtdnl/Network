@@ -105,16 +105,12 @@ export function memberCodes(members: readonly Pick<Member, 'attributes'>[]): Mem
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-/** Name parts shorter than this are not replaced on their own (initials, "Al"). */
-const MIN_PART = 3;
-
 /**
- * Replaces members' names in free text (captions) with their codes. Full
- * names are replaced first; then each part of a name (a first name or a
- * surname) of at least MIN_PART letters, matched case-sensitively as a whole
- * word. A part shared by several members is replaced with `shared`, because
- * no single code fits. This errs towards replacing too much: a caption word
- * that happens to equal a name part is replaced as well.
+ * Replaces members' full names in free text (view names, captions) with their
+ * codes (owner, Q27: full names only). A name is matched as whole words,
+ * ignoring case and the amount of space between its parts. A first name or
+ * surname on its own is not replaced. Two members with the same full name get
+ * `shared`, because no single code fits.
  */
 export function replaceNames(
   text: string,
@@ -123,32 +119,22 @@ export function replaceNames(
   shared: string,
 ): string {
   if (text === '' || names.length === 0) return text;
-  const replacements = new Map<string, string>();
-  const parts = new Map<string, Set<number>>();
+  const owners = new Map<string, number[]>();
   names.forEach((name, i) => {
-    const full = name.trim();
-    if (full === '') return;
-    replacements.set(full, codes[i] ?? shared);
-    for (const part of full.split(/[\s‐-―-]+/)) {
-      if (part.length < MIN_PART) continue;
-      const owners = parts.get(part) ?? new Set<number>();
-      owners.add(i);
-      parts.set(part, owners);
-    }
+    const key = name.trim().replace(/\s+/g, ' ').toLocaleLowerCase('en-GB');
+    if (key === '') return;
+    owners.set(key, [...(owners.get(key) ?? []), i]);
   });
-  for (const [part, owners] of parts) {
-    if (replacements.has(part)) continue;
-    const [only] = owners;
-    replacements.set(
-      part,
-      owners.size === 1 && only !== undefined ? (codes[only] ?? shared) : shared,
-    );
-  }
-  // Longest first, so a full name is replaced before its parts.
-  const keys = [...replacements.keys()].sort((a, b) => b.length - a.length);
+  if (owners.size === 0) return text;
+  // Longest first, so "Ada Plumb Jones" is matched before "Ada Plumb".
+  const keys = [...owners.keys()].sort((a, b) => b.length - a.length);
   const pattern = new RegExp(
-    `(?<![\\p{L}\\p{N}])(?:${keys.map(escape).join('|')})(?![\\p{L}\\p{N}])`,
-    'gu',
+    `(?<![\\p{L}\\p{N}])(?:${keys.map((k) => k.split(' ').map(escape).join('\\s+')).join('|')})(?![\\p{L}\\p{N}])`,
+    'giu',
   );
-  return text.replace(pattern, (m) => replacements.get(m) ?? shared);
+  return text.replace(pattern, (m) => {
+    const found = owners.get(m.replace(/\s+/g, ' ').toLocaleLowerCase('en-GB')) ?? [];
+    const only = found.length === 1 ? found[0] : undefined;
+    return only === undefined ? shared : (codes[only] ?? shared);
+  });
 }

@@ -52,20 +52,26 @@ describe('role/team codes (plan Q13)', () => {
   });
 });
 
-describe('names replaced in free text', () => {
-  const names = ['Ada Theodolite', 'Ben Alidade', 'Ada Plumb'];
-  const codes = ['FIN-L3-01', 'OPE-L2-01', 'SAL-L2-01'];
+describe('names replaced in free text (full names only, Q27)', () => {
+  const names = ['Ada Theodolite', 'Ben Alidade', 'Ada Plumb', 'Ben Alidade'];
+  const codes = ['FIN-L3-01', 'OPE-L2-01', 'SAL-L2-01', 'OPE-L2-02'];
 
-  it('replaces full names, then unique name parts, and marks shared parts', () => {
-    expect(replaceNames('Ada Theodolite and Ben met Plumb.', names, codes, '[name]')).toBe(
-      'FIN-L3-01 and OPE-L2-01 met SAL-L2-01.',
+  it('replaces full names, whatever the case and spacing', () => {
+    expect(replaceNames('Ada Theodolite met ada  plumb.', names, codes, '[name]')).toBe(
+      'FIN-L3-01 met SAL-L2-01.',
     );
-    expect(replaceNames('Ask Ada.', names, codes, '[name]')).toBe('Ask [name].');
-    expect(replaceNames('Alidade’s team', names, codes, '[name]')).toBe('OPE-L2-01’s team');
+    expect(replaceNames('Ada Theodolite’s team', names, codes, '[name]')).toBe('FIN-L3-01’s team');
   });
 
-  it('matches whole words only, case-sensitively', () => {
-    expect(replaceNames('Benchmarks and ben', names, codes, '[name]')).toBe('Benchmarks and ben');
+  it('leaves first names and surnames on their own, and words that contain a name', () => {
+    expect(replaceNames('Ask Ada. Will Plumb help?', names, codes, '[name]')).toBe(
+      'Ask Ada. Will Plumb help?',
+    );
+    expect(replaceNames('Ada Theodolites', names, codes, '[name]')).toBe('Ada Theodolites');
+  });
+
+  it('marks a full name two members share', () => {
+    expect(replaceNames('Ben Alidade joined.', names, codes, '[name]')).toBe('[name] joined.');
   });
 });
 
