@@ -5,11 +5,11 @@
 // it is computed here from the project (src/data/coverage.ts, D29).
 
 import { computeCoverage } from '../data/coverage';
-import { DEFAULT_WAVE, isCategorical, type AnalysisSettings, type Project } from '../data/schema';
+import { DEFAULT_WAVE, isCategorical, type Project } from '../data/schema';
 import type { AnalysisInput, AttributeColumn, EngineLayer, EngineSettings } from './types';
 
 export type AnalysisOptions = Pick<
-  AnalysisSettings,
+  EngineSettings,
   'view' | 'symmetrise' | 'weights' | 'signedTreatment'
 >;
 

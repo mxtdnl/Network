@@ -13,6 +13,7 @@ import { formatWeight, mapCopy } from '../copy/map';
 import { DIRECTED_METRICS, SYMMETRISED_METRICS, metricCopy } from '../copy/metrics';
 import { groupAttributes } from '../map/model';
 import { drawableLayers, memberGroups, type MapData } from '../map/useMapModel';
+import { useMemberNames } from '../state/names';
 import { useAppStore, type SizeMetric } from '../state/store';
 
 const A = adjacencyCopy;
@@ -40,6 +41,7 @@ type SortKey = 'name' | 'community' | `attr:${string}` | `metric:${string}`;
 export function AdjacencyView({ data }: { data: MapData }) {
   const { project, result, settings, model } = data;
   const setMap = useAppStore((s) => s.setMap);
+  const names = useMemberNames();
   const [sort, setSort] = useState<SortKey>(settings.groupBy ? `attr:${settings.groupBy}` : 'name');
   const ids = { layer: useId(), sort: useId(), help: useId() };
 
@@ -58,7 +60,7 @@ export function AdjacencyView({ data }: { data: MapData }) {
   // Row order: the members shown, sorted; group starts marked for attribute and community sorts.
   const { order, starts } = useMemo(() => {
     const visible = model.nodes.filter((node) => node.visible).map((node) => node.index);
-    const name = (i: number) => project.members[i]?.display_name ?? '';
+    const name = (i: number) => names.byIndex[i] ?? '';
     let key: (i: number) => number = () => 0;
     let grouped = false;
     if (sort === 'community' && ref?.communities) {
@@ -84,7 +86,7 @@ export function AdjacencyView({ data }: { data: MapData }) {
     if (grouped)
       sorted.forEach((i, k) => k > 0 && key(i) !== key(sorted[k - 1] as number) && s.add(k));
     return { order: sorted, starts: s };
-  }, [model, project, ref, sort]);
+  }, [model, project, names, ref, sort]);
 
   return (
     <div className="matrix adjacency">
@@ -196,6 +198,7 @@ function AdjacencyGrid({ data, order, starts, weights, n, helpId, layer }: GridP
   const selectMember = useAppStore((s) => s.selectMember);
   const toggleGroupMember = useAppStore((s) => s.toggleGroupMember);
   const setRightPanel = useAppStore((s) => s.setRightPanel);
+  const names = useMemberNames();
   const baseId = useId();
   const viewportRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -267,7 +270,7 @@ function AdjacencyGrid({ data, order, starts, weights, n, helpId, layer }: GridP
   const rowList = [...rows].filter((r) => r < m).sort((a, b) => a - b);
   const colList = [...cols].filter((c) => c < m).sort((a, b) => a - b);
 
-  const name = (k: number) => project.members[order[k] ?? -1]?.display_name ?? '';
+  const name = (k: number) => names.byIndex[order[k] ?? -1] ?? '';
   const idAt = (k: number) => project.members[order[k] ?? -1]?.id ?? '';
   const cellId = (r: number, c: number) => `${baseId}-r${String(r)}c${String(c)}`;
   const weight = (r: number, c: number) => {

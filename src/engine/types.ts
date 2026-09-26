@@ -276,6 +276,67 @@ export interface CompositeFormula {
   notation: string;
 }
 
+// ----------------------------------------------------------------- insights
+
+/** The rule-based observations of the insights panel (spec §9). */
+export type InsightRuleId =
+  | 'brokers'
+  | 'peripheral'
+  | 'overload'
+  | 'silo'
+  | 'negativeCluster'
+  | 'formalOnly'
+  | 'informalOnly';
+
+/** Why a rule could not be applied to this analysis. */
+export type InsightUnavailable =
+  | 'noComposite'
+  | 'noLayers'
+  | 'layersNotEnabled'
+  | 'noGroupAttribute'
+  | 'noSignedLayer'
+  | 'noFormalInformal';
+
+/**
+ * The map configuration that shows an observation: which ties to draw, how to
+ * size and place members, and whom to highlight. The UI turns it into map
+ * settings; the engine knows nothing of the UI.
+ */
+export interface InsightView {
+  layer: LayerRef;
+  sizeMetric: NodeMetricKey;
+  layout: 'force' | 'grouped' | 'hierarchy';
+  groupBy: AttributeKey | null;
+  filters: { key: AttributeKey; values: string[] }[];
+  highlight: MemberId[];
+  /** Layer keys whose encodings (edge colour, edge style) should be switched on. */
+  show: LayerKey[];
+}
+
+/**
+ * One observation. Structured only: wording lives in ui/copy/insights.ts
+ * (CLAUDE.md D9), so it can be checked and anonymised at render time.
+ */
+export interface Observation {
+  rule: InsightRuleId;
+  /** The layer, sub-layer or composite the evidence comes from. */
+  ref: LayerRef;
+  /** Members the observation concerns, in the order the rule ranks them. */
+  members: MemberId[];
+  /** The group a silo observation concerns; for a formal–informal gap, the pair of groups. */
+  group?: { attribute: AttributeKey; value: string; other?: string };
+  /** Figures quoted in the wording; which keys are present depends on the rule. */
+  evidence: Record<string, number>;
+  view: InsightView;
+}
+
+export interface InsightOutcome {
+  rule: InsightRuleId;
+  status: 'observed' | 'none' | 'unavailable';
+  reason?: InsightUnavailable;
+  observations: Observation[];
+}
+
 // ----------------------------------------------------------------- analysis
 
 export type EngineWarning =
@@ -295,6 +356,8 @@ export interface AnalysisResult {
   composite: CompositeFormula | null;
   /** Response rates and the threshold flag (spec §6), or null when the input had none. */
   coverage: CoverageResult | null;
+  /** Every insight rule, in panel order, with its observations (spec §9). */
+  insights: InsightOutcome[];
   warnings: EngineWarning[];
 }
 

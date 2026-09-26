@@ -100,6 +100,8 @@ export interface MapModel {
   hiddenLayers: string[];
   hiddenLabels: string[];
   searchMatches: Set<number> | null;
+  /** Members named by an insight or a saved view (settings.highlight), visible ones only. */
+  highlighted: Set<number> | null;
 }
 
 export interface Radii {
@@ -348,6 +350,8 @@ export function buildMapModel(
   result: AnalysisResult,
   settings: MapSettings,
   radii: Radii,
+  /** Member names in project order, from the names layer (ui/state/names.ts), so anonymisation applies. */
+  names: readonly string[],
   options: ModelOptions = {},
 ): MapModel {
   const n = project.members.length;
@@ -383,12 +387,12 @@ export function buildMapModel(
 
   const nodes: MapNode[] = project.members.map((m, i) => {
     const sizeValue = column ? (column[i] as number) : NaN;
-    if (searchMatches && m.display_name.toLocaleLowerCase('en-GB').includes(query))
-      searchMatches.add(i);
+    const name = names[i] ?? m.id;
+    if (searchMatches && name.toLocaleLowerCase('en-GB').includes(query)) searchMatches.add(i);
     return {
       index: i,
       id: m.id,
-      name: m.display_name,
+      name,
       visible: memberMatchesFilters(m.attributes, settings.filters),
       sizeValue,
       radius: radius(sizeValue),
@@ -472,7 +476,7 @@ export function buildMapModel(
     for (const node of nodes) if (!keep.has(node.index)) node.visible = false;
     ego = {
       index: egoIndex,
-      name: project.members[egoIndex]?.display_name ?? '',
+      name: names[egoIndex] ?? '',
       depth: settings.ego.depth,
     };
     ({ edges, neighbours } = buildEdges());
@@ -487,6 +491,13 @@ export function buildMapModel(
     if (removed > 0) ({ edges, neighbours } = buildEdges());
   }
   if (searchMatches) for (const i of searchMatches) if (!nodes[i]?.visible) searchMatches.delete(i);
+  const marked = new Set(settings.highlight);
+  const highlighted =
+    marked.size === 0
+      ? null
+      : new Set(
+          nodes.filter((node) => node.visible && marked.has(node.id)).map((node) => node.index),
+        );
   const order: EdgeStyle[] = ['formal', 'informal', 'both', 'neither'];
 
   return {
@@ -516,6 +527,7 @@ export function buildMapModel(
     hiddenLayers: hidden.map((h) => h.key),
     hiddenLabels: hidden.map((h) => project.layers.find((l) => l.key === h.key)?.label ?? h.key),
     searchMatches,
+    highlighted,
   };
 }
 

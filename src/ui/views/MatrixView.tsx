@@ -23,6 +23,7 @@ import {
 } from '../../data/ratings';
 import type { LayerDefinition, Member, Tie } from '../../data/schema';
 import { matrixCopy } from '../copy/data';
+import { useMemberNames } from '../state/names';
 import { useAppStore } from '../state/store';
 
 // Rows and columns rendered beyond the visible area, so fast scrolling does not
@@ -190,6 +191,7 @@ interface Editing {
 }
 
 function MatrixGrid({ layer, members, ties, helpId }: GridProps) {
+  const names = useMemberNames();
   const applyRatings = useAppStore((s) => s.applyRatings);
   const baseId = useId();
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -399,11 +401,10 @@ function MatrixGrid({ layer, members, ties, helpId }: GridProps) {
       grid,
     );
     if (plan.changes.length > 0) applyRatings(layer.key, plan.changes);
-    const names = new Map(members.map((m) => [m.id, m.display_name]));
     let text = matrixCopy.pasted(plan.set, plan.cleared);
     const first = plan.skipped[0];
     if (first) {
-      const example = `“${first.text}” for ${names.get(first.rater) ?? first.rater} rating ${names.get(first.ratee) ?? first.ratee} (${matrixCopy.skipReason[first.reason]})`;
+      const example = `“${first.text}” for ${names.of(first.rater)} rating ${names.of(first.ratee)} (${matrixCopy.skipReason[first.reason]})`;
       text += matrixCopy.pasteSkipped(plan.skipped.length, example);
     }
     if (plan.outside > 0) text += matrixCopy.pasteOutside(plan.outside);
@@ -472,9 +473,9 @@ function MatrixGrid({ layer, members, ties, helpId }: GridProps) {
                 role="columnheader"
                 aria-colindex={c + 2}
                 className={c === active.c ? 'matrix__col-header is-active' : 'matrix__col-header'}
-                title={members[c]?.display_name}
+                title={names.of(members[c]?.id ?? '')}
               >
-                <span className="matrix__col-label">{members[c]?.display_name}</span>
+                <span className="matrix__col-label">{names.of(members[c]?.id ?? '')}</span>
               </div>
             ))}
           </div>
@@ -493,9 +494,9 @@ function MatrixGrid({ layer, members, ties, helpId }: GridProps) {
                   role="rowheader"
                   aria-colindex={1}
                   className={r === active.r ? 'matrix__row-header is-active' : 'matrix__row-header'}
-                  title={rater.display_name}
+                  title={names.of(rater.id)}
                 >
-                  {rater.display_name}
+                  {names.of(rater.id)}
                 </div>
                 {colList.map((c) => {
                   const ratee = members[c];
@@ -520,8 +521,8 @@ function MatrixGrid({ layer, members, ties, helpId }: GridProps) {
                             className="matrix__editor"
                             value={editing.text}
                             aria-label={matrixCopy.cellLabel(
-                              rater.display_name,
-                              ratee.display_name,
+                              names.of(rater.id),
+                              names.of(ratee.id),
                               matrixCopy.editValue,
                             )}
                             aria-invalid={editing.error !== null}
@@ -548,7 +549,7 @@ function MatrixGrid({ layer, members, ties, helpId }: GridProps) {
       </p>
       <p className="matrix__position num" aria-hidden="true">
         {activeMember && activeTarget
-          ? matrixCopy.position(activeMember.display_name, activeTarget.display_name)
+          ? matrixCopy.position(names.of(activeMember.id), names.of(activeTarget.id))
           : ''}
       </p>
     </>

@@ -1,11 +1,9 @@
 // Schema migrations for .ona.json project files (spec §4.3, plan §2).
 //
 // Each step upgrades a file from one schema version to the next. `migrate` runs
-// every step from the file's version up to SCHEMA_VERSION in order. Version 1
-// is the first released version, so the registry holds only an identity step:
-// it runs on every load, which keeps the chain exercised until a real step
-// (1 → 2) is added. Every future step must ship with a fixture file of the
-// older version and a round-trip test.
+// every step from the file's version up to SCHEMA_VERSION in order. Every step
+// ships with a fixture file of the older version and a round-trip test
+// (tests/fixtures/migrations/, tests/unit/projectFile.test.ts).
 
 import { SCHEMA_VERSION } from './schema';
 
@@ -19,11 +17,79 @@ export interface Migration {
 export const MIGRATIONS: readonly Migration[] = [
   {
     from: 1,
-    to: 1,
-    description: 'Version 1 is current; nothing to change.',
-    up: (file) => file,
+    to: 2,
+    description:
+      'Saved views take the shape of the app state they restore: weights, map settings, positions and selection (Phase 6).',
+    up: (file) => ({
+      ...file,
+      saved_views: Array.isArray(file.saved_views)
+        ? file.saved_views.map(savedViewV1toV2)
+        : file.saved_views,
+    }),
   },
 ];
+
+type Obj = Record<string, unknown>;
+const obj = (v: unknown): Obj =>
+  typeof v === 'object' && v !== null && !Array.isArray(v) ? (v as Obj) : {};
+const str = (v: unknown, fallback: string) => (typeof v === 'string' ? v : fallback);
+
+/**
+ * Version 1 described saved views after docs/plan.md §2 (`analysis`, `map`
+ * with a viewport and a path, `selection` as a list), before any version of
+ * Graticule could create one. Each field is carried to its version 2 place;
+ * fields with no counterpart (the viewport, the path) are dropped, and a
+ * missing field takes the app's default. A view that is not an object is left
+ * as it is, so the file check reports it.
+ */
+export function savedViewV1toV2(view: unknown): unknown {
+  if (typeof view !== 'object' || view === null || Array.isArray(view)) return view;
+  const v = view as Obj;
+  const analysis = obj(v.analysis);
+  const map = obj(v.map);
+  const positions: Record<string, { x: number; y: number; pinned: boolean }> = {};
+  for (const [id, p] of Object.entries(obj(map.positions))) {
+    const q = obj(p);
+    if (typeof q.x === 'number' && typeof q.y === 'number') {
+      positions[id] = { x: q.x, y: q.y, pinned: q.pinned === true };
+    }
+  }
+  const ego = obj(map.egoView);
+  return {
+    id: v.id,
+    name: v.name,
+    caption: v.caption,
+    created_at: v.created_at,
+    weights: {
+      preset: str(analysis.preset, 'custom'),
+      custom: obj(analysis.weights),
+      customTreatment: obj(analysis.signedTreatment),
+    },
+    map: {
+      view: str(analysis.view, 'directed'),
+      symmetrise: str(analysis.symmetrise, 'mean'),
+      layer: str(analysis.activeLayer, 'composite'),
+      sizeMetric: str(analysis.nodeSizeMetric, 'betweenness'),
+      fill: analysis.nodeFill ?? { kind: 'community' },
+      threshold: typeof map.threshold === 'number' ? map.threshold : 0,
+      layerToggles: obj(map.layerToggles),
+      hideOffLayers: false,
+      filters: Array.isArray(map.filters) ? map.filters : [],
+      layout: str(map.layout, 'force'),
+      groupBy: typeof map.groupBy === 'string' ? map.groupBy : null,
+      ego:
+        typeof ego.member === 'string'
+          ? { member: ego.member, depth: ego.depth === 2 ? 2 : 1 }
+          : null,
+      highlight: [],
+    },
+    positions,
+    selection: {
+      member: null,
+      group: Array.isArray(v.selection) ? v.selection : [],
+    },
+  };
+}
 
 export class ProjectFileError extends Error {
   constructor(message: string) {

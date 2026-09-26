@@ -102,7 +102,8 @@ export const NO_HIGHLIGHT: Highlight = {
 /**
  * Members to keep at full strength; null when nothing is highlighted. The
  * member under the pointer or keyboard focus comes first, then a shortest
- * path, then the selected member, then the subgroup, then search matches.
+ * path, then the selected member, then the subgroup, then search matches,
+ * then the members an insight or saved view highlights.
  */
 export function highlightSet(model: MapModel, h: Highlight): Set<number> | null {
   const pointer = h.hovered ?? h.focused;
@@ -112,6 +113,7 @@ export function highlightSet(model: MapModel, h: Highlight): Set<number> | null 
   if (h.selected !== null && model.nodes[h.selected]?.visible) return neighbourhood(h.selected);
   if (h.group && h.group.size > 0) return new Set(h.group);
   if (model.searchMatches) return model.searchMatches;
+  if (model.highlighted && model.highlighted.size > 0) return model.highlighted;
   return null;
 }
 
@@ -121,6 +123,12 @@ function centreOf(model: MapModel, h: Highlight): number | null {
   if (pointer !== null && model.nodes[pointer]?.visible) return pointer;
   if (h.path && h.path.length > 0) return null;
   return h.selected !== null && model.nodes[h.selected]?.visible ? h.selected : null;
+}
+
+interface LabelPlace {
+  x: number;
+  y: number;
+  align: 'center' | 'left' | 'right';
 }
 
 /** Up to this many visible members, every member is labelled. */
@@ -413,7 +421,7 @@ export function buildScene(
   }
 
   const nodes: NodeMark[] = [];
-  const candidates: (LabelMark & { priority: number })[] = [];
+  const candidates: (LabelMark & { priority: number; alternatives: LabelPlace[] })[] = [];
   const visibleCount = model.nodes.filter((n) => n.visible).length;
   const order = model.nodes.filter((n) => n.visible && (!onlyLit || lit.has(n.index)));
   if (lit) order.sort((p, q) => Number(lit.has(p.index)) - Number(lit.has(q.index)));
@@ -460,8 +468,22 @@ export function buildScene(
           place = { x: p.x, y: p.y - node.radius - theme.labelGap * 2, align: 'center' };
         }
       }
+      // A highlighted member's name matters most: if its first place is taken,
+      // it may go above, right or left of the member instead.
+      const important = own || (lit?.has(node.index) === true && alpha === 1);
+      const mid = p.y + theme.labelSize / 3;
+      const side = node.radius + theme.labelGap * 2;
+      const alternatives: LabelPlace[] =
+        important && !circle
+          ? [
+              { x: p.x, y: p.y - node.radius - theme.labelGap * 2, align: 'center' },
+              { x: p.x + side, y: mid, align: 'left' },
+              { x: p.x - side, y: mid, align: 'right' },
+            ]
+          : [];
       candidates.push({
         ...place,
+        alternatives,
         text: node.name,
         alpha,
         // The member in focus first, then highlighted members, then larger members.
@@ -477,12 +499,15 @@ export function buildScene(
   candidates.sort((a, b) => b.priority - a.priority);
   for (const c of candidates) {
     const w = measure(c.text) + theme.labelGap * 2;
-    const x0 = c.align === 'left' ? c.x : c.align === 'right' ? c.x - w : c.x - w / 2;
-    const box = { x0, y0: c.y - theme.labelSize, x1: x0 + w, y1: c.y + theme.labelGap };
-    if (placed.some((b) => box.x0 < b.x1 && box.x1 > b.x0 && box.y0 < b.y1 && box.y1 > b.y0))
-      continue;
-    placed.push(box);
-    labels.push({ x: c.x, y: c.y, text: c.text, alpha: c.alpha, align: c.align ?? 'center' });
+    for (const at of [{ x: c.x, y: c.y, align: c.align ?? 'center' }, ...c.alternatives]) {
+      const x0 = at.align === 'left' ? at.x : at.align === 'right' ? at.x - w : at.x - w / 2;
+      const box = { x0, y0: at.y - theme.labelSize, x1: x0 + w, y1: at.y + theme.labelGap };
+      if (placed.some((b) => box.x0 < b.x1 && box.x1 > b.x0 && box.y0 < b.y1 && box.y1 > b.y0))
+        continue;
+      placed.push(box);
+      labels.push({ x: at.x, y: at.y, text: c.text, alpha: c.alpha, align: at.align });
+      break;
+    }
   }
 
   const rings: RingMark[] = [];

@@ -8,6 +8,7 @@ import { shellCopy } from '../copy/shell';
 import { focusMapMember } from '../map/focus';
 import { rankInterval, rankOf } from '../map/rank';
 import { drawableLayers, useMapData } from '../map/useMapModel';
+import { useMemberNames, type MemberNames } from '../state/names';
 import { useAppStore, type SizeMetric } from '../state/store';
 import { simulateRemoval } from '../state/tools';
 
@@ -68,13 +69,18 @@ interface TieRow {
   received: number | null;
 }
 
-function tiesFor(project: Project, memberId: string, layer: LayerDefinition): TieRow[] {
-  const names = new Map(project.members.map((m) => [m.id, m.display_name]));
+function tiesFor(
+  project: Project,
+  names: MemberNames,
+  memberId: string,
+  layer: LayerDefinition,
+): TieRow[] {
+  const known = new Set(project.members.map((m) => m.id));
   const rows = new Map<string, TieRow>();
   const row = (id: string) => {
     let r = rows.get(id);
     if (!r) {
-      r = { id, name: names.get(id) ?? id, given: null, received: null };
+      r = { id, name: names.of(id), given: null, received: null };
       rows.set(id, r);
     }
     return r;
@@ -82,8 +88,8 @@ function tiesFor(project: Project, memberId: string, layer: LayerDefinition): Ti
   for (const t of project.ties) {
     if (t.variable !== layer.key || t.wave !== DEFAULT_WAVE || typeof t.value !== 'number')
       continue;
-    if (t.rater_id === memberId && names.has(t.ratee_id)) row(t.ratee_id).given = t.value;
-    else if (t.ratee_id === memberId && names.has(t.rater_id)) row(t.rater_id).received = t.value;
+    if (t.rater_id === memberId && known.has(t.ratee_id)) row(t.ratee_id).given = t.value;
+    else if (t.ratee_id === memberId && known.has(t.rater_id)) row(t.rater_id).received = t.value;
   }
   return [...rows.values()].sort(
     (a, b) =>
@@ -106,6 +112,7 @@ function TiesByLayer({
 }) {
   const layers = project.layers.filter((l) => l.enabled && !isCategorical(l));
   const [open, setOpen] = useState<Record<string, boolean>>({});
+  const names = useMemberNames();
   const headingId = useId();
   const firstOpen = layers.some((l) => l.key === active) ? active : layers[0]?.key;
   return (
@@ -115,7 +122,7 @@ function TiesByLayer({
       </h3>
       {layers.map((layer) => {
         const expanded = open[layer.key] ?? layer.key === firstOpen;
-        const rows = expanded ? tiesFor(project, memberId, layer) : [];
+        const rows = expanded ? tiesFor(project, names, memberId, layer) : [];
         const panelId = `${headingId}-${layer.key}`;
         return (
           <div key={layer.key} className="member__layer">
@@ -287,6 +294,7 @@ export function MemberPanel() {
   const setRightPanel = useAppStore((s) => s.setRightPanel);
   const setTools = useAppStore((s) => s.setTools);
   const [panelLayer, setPanelLayer] = useState<{ follow: string; layer: string } | null>(null);
+  const names = useMemberNames();
   const headingId = useId();
   const member = useMemo(
     () => data?.project.members.find((m) => m.id === memberId) ?? null,
@@ -300,7 +308,6 @@ export function MemberPanel() {
   // The panel follows the map's layer until the user picks another here.
   const layer =
     panelLayer && panelLayer.follow === settings.layer ? panelLayer.layer : settings.layer;
-  const names = new Map(project.members.map((m) => [m.id, m.display_name]));
 
   const close = () => {
     selectMember(null);
@@ -319,7 +326,7 @@ export function MemberPanel() {
     <article className="member" aria-labelledby={headingId} onKeyDown={onKeyDown}>
       <div className="member__title-row">
         <h2 id={headingId} className="member__name">
-          {member.display_name}
+          {names.of(member.id)}
         </h2>
         <button
           type="button"
@@ -339,16 +346,16 @@ export function MemberPanel() {
               <dd>
                 {v === null ? (
                   mapCopy.legend.notRecorded
-                ) : a.type === 'member_ref' && names.has(v) ? (
+                ) : a.type === 'member_ref' && project.members.some((m) => m.id === v) ? (
                   <button
                     type="button"
                     className="link-button"
-                    aria-label={P.selectManager(names.get(v) ?? v)}
+                    aria-label={P.selectManager(names.of(v))}
                     onClick={() => {
                       selectMember(v);
                     }}
                   >
-                    {names.get(v)}
+                    {names.of(v)}
                   </button>
                 ) : (
                   v

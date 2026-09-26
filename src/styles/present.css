@@ -1,0 +1,389 @@
+/* Phase 6: insights panel, saved-views manager and presentation mode. Every
+   value comes from tokens.css. */
+
+/* Insights (spec §9). Each rule is a section: title, the rule as applied in
+   secondary text, then its observations as questions. Hierarchy comes from
+   type and spacing, not boxes (design-system §4.1). */
+.insights__intro,
+.views__intro {
+  color: var(--graphite);
+  max-width: var(--measure);
+  margin-bottom: var(--s-5);
+}
+
+.insights__coverage {
+  display: flex;
+  gap: var(--s-2);
+  margin-bottom: var(--s-5);
+  font-weight: var(--weight-medium);
+}
+
+.insights__coverage .icon {
+  flex: none;
+  margin-top: calc((var(--t-0-line) - var(--icon-size)) / 2);
+}
+
+.insights__clear {
+  margin: calc(var(--s-3) * -1) 0 var(--s-4) calc(var(--s-2) * -1);
+}
+
+.insight {
+  margin-bottom: var(--s-6);
+}
+
+.insight__title {
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+  font-weight: var(--weight-semibold);
+  margin-bottom: var(--s-2);
+}
+
+.insight__rule,
+.insight__view,
+.insight__status {
+  color: var(--graphite);
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+}
+
+.insight__status {
+  margin-top: var(--s-2);
+}
+
+.insight__rule-label {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+.insight__observation {
+  margin-top: var(--s-4);
+}
+
+.insight__observation + .insight__observation {
+  margin-top: var(--s-5);
+}
+
+.insight__question {
+  font-weight: var(--weight-medium);
+  margin-bottom: var(--s-3);
+}
+
+.insight__members-label {
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+  font-weight: var(--weight-medium);
+  margin-bottom: var(--s-1);
+}
+
+.insight__members {
+  list-style: none;
+  margin: 0 0 var(--s-3);
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-2);
+}
+
+.insight__member {
+  min-height: var(--target-min);
+  padding: 0 var(--s-2);
+  border: var(--line-width) solid var(--stone);
+  border-radius: var(--r-chip);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+  cursor: pointer;
+}
+
+.insight__member:hover {
+  border-color: var(--ink);
+}
+
+.insight__view {
+  margin-bottom: var(--s-3);
+}
+
+.insight__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* Saved views: the new-view form, then the list in presentation order. */
+.views__new {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  margin-bottom: var(--s-5);
+}
+
+.views__new-row,
+.views__rename {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.views__name-input {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.views__list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  margin-bottom: var(--s-3);
+}
+
+.views__heading {
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+  font-weight: var(--weight-semibold);
+}
+
+.views__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.views__item {
+  padding-block: var(--s-2) var(--s-5);
+}
+
+.views__name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  font-weight: var(--weight-semibold);
+  min-height: var(--control-height);
+  padding-top: var(--s-1);
+}
+
+.views__position {
+  flex: none;
+  min-width: var(--s-7);
+  color: var(--graphite);
+  font-weight: var(--weight-regular);
+  font-size: var(--t--1-size);
+}
+
+.views__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1);
+  margin: var(--s-1) 0 var(--s-2) calc(var(--s-2) * -1);
+}
+
+.views__move {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  border: none;
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.views__move:hover:not(:disabled) {
+  background: var(--paper);
+}
+
+.views__move:disabled {
+  color: var(--stone);
+  cursor: not-allowed;
+}
+
+.views__item-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+}
+
+.views__item-head .views__name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.views__order {
+  display: flex;
+  flex: none;
+}
+
+.views__help {
+  margin: calc(var(--s-2) * -1) 0 var(--s-3);
+}
+
+.views__caption {
+  margin-bottom: 0;
+}
+
+.views__caption .text-input--area {
+  max-width: none;
+}
+
+.views__rename .field__error {
+  flex-basis: 100%;
+}
+
+/* Legend: the faded sample for highlighted members. */
+.legend__node--faded {
+  opacity: var(--map-fade);
+}
+
+/* Presentation mode (design-system §5.3): one left edge for title, map and
+   caption; the legend in its own column; nothing else. */
+.presentation {
+  --map-label-size: var(--t-1-size);
+  --map-group-size: var(--t-2-size);
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'title title'
+    'body body'
+    'caption counter';
+  column-gap: var(--s-6);
+  /* s-7 margins at 1280 px, rising to s-8 at 1920 px and above (design-system §4.1). */
+  padding: clamp(var(--s-7), 3.34vw, var(--s-8));
+  background: var(--paper);
+  color: var(--ink);
+  outline: none;
+}
+
+.presentation--idle,
+.presentation--idle .map__canvas {
+  cursor: none;
+}
+
+.presentation__title {
+  grid-area: title;
+  font-size: var(--t-6-size);
+  line-height: var(--t-6-line);
+  font-weight: var(--weight-semibold);
+  max-width: var(--measure);
+  margin-bottom: var(--s-6);
+}
+
+.presentation__body {
+  grid-area: body;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--presentation-legend-width);
+  gap: var(--s-6);
+  min-height: 0;
+}
+
+.presentation__map {
+  position: relative;
+  min-height: 0;
+}
+
+.map--presentation {
+  height: 100%;
+  margin: 0;
+}
+
+.map--presentation .map__canvas {
+  cursor: default;
+  pointer-events: none;
+}
+
+.presentation__status {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  color: var(--graphite);
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+}
+
+.presentation__legend {
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+/* The legend leaves the map and is raised to t-1 (design-system §5.3). */
+.presentation__legend .legend {
+  position: static;
+  max-height: none;
+  overflow: visible;
+  grid-template-columns: 1fr;
+  gap: var(--s-5);
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+}
+
+.presentation__coverage {
+  display: flex;
+  gap: var(--s-2);
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+  font-weight: var(--weight-medium);
+}
+
+.presentation__coverage .icon {
+  flex: none;
+  margin-top: calc((var(--t-1-line) - var(--icon-size)) / 2);
+}
+
+.presentation__caption {
+  grid-area: caption;
+  align-self: end;
+  max-width: var(--measure);
+  margin-top: var(--s-6);
+  font-size: var(--t-5-size);
+  line-height: var(--t-5-line);
+  font-weight: var(--weight-medium);
+}
+
+.presentation__counter {
+  grid-area: counter;
+  align-self: end;
+  color: var(--graphite);
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+}
+
+/* Shown while the pointer moves or focus is inside; hidden at rest. */
+.presentation__controls {
+  position: fixed;
+  inset-block-start: var(--s-4);
+  inset-inline-end: var(--s-4);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-2);
+  border-radius: var(--r-overlay);
+  background: var(--paper);
+  box-shadow: var(--e-1);
+  transition: opacity var(--m-base) var(--ease-standard);
+}
+
+.presentation--idle .presentation__controls:not(:focus-within) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Five tabs share the right column's width: Member, Explore, Insights,
+   Views and Coverage. Tighter gaps keep them on one line at --col-right. */
+.workspace__right .tabs__list {
+  gap: var(--s-3);
+  justify-content: space-between;
+}

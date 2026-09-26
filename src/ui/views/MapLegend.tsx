@@ -207,7 +207,22 @@ function Sample({ section, theme }: { section: LegendSection; theme: MapTheme })
           {section.items.map((item) => (
             <li key={item.mark} className="legend__sample">
               <svg className="legend__svg" width={box} height={box} aria-hidden="true">
-                {item.mark === 'path' ? (
+                {item.mark === 'highlight' ? (
+                  <>
+                    <circle
+                      className="legend__node"
+                      cx={box / 2 - theme.nodeMin - theme.line}
+                      cy={box / 2}
+                      r={theme.nodeMin}
+                    />
+                    <circle
+                      className="legend__node legend__node--faded"
+                      cx={box / 2 + theme.nodeMin + theme.line}
+                      cy={box / 2}
+                      r={theme.nodeMin}
+                    />
+                  </>
+                ) : item.mark === 'path' ? (
                   <line
                     className="legend__path"
                     x1={0}

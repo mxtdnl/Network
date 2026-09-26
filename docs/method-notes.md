@@ -379,3 +379,23 @@ Conventions applied in the fixture script rather than taken from NetworkX:
 | Centralisation, E-I index, cross-group density, dyad reciprocity, signed in-valence and triads, multiplexity, resilience | No function (or it raises on disconnected graphs) | Plain Python from NetworkX components and shortest paths |
 
 Shortest paths (distance and number of equal paths, via `dijkstra_path_length` and `all_shortest_paths`), betweenness (weighted and binary, directed and undirected, normalised), constraint, clustering, density, overall reciprocity, components and fixed-partition modularity need no adjustment: graphology and the custom code match NetworkX's own functions directly.
+
+## 8. Insight rules
+
+The insights panel (spec §9) lists rule-based observations. Each rule is a pure function in `src/engine/insights.ts`; its thresholds are the constants `INSIGHT_RULES` there, and the panel quotes them, so the rule shown is the rule that ran. Rules run on the analysis on screen (its view, symmetrisation rule and weights). Each observation is worded as a question for inquiry, never as a verdict on a person; `tests/unit/insightsCopy.test.ts` checks the wording against the banned list in `CLAUDE.md`. A rule that found nothing says so, and a rule that cannot run says why.
+
+Quantiles use linear interpolation over the members whose value is defined (NumPy's default), as in the bootstrap.
+
+| Rule | Reads | Observation when | Shows on the map |
+|---|---|---|---|
+| Potential brokers | Composite: weighted betweenness and constraint | Betweenness among the highest 10 % of members (at least one member; ties with the last included) and above 0, and constraint at or below the median; at most 5 members | Ties from the composite, size by betweenness, the members highlighted |
+| Peripheral members | Received strength (strength when symmetrised) on every unsigned layer and the positive part of each signed layer | At or below the 20th percentile on more than half of those layers; a layer on which nobody receives a tie is not counted, and a member at a layer's highest value is never low | Ties from the composite, size by received strength, the members highlighted |
+| Possible overload | Connections in (connections when symmetrised) on advice and workflow dependency | At or above the 90th percentile and at least twice the median, and above 0; at most 5 per layer | That layer, size by connections in |
+| Silos | E-I index per team on the composite and each unsigned layer | A team of at least 3 members with E-I −0.50 or lower on any of them (at least three internal ties per external one); the lowest is quoted | That layer, grouped by team, the team highlighted |
+| Negative clusters | Each signed layer's directed ratings | Pairs who rate each other negatively in both directions, joined through shared members into groups of at least 3 | The composite with valence colour on, the group highlighted |
+| Formal ties with no informal counterpart | Formal–informal classes (multiplexity) | For a pair of teams, or one team: at least 50 % of formal ties are formal only, and at least 5 such ties | Formal collaboration, the two teams only, grouped, formal and informal line styles on; the 5 members in the most such ties highlighted |
+| Informal ties with no formal counterpart | As above | The same, for informal only | Informal collaboration, as above |
+
+**Caveats.** The thresholds are conventions chosen for this tool, not published standards; they are stated wherever a rule is shown so a reader can judge them. Every rule inherits the caveats of the metric it reads (sections 3 to 6): betweenness assumes shortest-path flow, the E-I index counts ties and favours larger groups, received strength depends on who answered. The rules describe positions in the network, which have many causes (role, tenure, location, workload, the survey itself); an observation is a reason to ask, not an answer. Below the coverage threshold the panel repeats the coverage warning.
+
+**Demo.** On the demo the rules find the structures it was built with (scripts/generate-demo.ts): the Operations broker, Finance as a silo, the pocket of reciprocated negative valence, formal-only ties between Product and Sales and informal-only ties between People and Product. Possible overload does not apply, because the demo has no advice or workflow dependency ratings. `tests/unit/insights.test.ts` checks each threshold at its boundary and the demo findings.

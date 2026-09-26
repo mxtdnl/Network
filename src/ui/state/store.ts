@@ -25,7 +25,7 @@ import {
 } from './presets';
 
 export type CentreView = 'map' | 'matrix' | 'table' | 'compare';
-export type RightPanel = 'member' | 'explore' | 'insights' | 'coverage';
+export type RightPanel = 'member' | 'explore' | 'insights' | 'views' | 'coverage';
 export type MatrixMode = 'explore' | 'enter';
 export type CompareMode = 'layers' | 'formalInformal';
 
@@ -39,6 +39,8 @@ export interface UiState {
   /** The Matrix tab shows the adjacency matrix (explore) or the rating grid (enter). */
   matrixMode: MatrixMode;
   compareMode: CompareMode;
+  /** Presentation mode: the saved view on screen, by position in the list; null in the workspace. */
+  presentation: { index: number } | null;
 }
 
 export interface StatusMessage {
@@ -102,6 +104,8 @@ export interface MapSettings {
   tool: 'pan' | 'lasso';
   /** Ego view: only the member and those within `depth` steps on the ties shown. */
   ego: { member: MemberId; depth: 1 | 2 } | null;
+  /** Members highlighted by an insight or a saved view; the rest of the map is faded. */
+  highlight: MemberId[];
 }
 
 export interface SelectionState {
@@ -145,6 +149,7 @@ interface Actions {
   openNotice: () => void;
   closeNotice: () => void;
   setImportOpen: (open: boolean) => void;
+  setPresentation: (presentation: UiState['presentation']) => void;
 
   setProject: (project: Project | null, status?: StatusMessage) => void;
   setStatus: (status: StatusMessage | null) => void;
@@ -156,6 +161,18 @@ interface Actions {
   restoreLayer: (key: LayerKey) => void;
   applyRatings: (variable: LayerKey, changes: readonly RatingChange[]) => void;
   setCoverageThreshold: (threshold: number) => void;
+  /**
+   * Changes parts of the project the analysis does not read (saved views, the
+   * anonymisation setting). The project is saved and persisted as usual, but
+   * the revision does not move, so nothing is recalculated or laid out again.
+   */
+  updateProjectViews: (fn: (p: Project) => Project) => void;
+  /** Applies a saved view's state in one step. */
+  applyViewState: (patch: {
+    map: MapSettings;
+    weights: WeightState;
+    selection: { member: MemberId | null; group: MemberId[] };
+  }) => void;
 
   setMap: (patch: Partial<MapSettings>) => void;
   selectMember: (id: MemberId | null) => void;
@@ -202,6 +219,7 @@ export function initialMapSettings(): MapSettings {
     groupBy: null,
     tool: 'pan',
     ego: null,
+    highlight: [],
   };
 }
 
@@ -236,6 +254,7 @@ export function initialUiState(noticeSeen: boolean): UiState {
     importOpen: false,
     matrixMode: 'explore',
     compareMode: 'layers',
+    presentation: null,
   };
 }
 
@@ -297,6 +316,10 @@ export const useAppStore = create<AppState>()((set, get) => {
     },
     setAnonymise: (anonymise) => {
       setUi({ anonymise });
+      const { project } = get().data;
+      if (project && project.settings.anonymise !== anonymise) {
+        setData({ project: { ...project, settings: { ...project.settings, anonymise } } });
+      }
     },
     openNotice: () => {
       setUi({ noticeOpen: true });
@@ -307,6 +330,9 @@ export const useAppStore = create<AppState>()((set, get) => {
     },
     setImportOpen: (importOpen) => {
       setUi({ importOpen });
+    },
+    setPresentation: (presentation) => {
+      setUi({ presentation });
     },
 
     setProject: (project, status) => {
@@ -322,6 +348,8 @@ export const useAppStore = create<AppState>()((set, get) => {
       const fill = project?.attribute_definitions.some((a) => a.key === 'team')
         ? initialMapSettings().fill
         : ({ kind: 'community' } as const);
+      // A project saved with names hidden opens with names hidden.
+      if (project?.settings.anonymise) setUi({ anonymise: true });
       set({
         map: { ...initialMapSettings(), fill },
         selection: { member: null, hovered: null, group: [] },
@@ -381,6 +409,22 @@ export const useAppStore = create<AppState>()((set, get) => {
     },
     setCoverageThreshold: (coverage_threshold) => {
       change((p) => ({ ...p, settings: { ...p.settings, coverage_threshold } }));
+    },
+    updateProjectViews: (fn) => {
+      const { project } = get().data;
+      if (!project) return;
+      const next = fn(project);
+      if (next === project) return;
+      setData({ project: { ...next, meta: { ...next.meta, modified_at: now() } } });
+    },
+    applyViewState: ({ map, weights, selection }) => {
+      set((s) => ({
+        map,
+        weights,
+        selection: { ...s.selection, member: selection.member, group: [...selection.group] },
+        tools: { ...initialToolsState(), removal: [] },
+        ui: { ...s.ui, centreView: 'map' },
+      }));
     },
 
     setMap: (patch) => {

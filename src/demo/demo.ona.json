@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "app": {
     "name": "Graticule",
     "version": "0.2.0"

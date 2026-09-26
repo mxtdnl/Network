@@ -27,7 +27,10 @@ export function saveProjectFile(): void {
     return;
   }
   const name = projectFileName(data.project);
-  const blob = new Blob([serialiseProject(data.project)], { type: 'application/json' });
+  // The file records whether names were hidden, so it reopens the same way.
+  const anonymise = useAppStore.getState().ui.anonymise;
+  const project = { ...data.project, settings: { ...data.project.settings, anonymise } };
+  const blob = new Blob([serialiseProject(project)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;

@@ -239,13 +239,57 @@ interface Animation {
   ease: (t: number) => number;
 }
 
+export interface SavedPoint {
+  x: number;
+  y: number;
+  pinned: boolean;
+}
+
 export class ForceLayout {
   readonly nodes: LayoutNode[] = [];
   private simulation: Simulation<LayoutNode, LayoutLink> | null = null;
   private key = '';
   private animation: Animation | null = null;
   private display: { x: number; y: number }[] = [];
+  /** Positions to apply after the next update (a restored saved view), by member index. */
+  private pending: (SavedPoint | null)[] | null = null;
+  private restored = false;
   annotation: LayoutAnnotation = { kind: 'none' };
+
+  /**
+   * Places members where a saved view drew them, and pins the ones it had
+   * pinned, once the next `update` has built the layout. Members without a
+   * saved position keep the position the layout gives them.
+   */
+  requestPositions(positions: (SavedPoint | null)[]): void {
+    this.pending = positions;
+  }
+
+  /** True once after saved positions were applied, so the view can be fitted to them. */
+  takeRestored(): boolean {
+    const r = this.restored;
+    this.restored = false;
+    return r;
+  }
+
+  private applyPending(): boolean {
+    const pending = this.pending;
+    this.pending = null;
+    if (!pending || pending.length !== this.nodes.length) return false;
+    this.simulation?.stop();
+    pending.forEach((p, i) => {
+      const node = this.nodes[i];
+      if (!node || !p) return;
+      node.x = p.x;
+      node.y = p.y;
+      node.vx = 0;
+      node.vy = 0;
+      node.fx = p.pinned ? p.x : null;
+      node.fy = p.pinned ? p.y : null;
+    });
+    this.restored = true;
+    return true;
+  }
 
   /**
    * Rebuilds the forces for new weights or a new layout. Members start from
@@ -264,7 +308,7 @@ export class ForceLayout {
       this.nodes.forEach((node, i) => {
         node.radius = radii[i] ?? node.radius;
       });
-      return false;
+      return this.applyPending();
     }
     const kindChanged = this.annotation.kind !== layoutAnnotation(spec, n).kind;
     this.key = key;
@@ -373,6 +417,7 @@ export class ForceLayout {
       sim.tick(SETTLE_TICKS);
     }
     this.simulation = sim;
+    this.applyPending();
     return true;
   }
 
@@ -451,6 +496,19 @@ export class ForceLayout {
       node.fx = null;
       node.fy = null;
     }
+  }
+
+  /** Settled position and pin of every member, for a saved view. */
+  snapshot(): SavedPoint[] {
+    // A pinned member is where its pin holds it, even before the simulation has moved it there.
+    return this.nodes.map((node) => {
+      const pinned = node.fx !== null && node.fx !== undefined;
+      return {
+        x: pinned ? (node.fx as number) : (node.x ?? 0),
+        y: pinned ? (node.fy ?? node.y ?? 0) : (node.y ?? 0),
+        pinned,
+      };
+    });
   }
 
   get pinned(): number {

@@ -9,6 +9,7 @@ import { migrate, ProjectFileError } from './migrations';
 import {
   isCategorical,
   PROJECT_FILE_EXTENSION,
+  SCHEMA_VERSION,
   tieKey,
   type LayerDefinition,
   type Project,
@@ -51,7 +52,7 @@ export function checkProject(file: Obj): string[] {
     if (!ok) problems.push(message);
   };
 
-  need(file.schema_version === 1, 'schema_version must be 1.');
+  need(file.schema_version === SCHEMA_VERSION, `schema_version must be ${String(SCHEMA_VERSION)}.`);
   const app = file.app;
   need(
     isObj(app) && app.name === 'Graticule' && isStr(app.version),
@@ -211,23 +212,23 @@ export function checkProject(file: Obj): string[] {
       }
     });
 
-  // Saved views: checked for shape here; their contents gain behaviour in later phases.
+  // Saved views: every field is checked, so a restored view never meets a
+  // value the app cannot show. Member ids that are no longer in the project
+  // are allowed and ignored when the view is restored.
   const views = file.saved_views;
+  const viewIds = new Set<string>();
   if (!Array.isArray(views)) problems.push('saved_views must be a list.');
   else
     views.forEach((v: unknown, i) => {
       const at = `Saved view ${String(i + 1)}`;
-      need(
-        isObj(v) &&
-          isStr(v.id) &&
-          isStr(v.name) &&
-          isStr(v.caption) &&
-          isStr(v.created_at) &&
-          isObj(v.analysis) &&
-          isObj(v.map) &&
-          isStrArray(v.selection),
-        `${at} must have an id, name, caption, created_at, analysis, map and selection.`,
-      );
+      if (!isObj(v) || !isStr(v.id) || v.id === '') {
+        problems.push(`${at} has no id.`);
+        return;
+      }
+      need(!viewIds.has(v.id), `${at} repeats the id “${v.id}”.`);
+      viewIds.add(v.id);
+      for (const problem of checkSavedView(v))
+        problems.push(`${at} (${v.name as string}) ${problem}`);
     });
 
   const s = file.settings;
@@ -256,6 +257,82 @@ export function checkProject(file: Obj): string[] {
     );
   }
 
+  return problems;
+}
+
+const LAYOUTS = new Set(['force', 'grouped', 'circular', 'hierarchy']);
+const PRESETS = new Set(['formal', 'informal', 'health', 'custom']);
+const TREATMENTS = new Set(['positive', 'filterNegative', 'multiplier']);
+const isNumRecord = (v: unknown): v is Record<string, number> =>
+  isObj(v) && Object.values(v).every(isNum);
+const isNullableStr = (v: unknown) => v === null || isStr(v);
+
+/** Problems with one saved view (schema version 2), each a sentence ending. */
+export function checkSavedView(v: Obj): string[] {
+  const problems: string[] = [];
+  const need = (ok: boolean, message: string) => {
+    if (!ok) problems.push(message);
+  };
+  need(isStr(v.name) && v.name.trim() !== '', 'has no name.');
+  need(isStr(v.caption), 'has no caption text.');
+  need(isStr(v.created_at), 'has no created_at.');
+
+  const w = v.weights;
+  need(
+    isObj(w) &&
+      PRESETS.has(w.preset as string) &&
+      isNumRecord(w.custom) &&
+      isObj(w.customTreatment) &&
+      Object.values(w.customTreatment).every((t) => TREATMENTS.has(t as string)),
+    'has invalid weights.',
+  );
+
+  const m = v.map;
+  if (!isObj(m)) {
+    problems.push('has no map settings.');
+  } else {
+    need(m.view === 'directed' || m.view === 'symmetrised', 'has an unknown view.');
+    need(['mean', 'min', 'max'].includes(m.symmetrise as string), 'has an unknown rule.');
+    need(isStr(m.layer) && isStr(m.sizeMetric), 'has no layer or node-size metric.');
+    const fill = m.fill;
+    need(
+      isObj(fill) && (fill.kind === 'community' || (fill.kind === 'attribute' && isStr(fill.key))),
+      'has an invalid node fill.',
+    );
+    need(isNum(m.threshold) && m.threshold >= 0 && m.threshold <= 1, 'has an invalid threshold.');
+    need(
+      isObj(m.layerToggles) && Object.values(m.layerToggles).every(isBool),
+      'has invalid layer toggles.',
+    );
+    need(isBool(m.hideOffLayers), 'must say whether switched-off layers hide their ties.');
+    need(
+      Array.isArray(m.filters) &&
+        m.filters.every((f: unknown) => isObj(f) && isStr(f.key) && isStrArray(f.values)),
+      'has invalid filters.',
+    );
+    need(LAYOUTS.has(m.layout as string), 'has an unknown layout.');
+    need(isNullableStr(m.groupBy), 'has an invalid grouping attribute.');
+    const ego = m.ego;
+    need(
+      ego === null || (isObj(ego) && isStr(ego.member) && (ego.depth === 1 || ego.depth === 2)),
+      'has an invalid ego view.',
+    );
+    need(isStrArray(m.highlight), 'has an invalid highlight.');
+  }
+
+  const positions = v.positions;
+  need(
+    isObj(positions) &&
+      Object.values(positions).every(
+        (p) => isObj(p) && isNum(p.x) && isNum(p.y) && isBool(p.pinned),
+      ),
+    'has invalid positions.',
+  );
+  const sel = v.selection;
+  need(
+    isObj(sel) && isNullableStr(sel.member) && isStrArray(sel.group),
+    'has an invalid selection.',
+  );
   return problems;
 }
 

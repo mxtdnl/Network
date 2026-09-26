@@ -17,6 +17,7 @@ import { registerMapFocus } from '../map/focus';
 import { layerName } from '../map/legend';
 import { nextMember, type MapModel } from '../map/model';
 import { sharedLayout, useMapData, type MapData } from '../map/useMapModel';
+import type { MapTheme } from '../map/theme';
 import { useAppStore } from '../state/store';
 import { clearPath, endSimulation } from '../state/tools';
 import { EmptyState } from './EmptyState';
@@ -57,8 +58,36 @@ export function MapView() {
   return <MapCanvas data={data} />;
 }
 
-function MapCanvas({ data }: { data: MapData }) {
-  const { mapModel: model, theme, result, settings, layout } = data;
+/** Legend extras for the map on screen: layout, subgroup, path and highlight marks. */
+export function legendExtras(
+  data: MapData,
+  group: number,
+  path: boolean,
+): NonNullable<Parameters<typeof MapLegend>[0]['extras']> {
+  return {
+    layout: data.settings.layout,
+    groupBy:
+      data.project.attribute_definitions.find((a) => a.key === data.settings.groupBy)?.label ?? '',
+    group,
+    path,
+    highlight: data.mapModel.highlighted?.size ?? 0,
+  };
+}
+
+interface MapCanvasProps {
+  data: MapData;
+  /**
+   * Presentation mode (spec §8): the map only, drawn with the presentation
+   * theme (larger labels). No controls, notes, legend or focusable members;
+   * the presentation shows the legend beside the map and handles the keys.
+   */
+  presentation?: { theme: MapTheme };
+}
+
+export function MapCanvas({ data, presentation }: MapCanvasProps) {
+  const { mapModel: model, result, settings, layout } = data;
+  const theme = presentation?.theme ?? data.theme;
+  const analyst = !presentation;
   const selected = useAppStore((s) => s.selection.member);
   const group = useAppStore((s) => s.selection.group);
   const path = useAppStore((s) => s.tools.path);
@@ -289,199 +318,205 @@ function MapCanvas({ data }: { data: MapData }) {
   const visibleCount = visible.length;
 
   return (
-    <div className="map">
+    <div className={analyst ? 'map' : 'map map--presentation'}>
       <div ref={containerRef} className="map__stage">
         <canvas ref={canvasRef} className="map__canvas" aria-hidden="true" />
       </div>
 
-      <div ref={noteRef} className="map__notes">
-        {coverage?.belowThreshold && (
-          <p className="map__coverage" role="note">
-            <Icon name="warning" />
-            {mapCopy.coverage(percent(coverage.rate), percent(coverage.threshold))}
-          </p>
-        )}
-        {model.ego && (
-          <p className="map__mode">
-            <span>{mapCopy.modes.ego(model.ego.name, model.ego.depth)}</span>
-            <button
-              type="button"
-              className="button button--text"
-              onClick={() => {
-                setMap({ ego: null });
-              }}
-            >
-              {mapCopy.modes.exitEgo}
-            </button>
-          </p>
-        )}
-        {path && path.status !== 'running' && (
-          <p className="map__mode">
-            <span>
-              {path.status === 'ready' && path.result
-                ? mapCopy.modes.path(
-                    model.nodes[indexOf.get(path.from) ?? -1]?.name ?? '',
-                    model.nodes[indexOf.get(path.to) ?? -1]?.name ?? '',
-                  )
-                : mapCopy.modes.noPath}
-            </span>
-            <button type="button" className="button button--text" onClick={clearPath}>
-              {mapCopy.modes.clearPath}
-            </button>
-          </p>
-        )}
-        {simulation && (
-          <p className="map__mode">
-            <span>
-              {showRemoval
-                ? mapCopy.modes.removed(removal.length)
-                : mapCopy.modes.removedShown(removal.length)}
-            </span>
-            <button
-              type="button"
-              className="button button--text"
-              onClick={() => {
-                setTools({ showRemoval: !showRemoval });
-              }}
-            >
-              {showRemoval ? mapCopy.modes.showRemoved : mapCopy.modes.hideRemoved}
-            </button>
-            <button type="button" className="button button--text" onClick={endSimulation}>
-              {mapCopy.modes.endSimulation}
-            </button>
-          </p>
-        )}
-        {(visibleCount === 0 || model.edges.length === 0 || running) && (
-          <p className="map__notice" role="status">
-            {running
-              ? mapCopy.calculating
-              : visibleCount === 0
-                ? mapCopy.noMembers
-                : mapCopy.noTies}
-          </p>
-        )}
-      </div>
+      {analyst && (
+        <div ref={noteRef} className="map__notes">
+          {coverage?.belowThreshold && (
+            <p className="map__coverage" role="note">
+              <Icon name="warning" />
+              {mapCopy.coverage(percent(coverage.rate), percent(coverage.threshold))}
+            </p>
+          )}
+          {model.ego && (
+            <p className="map__mode">
+              <span>{mapCopy.modes.ego(model.ego.name, model.ego.depth)}</span>
+              <button
+                type="button"
+                className="button button--text"
+                onClick={() => {
+                  setMap({ ego: null });
+                }}
+              >
+                {mapCopy.modes.exitEgo}
+              </button>
+            </p>
+          )}
+          {path && path.status !== 'running' && (
+            <p className="map__mode">
+              <span>
+                {path.status === 'ready' && path.result
+                  ? mapCopy.modes.path(
+                      model.nodes[indexOf.get(path.from) ?? -1]?.name ?? '',
+                      model.nodes[indexOf.get(path.to) ?? -1]?.name ?? '',
+                    )
+                  : mapCopy.modes.noPath}
+              </span>
+              <button type="button" className="button button--text" onClick={clearPath}>
+                {mapCopy.modes.clearPath}
+              </button>
+            </p>
+          )}
+          {simulation && (
+            <p className="map__mode">
+              <span>
+                {showRemoval
+                  ? mapCopy.modes.removed(removal.length)
+                  : mapCopy.modes.removedShown(removal.length)}
+              </span>
+              <button
+                type="button"
+                className="button button--text"
+                onClick={() => {
+                  setTools({ showRemoval: !showRemoval });
+                }}
+              >
+                {showRemoval ? mapCopy.modes.showRemoved : mapCopy.modes.hideRemoved}
+              </button>
+              <button type="button" className="button button--text" onClick={endSimulation}>
+                {mapCopy.modes.endSimulation}
+              </button>
+            </p>
+          )}
+          {(visibleCount === 0 || model.edges.length === 0 || running) && (
+            <p className="map__notice" role="status">
+              {running
+                ? mapCopy.calculating
+                : visibleCount === 0
+                  ? mapCopy.noMembers
+                  : mapCopy.noTies}
+            </p>
+          )}
+        </div>
+      )}
 
-      <div ref={toolsRef} className="map__tools" role="group" aria-label={mapCopy.tools.group}>
-        <button
-          type="button"
-          className="map__tool"
-          aria-pressed={settings.tool === 'lasso'}
-          onClick={() => {
-            setMap({ tool: settings.tool === 'lasso' ? 'pan' : 'lasso' });
-          }}
-        >
-          {mapCopy.tools.lasso}
-        </button>
-        {group.length > 0 && (
+      {analyst && (
+        <div ref={toolsRef} className="map__tools" role="group" aria-label={mapCopy.tools.group}>
           <button
             type="button"
             className="map__tool"
+            aria-pressed={settings.tool === 'lasso'}
             onClick={() => {
-              setGroup([]);
+              setMap({ tool: settings.tool === 'lasso' ? 'pan' : 'lasso' });
             }}
           >
-            {mapCopy.tools.clearGroup(group.length)}
+            {mapCopy.tools.lasso}
           </button>
-        )}
-      </div>
-
-      <p id={instructionsId} className="visually-hidden">
-        {mapCopy.nodes.instructions}
-      </p>
-      <div
-        role="group"
-        aria-label={mapCopy.nodes.group}
-        aria-describedby={instructionsId}
-        className="map__nodes"
-      >
-        {visible.map((node) => (
-          <button
-            key={node.id}
-            ref={(el) => {
-              if (el) buttons.current.set(node.index, el);
-              else buttons.current.delete(node.index);
-            }}
-            type="button"
-            className="map__node"
-            tabIndex={node.index === tabStop ? 0 : -1}
-            aria-pressed={node.index === selectedIndex}
-            onFocus={() => {
-              onFocus(node.index);
-            }}
-            onBlur={onBlur}
-            onKeyDown={(e) => {
-              onKeyDown(e, node.index);
-            }}
-            onClick={() => {
-              open(node.index);
-            }}
-          >
-            {mapCopy.nodes.label(
-              node.name,
-              groupLabel(model, node.index),
-              model.neighbours[node.index]?.length ?? 0,
-            )}
-            {inGroup.has(node.id) ? mapCopy.nodes.inGroup : ''}
-          </button>
-        ))}
-      </div>
-
-      <MapLegend
-        ref={legendRef}
-        model={model}
-        theme={theme}
-        extras={{
-          layout: settings.layout,
-          groupBy:
-            data.project.attribute_definitions.find((a) => a.key === settings.groupBy)?.label ?? '',
-          group: groupSet.size,
-          path: pathIndices !== null && pathIndices.length > 1,
-        }}
-      />
-
-      <div className="map__zoom" role="group" aria-label={mapCopy.zoom.group}>
-        {pinned > 0 && (
-          <button
-            type="button"
-            className="button button--text map__unpin"
-            onClick={() => {
-              controllerRef.current?.unpinAll();
-            }}
-          >
-            {mapCopy.zoom.unpin}
-          </button>
-        )}
-        <div className="map__zoom-buttons">
-          <button
-            type="button"
-            className="map__zoom-button"
-            aria-label={mapCopy.zoom.in}
-            title={mapCopy.zoom.in}
-            onClick={() => controllerRef.current?.zoomBy(1)}
-          >
-            <Icon name="plus" />
-          </button>
-          <button
-            type="button"
-            className="map__zoom-button"
-            aria-label={mapCopy.zoom.out}
-            title={mapCopy.zoom.out}
-            onClick={() => controllerRef.current?.zoomBy(-1)}
-          >
-            <Icon name="minus" />
-          </button>
-          <button
-            type="button"
-            className="map__zoom-button"
-            aria-label={mapCopy.zoom.fit}
-            title={mapCopy.zoom.fit}
-            onClick={() => controllerRef.current?.fit()}
-          >
-            <Icon name="fit" />
-          </button>
+          {group.length > 0 && (
+            <button
+              type="button"
+              className="map__tool"
+              onClick={() => {
+                setGroup([]);
+              }}
+            >
+              {mapCopy.tools.clearGroup(group.length)}
+            </button>
+          )}
         </div>
-      </div>
+      )}
+
+      {analyst && (
+        <>
+          <p id={instructionsId} className="visually-hidden">
+            {mapCopy.nodes.instructions}
+          </p>
+          <div
+            role="group"
+            aria-label={mapCopy.nodes.group}
+            aria-describedby={instructionsId}
+            className="map__nodes"
+          >
+            {visible.map((node) => (
+              <button
+                key={node.id}
+                ref={(el) => {
+                  if (el) buttons.current.set(node.index, el);
+                  else buttons.current.delete(node.index);
+                }}
+                type="button"
+                className="map__node"
+                tabIndex={node.index === tabStop ? 0 : -1}
+                aria-pressed={node.index === selectedIndex}
+                onFocus={() => {
+                  onFocus(node.index);
+                }}
+                onBlur={onBlur}
+                onKeyDown={(e) => {
+                  onKeyDown(e, node.index);
+                }}
+                onClick={() => {
+                  open(node.index);
+                }}
+              >
+                {mapCopy.nodes.label(
+                  node.name,
+                  groupLabel(model, node.index),
+                  model.neighbours[node.index]?.length ?? 0,
+                )}
+                {inGroup.has(node.id) ? mapCopy.nodes.inGroup : ''}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      {analyst && (
+        <MapLegend
+          ref={legendRef}
+          model={model}
+          theme={theme}
+          extras={legendExtras(data, groupSet.size, pathIndices !== null && pathIndices.length > 1)}
+        />
+      )}
+
+      {analyst && (
+        <div className="map__zoom" role="group" aria-label={mapCopy.zoom.group}>
+          {pinned > 0 && (
+            <button
+              type="button"
+              className="button button--text map__unpin"
+              onClick={() => {
+                controllerRef.current?.unpinAll();
+              }}
+            >
+              {mapCopy.zoom.unpin}
+            </button>
+          )}
+          <div className="map__zoom-buttons">
+            <button
+              type="button"
+              className="map__zoom-button"
+              aria-label={mapCopy.zoom.in}
+              title={mapCopy.zoom.in}
+              onClick={() => controllerRef.current?.zoomBy(1)}
+            >
+              <Icon name="plus" />
+            </button>
+            <button
+              type="button"
+              className="map__zoom-button"
+              aria-label={mapCopy.zoom.out}
+              title={mapCopy.zoom.out}
+              onClick={() => controllerRef.current?.zoomBy(-1)}
+            >
+              <Icon name="minus" />
+            </button>
+            <button
+              type="button"
+              className="map__zoom-button"
+              aria-label={mapCopy.zoom.fit}
+              title={mapCopy.zoom.fit}
+              onClick={() => controllerRef.current?.fit()}
+            >
+              <Icon name="fit" />
+            </button>
+          </div>
+        </div>
+      )}
 
       <table className="visually-hidden" aria-labelledby={tableId}>
         <caption id={tableId}>{mapCopy.table.caption(name)}</caption>

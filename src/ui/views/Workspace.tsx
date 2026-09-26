@@ -17,11 +17,11 @@ import { TableView } from './TableView';
 import { TopBar } from './TopBar';
 import { WeightPanel } from './WeightPanel';
 import { exploreCopy } from '../copy/explore';
+import { savedViewsCopy } from '../copy/savedViews';
+import { InsightsPanel } from './InsightsPanel';
+import { PresentationView } from './PresentationView';
+import { SavedViewsPanel } from './SavedViewsPanel';
 import { weightsCopy } from '../copy/weights';
-
-function Placeholder({ text }: { text: string }) {
-  return <p className="placeholder">{text}</p>;
-}
 
 const centreItems: readonly TabItem<CentreView>[] = [
   { key: 'map', label: shellCopy.centreTabs.map, panel: <MapView /> },
@@ -33,11 +33,8 @@ const centreItems: readonly TabItem<CentreView>[] = [
 const rightItems: readonly TabItem<RightPanel>[] = [
   { key: 'member', label: shellCopy.rightTabs.member, panel: <MemberPanel /> },
   { key: 'explore', label: exploreCopy.tab, panel: <ExplorePanel /> },
-  {
-    key: 'insights',
-    label: shellCopy.rightTabs.insights,
-    panel: <Placeholder text={shellCopy.rightEmpty.insights} />,
-  },
+  { key: 'insights', label: shellCopy.rightTabs.insights, panel: <InsightsPanel /> },
+  { key: 'views', label: savedViewsCopy.tab, panel: <SavedViewsPanel /> },
   { key: 'coverage', label: coverageCopy.tab, panel: <CoveragePanel /> },
 ];
 
@@ -50,6 +47,15 @@ export function Workspace() {
   const closeNotice = useAppStore((s) => s.closeNotice);
   const hasProject = useAppStore((s) => (s.data.project?.members.length ?? 0) > 0);
   const showMapControls = hasProject && ui.centreView === 'map';
+
+  if (ui.presentation) {
+    return (
+      <>
+        <PresentationView />
+        <EthicsNotice open={ui.noticeOpen} onClose={closeNotice} />
+      </>
+    );
+  }
 
   return (
     <div className="workspace">
