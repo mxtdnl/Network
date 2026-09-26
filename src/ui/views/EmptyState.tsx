@@ -1,14 +1,17 @@
 import { useId } from 'react';
 import { shellCopy } from '../copy/shell';
+import { loadDemo } from '../state/projectActions';
+import { useAppStore } from '../state/store';
 
 // Shown in the map view until a project has data (spec §12: empty states tell
 // the user the next action).
 export function EmptyState() {
-  const unavailableId = useId();
+  const headingId = useId();
+  const setImportOpen = useAppStore((s) => s.setImportOpen);
   const copy = shellCopy.empty;
   return (
-    <section className="empty-state" aria-labelledby={`${unavailableId}-heading`}>
-      <h2 id={`${unavailableId}-heading`} className="empty-state__heading">
+    <section className="empty-state" aria-labelledby={headingId}>
+      <h2 id={headingId} className="empty-state__heading">
         {copy.heading}
       </h2>
       <p className="empty-state__body">{copy.body}</p>
@@ -16,23 +19,22 @@ export function EmptyState() {
         <button
           type="button"
           className="button button--primary"
-          disabled
-          aria-describedby={unavailableId}
+          onClick={() => {
+            setImportOpen(true);
+          }}
         >
           {copy.importData}
         </button>
         <button
           type="button"
           className="button button--secondary"
-          disabled
-          aria-describedby={unavailableId}
+          onClick={() => {
+            void loadDemo();
+          }}
         >
           {copy.loadDemo}
         </button>
       </div>
-      <p id={unavailableId} className="empty-state__note">
-        {copy.unavailable}
-      </p>
       <p className="empty-state__note">{copy.privacy}</p>
     </section>
   );

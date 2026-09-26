@@ -4,7 +4,7 @@
 .workspace {
   display: grid;
   grid-template-columns: var(--col-left) minmax(0, 1fr) var(--col-right);
-  grid-template-rows: var(--bar-height) minmax(0, 1fr);
+  grid-template-rows: var(--bar-height) auto minmax(0, 1fr);
   height: 100%;
   min-height: 100vh;
 }

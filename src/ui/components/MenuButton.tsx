@@ -1,9 +1,13 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
+import { Icon } from './Icon';
 
 export interface MenuItem {
   key: string;
   label: string;
   onSelect: () => void;
+  /** Present for an on/off item (menuitemcheckbox). */
+  checked?: boolean;
+  disabled?: boolean;
 }
 
 interface MenuButtonProps {
@@ -108,16 +112,24 @@ export function MenuButton({ label, items }: MenuButtonProps) {
                 itemRefs.current[i] = el;
               }}
               type="button"
-              role="menuitem"
+              role={item.checked === undefined ? 'menuitem' : 'menuitemcheckbox'}
+              aria-checked={item.checked}
+              aria-disabled={item.disabled}
               tabIndex={-1}
               className="menu__item"
               onClick={() => {
+                if (item.disabled) return;
                 // Return focus first, so a dialog opened by the item restores
                 // focus to the menu button when it closes.
                 close(true);
                 item.onSelect();
               }}
             >
+              {item.checked !== undefined && (
+                <span className="menu__check" aria-hidden="true">
+                  {item.checked ? <Icon name="check" /> : null}
+                </span>
+              )}
               {item.label}
             </button>
           ))}

@@ -4,6 +4,8 @@ import './styles/fonts.css';
 import './styles/tokens.css';
 import './styles/global.css';
 import './styles/shell.css';
+import './styles/data.css';
+import { restoreLocalProject } from './ui/state/persistenceSync';
 import { Workspace } from './ui/views/Workspace';
 
 const root = document.getElementById('root');
@@ -14,3 +16,5 @@ createRoot(root).render(
     <Workspace />
   </StrictMode>,
 );
+
+void restoreLocalProject();

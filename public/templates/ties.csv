@@ -1,0 +1,7 @@
+rater_id,ratee_id,variable,value,wave
+M01,M02,connection_strength,4,1
+M01,M02,valence,2,1
+M01,M03,formal_collaboration,3,1
+M02,M01,connection_strength,3,1
+M02,M03,informal_collaboration,0,1
+M03,M01,valence,,1

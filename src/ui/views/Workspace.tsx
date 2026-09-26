@@ -1,8 +1,14 @@
 import { EthicsNotice } from '../components/EthicsNotice';
 import { Tabs, type TabItem } from '../components/Tabs';
+import { coverageCopy } from '../copy/data';
 import { shellCopy } from '../copy/shell';
 import { useAppStore, type CentreView, type RightPanel } from '../state/store';
-import { EmptyState } from './EmptyState';
+import { CoveragePanel } from './CoveragePanel';
+import { ImportDialog } from './ImportDialog';
+import { LayerPanel } from './LayerPanel';
+import { MatrixView } from './MatrixView';
+import { ProjectSummary } from './ProjectSummary';
+import { StatusLine } from './StatusLine';
 import { TopBar } from './TopBar';
 
 function Placeholder({ text }: { text: string }) {
@@ -10,12 +16,8 @@ function Placeholder({ text }: { text: string }) {
 }
 
 const centreItems: readonly TabItem<CentreView>[] = [
-  { key: 'map', label: shellCopy.centreTabs.map, panel: <EmptyState /> },
-  {
-    key: 'matrix',
-    label: shellCopy.centreTabs.matrix,
-    panel: <Placeholder text={shellCopy.centreEmpty.matrix} />,
-  },
+  { key: 'map', label: shellCopy.centreTabs.map, panel: <ProjectSummary /> },
+  { key: 'matrix', label: shellCopy.centreTabs.matrix, panel: <MatrixView /> },
   {
     key: 'table',
     label: shellCopy.centreTabs.table,
@@ -39,10 +41,11 @@ const rightItems: readonly TabItem<RightPanel>[] = [
     label: shellCopy.rightTabs.insights,
     panel: <Placeholder text={shellCopy.rightEmpty.insights} />,
   },
+  { key: 'coverage', label: coverageCopy.tab, panel: <CoveragePanel /> },
 ];
 
 // Analyst workspace, docs/design-system.md §5.1: fixed left column, fluid
-// centre, fixed right column, under a top bar.
+// centre, fixed right column, under a top bar and its status line.
 export function Workspace() {
   const ui = useAppStore((s) => s.ui);
   const setCentreView = useAppStore((s) => s.setCentreView);
@@ -52,9 +55,10 @@ export function Workspace() {
   return (
     <div className="workspace">
       <TopBar />
+      <StatusLine />
       <aside className="workspace__left" aria-label={shellCopy.regions.left}>
         <h2 className="panel-heading">{shellCopy.left.heading}</h2>
-        <p className="placeholder">{shellCopy.left.empty}</p>
+        <LayerPanel />
       </aside>
       <main className="workspace__centre" aria-label={shellCopy.regions.centre}>
         <Tabs
@@ -72,6 +76,7 @@ export function Workspace() {
           onSelect={setRightPanel}
         />
       </aside>
+      <ImportDialog />
       <EthicsNotice open={ui.noticeOpen} onClose={closeNotice} />
     </div>
   );

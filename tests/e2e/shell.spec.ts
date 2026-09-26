@@ -70,7 +70,9 @@ test('the shell loads under the base path, shows the first-run notice and passes
   await expect(page.getByRole('heading', { name: 'Import data or load the demo' })).toBeVisible();
   await expect(page.getByRole('main')).toBeVisible();
   await expect(page.getByRole('complementary', { name: 'Layers and filters' })).toBeVisible();
-  await expect(page.getByRole('complementary', { name: 'Member and insights' })).toBeVisible();
+  await expect(
+    page.getByRole('complementary', { name: 'Member, insights and coverage' }),
+  ).toBeVisible();
   await expectNoAxeViolations(page);
 
   for (const viewport of viewports) {
