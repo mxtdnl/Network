@@ -17,12 +17,14 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "fonts": "node scripts/copy-fonts.mjs",
-    "demo": "tsx scripts/generate-demo.ts"
+    "demo": "tsx scripts/generate-demo.ts",
+    "templates": "tsx scripts/make-templates.ts"
   },
   "dependencies": {
     "papaparse": "^5.7.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "zustand": "^5.0.15"
   },
   "devDependencies": {

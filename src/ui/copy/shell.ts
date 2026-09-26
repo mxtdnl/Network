@@ -30,7 +30,7 @@ export const shellCopy = {
   },
   empty: {
     heading: 'Import data or load the demo',
-    body: 'Import a members file and a ties file in CSV format, or explore Graticule with a fictional team of 40 people.',
+    body: 'Import a members file and a ties file in CSV or XLSX format, or explore Graticule with a fictional team of 40 people.',
     privacy: 'Files are processed in this browser and are not uploaded anywhere.',
     importData: 'Import data',
     loadDemo: 'Load demo',

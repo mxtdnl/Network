@@ -17,7 +17,7 @@ const quote = (v: string | null) => `“${v ?? ''}”`;
 export const importCopy = {
   title: 'Import data',
   intro:
-    'Choose a members file and, if you have one, a ties file, both saved as CSV (UTF-8). The files are checked before anything is imported.',
+    'Choose a members file and, if you have one, a ties file. Both can be CSV or XLSX. The files are checked before anything is imported.',
   membersLabel: 'Members file',
   membersHelp: 'One row per member. Required columns: id, display_name.',
   tiesLabel: 'Ties file',
@@ -29,6 +29,8 @@ export const importCopy = {
   templates: 'Download a template',
   templateMembers: 'Members template (CSV)',
   templateTies: 'Ties template (CSV)',
+  templateMembersXlsx: 'Members template (XLSX)',
+  templateTiesXlsx: 'Ties template (XLSX)',
   chooseFile: 'Choose file',
   noFile: 'No file chosen',
   check: 'Check files',
@@ -37,10 +39,9 @@ export const importCopy = {
   back: 'Choose other files',
   needMembers: 'Choose a members file to start a new project.',
   unreadable: (name: string, reason: string) =>
-    `${name} could not be read: ${reason} Save it as CSV (UTF-8) and try again.`,
-  xlsxUnavailable:
-    'XLSX files cannot be read in this build yet. Save the sheet as CSV (UTF-8) and import that instead.',
-  unsupportedType: 'Graticule reads .csv files. Save the sheet as CSV (UTF-8) and import that.',
+    `${name} could not be read: ${reason} Save it as CSV (UTF-8) or XLSX and try again.`,
+  unsupportedType:
+    'Graticule reads .csv and .xlsx files. Save the sheet in one of these formats and try again.',
 
   reportTitle: 'Validation report',
   rowNumbers:
@@ -109,6 +110,8 @@ export const importCopy = {
         return `${n(d.count ?? 0, 'rating is', 'ratings are')} for ${d.variable ?? ''}, a layer that is turned off. They are imported and used when you turn the layer on.`;
       case 'later_wave':
         return `${n(d.count ?? 0, 'rating is', 'ratings are')} for wave 2 or later. They are stored; this version shows wave 1 only.`;
+      case 'other_sheets':
+        return `Only the first sheet was read. ${n(d.sheets?.length ?? 0, 'other sheet was', 'other sheets were')} not read: ${(d.sheets ?? []).join(', ')}.`;
       case 'new_attribute':
         return `The column ${issue.column ?? ''} becomes a new member attribute.`;
     }

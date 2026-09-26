@@ -48,15 +48,17 @@ Phase 0 decisions D1–D13 were approved by the owner on 2026-09-26.
 | D32 | 2026-09-26 | Tokens added in Phase 2: `--dialog-width-wide` 800px, `--icon-size` 16px, `--field-max-width` 480px, `--number-input-width` 64px, `--matrix-cell-width` 40px, `--matrix-cell-height` 32px, `--matrix-label-width` 184px, `--matrix-header-height` 136px, `--hatch-gap` 6px | Proposed | `src/styles/tokens.css` |
 | D33 | 2026-09-26 | The seeded validation fixture is TypeScript strings (`tests/fixtures/validation/seeded-errors.ts`), not `.csv` files, so the D21 participant-data rule needs no new exception. The e2e test uploads the strings as files | Proposed | `tests/fixtures/` |
 | D34 | 2026-09-26 | Shell changes: a status line under the top bar holds the persistent coverage warning and the result of the last action (a polite live region, cleared on view change); the right column gains a Coverage tab; a Project menu holds Open, Save, Import, Load demo, Keep a copy in this browser (checkbox item) and Clear local data; the file input's native "Choose File" button is replaced by a sentence-case label. Opening a project or loading the demo over a project with data asks for confirmation. Project-file load errors are written in `data/projectFile.ts` and `data/migrations.ts` (plan §2 places the migration message there) | Proposed | `src/ui/views/` |
-| D35 | 2026-09-26 | XLSX import and XLSX templates are not built: the environment's network policy denies `cdn.sheetjs.com`, the only source of current SheetJS releases (plan Q15). The UI accepts CSV only and says so; `src/data/import/xlsx.ts` is the single seam where SheetJS will go. See open questions | Blocked | `src/data/import/xlsx.ts` |
+| D35 | 2026-09-26 | SheetJS Community Edition 0.20.3 (the latest release on 2026-09-26) installed from `https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz`, pinned by that URL in `package.json` and by SHA-512 integrity in `package-lock.json` (plan Q15). `npm ci` therefore needs `cdn.sheetjs.com` reachable; it was added to this cloud environment's allowed domains on 2026-09-26. It is loaded only when an XLSX file is imported. The reader takes the first sheet (other sheets are named in a report note), reads stored values rather than display formats (a cell shown as 50 % is read as 0.5; a formula gives its last calculated value; an error cell stays as its text, e.g. `#N/A`, and fails validation), keeps spreadsheet row numbers when the table does not start at row 1, and refuses a file that is not a ZIP package, because SheetJS would otherwise read text or HTML renamed to .xlsx. XLSX templates are generated from the CSV templates by `npm run templates` (deterministic output) | Proposed | `src/data/import/xlsx.ts`, `scripts/make-templates.ts` |
 
 ## Resolved questions
+
+Q19 (SheetJS source): on 2026-09-26 the owner allowed `cdn.sheetjs.com` in the environment's network settings, so SheetJS is installed as plan Q15 proposed (D35).
 
 On 2026-09-26 the owner approved `docs/plan.md` §6 Q1–Q17 with their proposed defaults. Q18 is moot because Phase 0 was merged to `main` by pull request. The flat indigo hue in the categorical palette (design-system §2.1) is accepted as proposed.
 
 ## Open questions
 
-- **Q19 (2026-09-26). SheetJS source.** Plan Q15 approved installing SheetJS from its CDN tarball, pinned. This environment's network policy denies `cdn.sheetjs.com`, so XLSX import and the XLSX templates are not built (D35). Options: (a) allow `cdn.sheetjs.com` in the environment's network settings, then install `xlsx-0.20.3.tgz` pinned by URL and integrity hash (recommended; keeps Q15); (b) use `xlsx@0.18.5` from the npm registry, the last version SheetJS published there, which has known vulnerabilities in file parsing (CVE-2023-30533, prototype pollution, fixed in 0.19.3; CVE-2024-22363, ReDoS, fixed in 0.20.2); (c) keep CSV only for v1.
+None.
 
 ## Phase status
 
@@ -64,7 +66,7 @@ On 2026-09-26 the owner approved `docs/plan.md` §6 Q1–Q17 with their proposed
 |---|---|---|---|
 | 0 | Plan and design system proposal (no code) | Complete | 2026-09-26 |
 | 1 | Scaffold, tooling, CI/CD, tokens, app shell | Built; awaiting deployment and owner acceptance | — |
-| 2 | Data model, import and validation, matrix entry, project files, demo dataset | Built except XLSX import (Q19); awaiting owner acceptance | — |
+| 2 | Data model, import and validation, matrix entry, project files, demo dataset | Built; awaiting owner acceptance | — |
 | 3 | Analysis engine and fixtures | Not started | — |
 | 4 | Map view, encodings, legend, member panel | Not started | — |
 | 5 | Composite weighting, layouts, linked views, ego view, path, resilience, multi-select | Not started | — |

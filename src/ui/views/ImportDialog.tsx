@@ -22,8 +22,8 @@ interface CheckResult {
   readErrors: string[];
 }
 
-// XLSX joins this list once SheetJS is installed (CLAUDE.md, open questions).
-const ACCEPT = '.csv,text/csv';
+const ACCEPT =
+  '.csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 const templateUrl = (name: string) => `${import.meta.env.BASE_URL}templates/${name}`;
 
 function FileField({
@@ -112,11 +112,9 @@ function ImportFlow({ hasProject, onDone }: { hasProject: boolean; onDone: () =>
       try {
         return await readImportFile(file);
       } catch (e) {
-        const message =
-          e instanceof Error && e.name === 'XlsxUnavailableError'
-            ? importCopy.xlsxUnavailable
-            : importCopy.unreadable(file.name, e instanceof Error ? e.message : String(e));
-        readErrors.push(message);
+        readErrors.push(
+          importCopy.unreadable(file.name, e instanceof Error ? e.message : String(e)),
+        );
         return null;
       }
     };
@@ -243,6 +241,16 @@ function ImportFlow({ hasProject, onDone }: { hasProject: boolean; onDone: () =>
           <li>
             <a href={templateUrl('ties.csv')} download>
               {importCopy.templateTies}
+            </a>
+          </li>
+          <li>
+            <a href={templateUrl('members.xlsx')} download>
+              {importCopy.templateMembersXlsx}
+            </a>
+          </li>
+          <li>
+            <a href={templateUrl('ties.xlsx')} download>
+              {importCopy.templateTiesXlsx}
             </a>
           </li>
         </ul>

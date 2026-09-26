@@ -42,7 +42,8 @@ export type ErrorCode =
   | 'invalid_wave'
   | 'duplicate';
 
-export type NoteCode = 'not_rated' | 'disabled_layer' | 'later_wave' | 'new_attribute';
+export type NoteCode =
+  'not_rated' | 'disabled_layer' | 'later_wave' | 'new_attribute' | 'other_sheets';
 
 export type FileKind = 'members' | 'ties';
 
@@ -65,6 +66,7 @@ export interface Issue {
     skippedMember?: boolean;
     existing?: boolean;
     variable?: string;
+    sheets?: string[];
   };
 }
 
@@ -338,9 +340,26 @@ export function validateMembers(table: RawTable): MembersResult {
       validRows: members.length,
       skippedRows: table.rows.length - members.length,
       blocked: false,
-      issues: [...errors, ...notes],
+      issues: [...errors, ...notes, ...sheetNote(table, file)],
     },
   };
+}
+
+/** A workbook's other sheets are not read; the report says so. */
+function sheetNote(table: RawTable, file: FileKind): Issue[] {
+  const sheets = table.ignoredSheets ?? [];
+  if (sheets.length === 0) return [];
+  return [
+    {
+      file,
+      severity: 'note',
+      code: 'other_sheets',
+      row: null,
+      column: null,
+      value: null,
+      detail: { sheets },
+    },
+  ];
 }
 
 function byRow(a: Issue, b: Issue): number {
@@ -545,7 +564,7 @@ export function validateTies(table: RawTable, context: TieContext): TiesResult {
       validRows: ties.length,
       skippedRows: table.rows.length - ties.length,
       blocked: false,
-      issues: [...errors, ...notes],
+      issues: [...errors, ...notes, ...sheetNote(table, file)],
     },
   };
 }

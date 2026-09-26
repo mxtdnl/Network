@@ -106,6 +106,24 @@ test('import the templates, read the validation report and open the matrix', asy
   await expectNoAxeViolations(page);
 });
 
+test('import the XLSX templates under the production CSP', async ({ page }) => {
+  const cspViolations: string[] = [];
+  page.on('console', (msg) => {
+    if (/content security policy/i.test(msg.text())) cspViolations.push(msg.text());
+  });
+  await start(page);
+  await page.getByRole('button', { name: 'Import data' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Import data' });
+  await dialog.getByLabel('Members file').setInputFiles(join(templates, 'members.xlsx'));
+  await dialog.getByLabel('Ties file').setInputFiles(join(templates, 'ties.xlsx'));
+  await dialog.getByRole('button', { name: 'Check files' }).click();
+  await expect(dialog.getByText('3 rows of 3 can be imported.')).toBeVisible();
+  await expect(dialog.getByText('6 rows of 6 can be imported.')).toBeVisible();
+  await dialog.getByRole('button', { name: 'Import 9 valid rows' }).click();
+  await expect(page.getByRole('status').filter({ hasText: 'Imported 9 rows.' })).toBeVisible();
+  expect(cspViolations).toEqual([]);
+});
+
 test('the validation report lists every seeded error with its row', async ({ page }) => {
   await start(page);
   await page.getByRole('button', { name: 'Import data' }).click();
