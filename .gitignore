@@ -1,0 +1,32 @@
+# --- Participant data safety (spec §13). Never commit real participant data. ---
+# Project files, anywhere. Case variants are listed because Git matches case-
+# sensitively on Linux, where "Team.ONA.JSON" would otherwise slip through.
+*.[oO][nN][aA].[jJ][sS][oO][nN]
+# Exception: the committed, fictional demo project written by scripts/generate-demo.ts.
+!/src/demo/*.ona.json
+
+# Private data directory.
+data/private/
+
+# Spreadsheets anywhere except the downloadable import templates.
+*.[cC][sS][vV]
+*.[xX][lL][sS][xX]
+!/public/templates/**/*.csv
+!/public/templates/**/*.xlsx
+
+# --- Tooling ---
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+*.log
+*.tsbuildinfo
+.env
+.env.*
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/

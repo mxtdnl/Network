@@ -1,0 +1,329 @@
+/* App shell: workspace layout, top bar, tabs, controls, dialog. */
+
+/* Workspace, design-system §5.1 */
+.workspace {
+  display: grid;
+  grid-template-columns: var(--col-left) minmax(0, 1fr) var(--col-right);
+  grid-template-rows: var(--bar-height) minmax(0, 1fr);
+  height: 100%;
+  min-height: 100vh;
+}
+
+.workspace__left,
+.workspace__right {
+  background: var(--field);
+  overflow-y: auto;
+}
+
+.workspace__left {
+  padding: var(--s-3) var(--s-5) var(--s-5);
+}
+
+.workspace__centre {
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  min-height: var(--control-height);
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+  font-weight: var(--weight-semibold);
+  margin-bottom: var(--s-5); /* aligns content with the tab panels opposite */
+}
+
+.placeholder {
+  color: var(--graphite);
+  max-width: var(--measure);
+}
+
+/* Top bar: 48 px, same ground as the side columns, no rule beneath */
+.top-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: var(--s-6);
+  padding-inline: var(--s-5);
+  background: var(--field);
+}
+
+.top-bar__name {
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+  font-weight: var(--weight-semibold);
+}
+
+.top-bar__project {
+  color: var(--graphite);
+}
+
+.top-bar__actions {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+}
+
+/* Buttons */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height);
+  padding-inline: var(--s-4);
+  border: var(--line-width) solid transparent;
+  border-radius: var(--r-control);
+  cursor: pointer;
+  transition: background-color var(--m-fast) var(--ease-standard);
+}
+
+.button--primary {
+  background: var(--accent);
+  color: var(--paper);
+  font-weight: var(--weight-medium);
+}
+
+.button--secondary {
+  background: var(--paper);
+  border-color: var(--stone);
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+.button--text {
+  background: transparent;
+  padding-inline: var(--s-2);
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+.button--text:hover:not(:disabled) {
+  background: var(--paper);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+/* Disabled controls keep their variant's shape so hierarchy survives. */
+.button--primary:disabled {
+  background: var(--stone);
+  color: var(--paper);
+}
+
+.button--secondary:disabled,
+.button--text:disabled {
+  color: var(--graphite);
+}
+
+/* Switch */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--control-height);
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--r-control);
+  cursor: pointer;
+  font-weight: var(--weight-medium);
+}
+
+.switch__track {
+  position: relative;
+  width: var(--s-6);
+  height: var(--s-4);
+  border: var(--line-width) solid var(--stone);
+  border-radius: var(--r-chip);
+  background: var(--paper);
+  transition: background-color var(--m-fast) var(--ease-standard);
+}
+
+.switch__thumb {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  margin: auto var(--s-1) auto 0;
+  width: var(--s-3);
+  height: var(--s-3);
+  border-radius: var(--r-chip);
+  background: var(--stone);
+  transform: translateX(var(--s-1));
+  transition: transform var(--m-fast) var(--ease-standard);
+}
+
+.switch[aria-checked='true'] .switch__track {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.switch[aria-checked='true'] .switch__thumb {
+  background: var(--paper);
+  transform: translateX(calc(var(--s-4) - var(--line-width)));
+}
+
+/* Tabs: text with an accent underline for the active tab, not boxed */
+.tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.tabs__list {
+  display: flex;
+  gap: var(--s-5);
+  padding-inline: var(--s-5);
+  padding-top: var(--s-3);
+}
+
+.tabs__tab {
+  min-height: var(--control-height);
+  padding: 0;
+  background: none;
+  border: 0;
+  border-bottom: var(--indicator-width) solid transparent;
+  border-radius: var(--r-none);
+  color: var(--graphite);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+.tabs__tab[aria-selected='true'] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.tabs__panel {
+  flex: 1;
+  min-height: 0;
+  padding: var(--s-5);
+}
+
+.tabs__panel:focus-visible {
+  outline-offset: calc(var(--focus-width) * -1);
+}
+
+/* Empty state in the map view */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+  max-width: var(--measure);
+  margin: var(--s-8) auto 0;
+}
+
+.empty-state__heading {
+  font-size: var(--t-4-size);
+  line-height: var(--t-4-line);
+  font-weight: var(--weight-semibold);
+}
+
+.empty-state__body {
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+}
+
+.empty-state__actions {
+  display: flex;
+  gap: var(--s-3);
+  margin-top: var(--s-2);
+}
+
+.empty-state__note {
+  color: var(--graphite);
+}
+
+/* Menu (overlay: e-1, r-overlay) */
+.menu {
+  position: relative;
+}
+
+.menu__list {
+  position: absolute;
+  inset-inline-end: 0;
+  top: calc(100% + var(--s-1));
+  z-index: 10;
+  min-width: var(--menu-min-width);
+  padding-block: var(--s-1);
+  background: var(--paper);
+  border: var(--line-width) solid var(--stone);
+  border-radius: var(--r-overlay);
+  box-shadow: var(--e-1);
+}
+
+.menu__item {
+  display: block;
+  width: 100%;
+  min-height: var(--control-height);
+  padding-inline: var(--s-4);
+  background: none;
+  border: 0;
+  border-radius: var(--r-none);
+  text-align: start;
+  cursor: pointer;
+}
+
+.menu__item:hover,
+.menu__item:focus-visible {
+  background: var(--field);
+}
+
+.menu__item:focus-visible {
+  outline-offset: calc(var(--focus-width) * -1);
+}
+
+/* Dialog (overlay: e-2, r-dialog) */
+.dialog {
+  width: min(var(--dialog-width), 100% - var(--s-6));
+  padding: var(--s-6);
+  border: 0;
+  border-radius: var(--r-dialog);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--e-2);
+}
+
+.dialog::backdrop {
+  background: var(--scrim);
+}
+
+.dialog__title {
+  font-size: var(--t-3-size);
+  line-height: var(--t-3-line);
+  font-weight: var(--weight-semibold);
+  margin-bottom: var(--s-3);
+}
+
+.dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--s-5);
+}
+
+.notice__intro {
+  color: var(--graphite);
+  margin-bottom: var(--s-4);
+}
+
+.notice__points {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.notice__point-heading {
+  font-weight: var(--weight-semibold);
+}
+
+.notice__reopen {
+  color: var(--graphite);
+  margin-top: var(--s-4);
+}

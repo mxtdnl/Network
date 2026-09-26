@@ -1,0 +1,126 @@
+/*
+ * Graticule design tokens.
+ *
+ * Transcribed from docs/design-system.md (approved 2026-09-26). This file is the
+ * only place in the codebase where raw colour, type, spacing, radius, elevation,
+ * size or duration values may appear; tests/unit/design-tokens.test.ts enforces
+ * that and checks the colour values against the design-system tables.
+ */
+
+:root {
+  /* 1. Base colours */
+  --ink: #1c2127;
+  --graphite: #4e5761;
+  --stone: #7a838e;
+  --field: #edeff1;
+  --paper: #fbfcfc;
+  --accent: #1d5c8c; /* UI only; never on the map or in any data encoding */
+
+  /* 2.1 Categorical palette (Paul Tol "muted", reordered) */
+  --cat-1: #44aa99;
+  --cat-2: #332288;
+  --cat-3: #999933;
+  --cat-4: #117733;
+  --cat-5: #ddcc77;
+  --cat-6: #cc6677;
+  --cat-7: #88ccee;
+  --cat-8: #882255;
+  --cat-other: #b4b9bf;
+
+  /* 2.2 Diverging valence scale, -3 to +3 */
+  --val-n3: #833110;
+  --val-n2: #9d5524;
+  --val-n1: #a67b55;
+  --val-0: #919191;
+  --val-p1: #5188a1;
+  --val-p2: #156d8e;
+  --val-p3: #004d6e;
+
+  /* 3.1 Type families */
+  --font-sans: 'Fira Sans', system-ui, sans-serif;
+  --font-condensed: 'Fira Sans Condensed', 'Fira Sans', system-ui, sans-serif;
+
+  /* 3.2 Weights */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* 3.3 Modular scale: ratio 1.2, base 14px, line heights on a 4px grid */
+  --t--1-size: 12px;
+  --t--1-line: 16px;
+  --t-0-size: 14px;
+  --t-0-line: 20px;
+  --t-1-size: 17px;
+  --t-1-line: 24px;
+  --t-2-size: 20px;
+  --t-2-line: 28px;
+  --t-3-size: 24px;
+  --t-3-line: 32px;
+  --t-4-size: 29px;
+  --t-4-line: 36px;
+  --t-5-size: 35px;
+  --t-5-line: 44px;
+  --t-6-size: 42px;
+  --t-6-line: 52px;
+
+  /* 4.1 Spacing */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+
+  /* 4.2 Radius, by component role */
+  --r-none: 0;
+  --r-control: 4px;
+  --r-chip: 12px;
+  --r-overlay: 6px;
+  --r-dialog: 8px;
+
+  /* Lines: control boundaries, node outlines, legend boundary, focus ring */
+  --line-width: 1px;
+  --focus-width: 2px;
+  --focus-offset: 2px;
+  --indicator-width: 2px; /* active tab underline */
+
+  /* 4.3 Elevation (overlays only) */
+  --e-0: none;
+  --e-1: 0 1px 2px rgb(28 33 39 / 0.12), 0 4px 12px rgb(28 33 39 / 0.1);
+  --e-2: 0 2px 4px rgb(28 33 39 / 0.12), 0 12px 32px rgb(28 33 39 / 0.16);
+  --scrim: rgb(28 33 39 / 0.32);
+
+  /* 4.4 Motion */
+  --m-instant: 0ms;
+  --m-fast: 100ms;
+  --m-base: 150ms;
+  --m-panel: 200ms;
+  --m-max-ui: 250ms;
+  --m-layout: 600ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-layout: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* 5.1 Workspace layout and 6. target sizes */
+  --bar-height: 48px;
+  --col-left: 320px;
+  --col-right: 360px;
+  --control-height: 32px;
+  --target-min: 24px;
+  --attr-label-width: 96px;
+  --measure: 60ch; /* longest line for running text and captions */
+  --dialog-width: 560px;
+  --menu-min-width: 224px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --m-fast: 0ms;
+    --m-base: 0ms;
+    --m-panel: 0ms;
+    --m-max-ui: 0ms;
+    --m-layout: 0ms;
+  }
+}

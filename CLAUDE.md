@@ -27,6 +27,17 @@ Phase 0 decisions D1–D13 were approved by the owner on 2026-09-26.
 | D11 | 2026-09-26 | Categorical palette Paul Tol "muted" (8 hues, reordered); diverging valence scale orange-brown / grey / blue, 7 steps | Approved | design-system §2 |
 | D12 | 2026-09-26 | The UI accent never appears on the map or in any data encoding | Approved | design-system §1 |
 | D13 | 2026-09-26 | Zustand store lives under `src/ui/state/` to stay within the suggested structure | Approved | plan §1.1 |
+| D14 | 2026-09-26 | TypeScript pinned to 6.0.x and ESLint to 9.x: typescript-eslint 8.70 supports TypeScript < 6.1, and eslint-plugin-jsx-a11y 6.10 supports ESLint ≤ 9. Upgrade when the plugins do | Proposed | `package.json` |
+| D15 | 2026-09-26 | Node 22 LTS pinned in `.nvmrc` (Vite 8 needs ≥ 22.12 on the 22 line) | Proposed | `.nvmrc` |
+| D16 | 2026-09-26 | Token enforcement is a Vitest test (`tests/unit/design-tokens.test.ts`), not a stylelint rule: it scans every CSS, TS, TSX and HTML file except `tokens.css` for hex and functional colours, named colours, px/rem/em/ch/pt and ms/s values, requires font, line-height, radius and duration properties to use `var()`, and requires shadows to be a whole elevation token. The same file checks `tokens.css` against the design-system tables. ESLint bans the JSX `style` prop so styling cannot bypass the scan. Percent, `fr` and viewport units are allowed as layout proportions. Limit: unitless numbers in TypeScript (for example a `setTimeout` delay) cannot be detected and must be read from tokens by convention | Proposed | `tests/unit/` |
+| D17 | 2026-09-26 | Tokens added beyond the design-system tables, all layout or line sizes: `--line-width` 1px, `--focus-width`/`--focus-offset` 2px (§6), `--indicator-width` 2px (active tab underline), `--bar-height` 48px, `--col-left` 320px, `--col-right` 360px, `--attr-label-width` 96px (§5), `--control-height` 32px, `--target-min` 24px (§6), `--measure` 60ch (§5.3), `--dialog-width` 560px and `--menu-min-width` 224px (new values), `--weight-*` 400/500/600 (§3.2), easing curves (§4.4). `r-focus` needs no token because outlines follow the control's radius | Proposed | `src/styles/tokens.css` |
+| D18 | 2026-09-26 | Fonts self-hosted from @fontsource 5.3.0 (Fira 4.203), Latin and Latin Extended subsets only: Fira Sans 400/500/600, Fira Sans Condensed 400/500. `npm run fonts` re-copies them. The @fontsource LICENSE has a placeholder copyright line ("Google Inc."); `OFL.txt` replaces it with the notice embedded in the font files | Proposed | `src/assets/fonts/` |
+| D19 | 2026-09-26 | The CSP `<meta>` lives in `index.html` exactly as plan §4; a serve-only Vite plugin strips it from the dev server, which needs inline scripts for hot reload. Builds keep it. Vite's `assetsInlineLimit` is 0 so no asset becomes a `data:` URI blocked by `font-src 'self'` | Proposed | `vite.config.ts` |
+| D20 | 2026-09-26 | "First-run notice seen" is a UI flag stored in `localStorage` (key `graticule.firstRunNoticeSeen`), not project data. If storage is unavailable the notice shows on every load. The Phase 2 "clear all local data" action must remove this key | Proposed | `src/ui/state/noticeStorage.ts` |
+| D21 | 2026-09-26 | `.gitignore` matches `.ona.json`, `.csv` and `.xlsx` case-insensitively (Git is case-sensitive on Linux). Exceptions: `public/templates/**/*.csv` and `*.xlsx` (lower-case extensions only), and `src/demo/*.ona.json` for the demo generator's output. Demo output must therefore be a `.ona.json` in `src/demo/`, not CSV | Proposed | `.gitignore` |
+| D22 | 2026-09-26 | GitHub Actions pinned by major tag (checkout v7, setup-node v7, configure-pages v6, upload-pages-artifact v5, deploy-pages v5, upload-artifact v7; latest tags checked on 2026-09-26), not by commit SHA | Proposed | `.github/workflows/` |
+| D23 | 2026-09-26 | E2E tests run against `vite preview` of the production build, so the CSP and `/network/` base path are exercised. `PW_CHROMIUM_EXECUTABLE` optionally points Playwright at a preinstalled Chromium. `SCREENSHOT_DIR=docs/screenshots/phase-1 npm run test:e2e` regenerates the documentation screenshots | Proposed | `playwright.config.ts` |
+| D24 | 2026-09-26 | Shell details not fixed by the wireframe: the top bar uses the `field` ground (continuous with the side columns); the ⋯ overflow menu is omitted until it has actions; Present, Import data and Load demo are disabled with an explanatory line until later phases; Hide names toggles state only | Proposed | `src/ui/views/` |
 
 ## Resolved questions
 
@@ -41,7 +52,7 @@ None.
 | Phase | Content | Status | Accepted |
 |---|---|---|---|
 | 0 | Plan and design system proposal (no code) | Complete | 2026-09-26 |
-| 1 | Scaffold, tooling, CI/CD, tokens, app shell | Not started | — |
+| 1 | Scaffold, tooling, CI/CD, tokens, app shell | Built; awaiting deployment and owner acceptance | — |
 | 2 | Data model, import and validation, matrix entry, project files, demo dataset | Not started | — |
 | 3 | Analysis engine and fixtures | Not started | — |
 | 4 | Map view, encodings, legend, member panel | Not started | — |
