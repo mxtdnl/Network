@@ -19,6 +19,23 @@ const dataBoundary = {
     { group: ['react', 'react-dom', 'react/*', 'zustand'], message: 'data/ is UI-free.' },
   ],
 };
+// All styling goes through CSS files that use tokens (spec §12), which
+// tests/unit/design-tokens.test.ts checks; inline styles would bypass that.
+const noInlineStyle = {
+  selector: 'JSXAttribute[name.name="style"]',
+  message: 'Use a CSS class that reads design tokens instead of an inline style.',
+};
+// Anonymisation (spec §8) is applied at one rendering layer: the UI reads a
+// member's name only through src/ui/state/names.ts, so no view can show a real
+// name while names are hidden.
+const nameMessage =
+  'Read member names through useMemberNames() or memberNames() in src/ui/state/names.ts, which applies anonymisation.';
+const noDisplayName = [
+  { selector: 'MemberExpression[property.name="display_name"]', message: nameMessage },
+  { selector: 'MemberExpression[property.value="display_name"]', message: nameMessage },
+  { selector: 'Property[key.name="display_name"]', message: nameMessage },
+];
+
 const uiBoundary = {
   patterns: [
     {
@@ -51,15 +68,7 @@ export default tseslint.config(
     plugins: { 'react-hooks': reactHooks },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      // All styling goes through CSS files that use tokens (spec §12), which
-      // tests/unit/design-tokens.test.ts checks; inline styles would bypass that.
-      'no-restricted-syntax': [
-        'error',
-        {
-          selector: 'JSXAttribute[name.name="style"]',
-          message: 'Use a CSS class that reads design tokens instead of an inline style.',
-        },
-      ],
+      'no-restricted-syntax': ['error', noInlineStyle],
     },
   },
   { ...jsxA11y.flatConfigs.strict, files: ['src/**/*.tsx'] },
@@ -76,6 +85,11 @@ export default tseslint.config(
     files: ['src/ui/**/*.{ts,tsx}'],
     ignores: ['src/ui/engineClient.ts'],
     rules: { 'no-restricted-imports': ['error', uiBoundary] },
+  },
+  {
+    files: ['src/ui/**/*.{ts,tsx}'],
+    ignores: ['src/ui/state/names.ts'],
+    rules: { 'no-restricted-syntax': ['error', noInlineStyle, ...noDisplayName] },
   },
   {
     files: ['tests/**/*.ts', 'scripts/**/*.ts', '*.config.ts'],

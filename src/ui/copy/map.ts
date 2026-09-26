@@ -160,6 +160,10 @@ export const mapCopy = {
     hierarchy: 'Formal hierarchy',
     reportingLines: 'Reporting line, manager above',
     marks: 'Marks',
+    highlighted: (n: number) =>
+      n === 1
+        ? 'Highlighted member; others faded'
+        : `Highlighted members (${num(n)}); others faded`,
     selected: 'Selected member',
     group: (n: number) => `Subgroup (${count(n, 'member', 'members')})`,
     path: 'Shortest path',

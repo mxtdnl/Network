@@ -80,10 +80,12 @@ export function readMapTheme(element: Element = document.documentElement): MapTh
     line: number('--line-width'),
     focusWidth: number('--focus-width'),
     fade: number('--map-fade'),
-    labelFont: `${text('--weight-medium')} ${text('--t--1-size')} ${text('--font-condensed')}`,
-    labelSize: number('--t--1-size'),
-    groupFont: `${text('--weight-semibold')} ${text('--t-0-size')} ${text('--font-sans')}`,
-    groupSize: number('--t-0-size'),
+    // Label sizes are tokens of their own so presentation mode can raise them
+    // (design-system §3.2: map labels at t--1 in the workspace, t-1 when presenting).
+    labelFont: `${text('--weight-medium')} ${text('--map-label-size')} ${text('--font-condensed')}`,
+    labelSize: number('--map-label-size'),
+    groupFont: `${text('--weight-semibold')} ${text('--map-group-size')} ${text('--font-sans')}`,
+    groupSize: number('--map-group-size'),
     labelGap: number('--s-1'),
     swatch: number('--map-legend-swatch'),
   };

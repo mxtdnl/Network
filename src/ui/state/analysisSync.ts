@@ -40,6 +40,11 @@ function keys(s: AppState) {
   return { base, key: weights ? `${base}:${weightsKey(weights)}` : base, weights };
 }
 
+/** The key of the analysis the current state asks for; a result with this inputKey is up to date. */
+export function analysisKey(s: AppState): string {
+  return keys(s).key;
+}
+
 const debounceMs = () => durationToken('--m-base');
 
 function run(s: AppState): void {

@@ -2,6 +2,7 @@ import { useId, useMemo, useState } from 'react';
 import { computeCoverage } from '../../data/coverage';
 import { Icon } from '../components/Icon';
 import { coverageCopy, percent } from '../copy/data';
+import { useMemberNames } from '../state/names';
 import { useAppStore } from '../state/store';
 
 export function useCoverage() {
@@ -18,14 +19,14 @@ export function CoveragePanel() {
   const thresholdId = useId();
   const tableId = useId();
   const [draft, setDraft] = useState<string | null>(null);
+  const names = useMemberNames();
 
   if (!project || !coverage || !Number.isFinite(coverage.rate)) {
     return <p className="placeholder">{coverageCopy.noData}</p>;
   }
 
-  const names = new Map(project.members.map((m) => [m.id, m.display_name]));
   const raters = [...coverage.raters].sort(
-    (a, b) => a.rate - b.rate || (names.get(a.id) ?? '').localeCompare(names.get(b.id) ?? ''),
+    (a, b) => a.rate - b.rate || names.of(a.id).localeCompare(names.of(b.id)),
   );
   const shown = draft ?? String(Math.round(coverage.threshold * 100));
   const draftValid = /^\d{1,3}$/.test(shown) && Number(shown) <= 100;
@@ -101,7 +102,7 @@ export function CoveragePanel() {
             return (
               <tr key={r.id}>
                 <th scope="row" className="coverage__name">
-                  {names.get(r.id) ?? r.id}
+                  {names.of(r.id)}
                 </th>
                 <td className="numeric">
                   {below && (

@@ -8,13 +8,16 @@ import { formatValue, formatWeight, mapCopy } from '../copy/map';
 import { focusMapMember } from '../map/focus';
 import { layerName } from '../map/legend';
 import { useMapData, type MapData } from '../map/useMapModel';
+import { useMemberNames, type MemberNames } from '../state/names';
 import { useAppStore } from '../state/store';
 import { clearPath, endSimulation, findPath, simulateRemoval } from '../state/tools';
 
 const E = exploreCopy;
 
-function sortedMembers(project: Project) {
-  return [...project.members].sort((a, b) => a.display_name.localeCompare(b.display_name, 'en-GB'));
+function sortedMembers(project: Project, names: MemberNames) {
+  return project.members
+    .map((m) => ({ id: m.id, name: names.of(m.id) }))
+    .sort((a, b) => a.name.localeCompare(b.name, 'en-GB'));
 }
 
 function MemberSelect({
@@ -31,6 +34,7 @@ function MemberSelect({
   exclude?: ReadonlySet<string>;
 }) {
   const id = useId();
+  const names = useMemberNames();
   return (
     <div className="field">
       <label htmlFor={id} className="field__label">
@@ -45,11 +49,11 @@ function MemberSelect({
         }}
       >
         <option value="">{E.none}</option>
-        {sortedMembers(project)
+        {sortedMembers(project, names)
           .filter((m) => !exclude?.has(m.id))
           .map((m) => (
             <option key={m.id} value={m.id}>
-              {m.display_name}
+              {m.name}
             </option>
           ))}
       </select>
@@ -169,7 +173,7 @@ function PathSection({ data }: { data: MapData }) {
   const selected = useAppStore((s) => s.selection.member);
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
-  const names = new Map(data.project.members.map((m) => [m.id, m.display_name]));
+  const names = useMemberNames();
   const a = from || path?.from || selected || '';
   const b = to || path?.to || '';
   const same = a !== '' && a === b;
@@ -201,7 +205,7 @@ function PathSection({ data }: { data: MapData }) {
         {path?.status === 'running' && <p>{E.path.finding}</p>}
         {path?.status === 'error' && <p>{E.path.failed(path.error)}</p>}
         {path?.status === 'ready' && !path.result && (
-          <p>{E.path.none(names.get(path.from) ?? '', names.get(path.to) ?? '')}</p>
+          <p>{E.path.none(names.of(path.from), names.of(path.to))}</p>
         )}
         {path?.status === 'ready' && path.result && (
           <>
@@ -228,13 +232,13 @@ function PathSection({ data }: { data: MapData }) {
                   <button
                     type="button"
                     className="link-button"
-                    aria-label={E.path.select(names.get(id) ?? id)}
+                    aria-label={E.path.select(names.of(id))}
                     onClick={() => {
                       selectMember(id);
                       focusMapMember(id);
                     }}
                   >
-                    {names.get(id) ?? id}
+                    {names.of(id)}
                   </button>
                 </li>
               ))}
@@ -252,7 +256,7 @@ function GroupSection({ data }: { data: MapData }) {
   const setGroup = useAppStore((s) => s.setGroup);
   const toggle = useAppStore((s) => s.toggleGroupMember);
   const { project, result, settings, model } = data;
-  const names = new Map(project.members.map((m) => [m.id, m.display_name]));
+  const names = useMemberNames();
   const density = useMemo(() => {
     const weights = result.refs[settings.layer]?.weights;
     if (!weights || group.length === 0) return null;
@@ -278,11 +282,11 @@ function GroupSection({ data }: { data: MapData }) {
           <ul className="chips">
             {group.map((id) => (
               <li key={id} className="chip">
-                <span>{names.get(id) ?? id}</span>
+                <span>{names.of(id)}</span>
                 <button
                   type="button"
                   className="chip__remove"
-                  aria-label={E.group.remove(names.get(id) ?? id)}
+                  aria-label={E.group.remove(names.of(id))}
                   onClick={() => {
                     toggle(id);
                   }}
@@ -391,7 +395,7 @@ function ResilienceSection({ data }: { data: MapData }) {
   const setTools = useAppStore((s) => s.setTools);
   const [candidate, setCandidate] = useState('');
   const { project, result } = data;
-  const names = new Map(project.members.map((m) => [m.id, m.display_name]));
+  const names = useMemberNames();
   const chosen = new Set(removal);
   const setRemoval = (ids: string[]) => {
     setTools({ removal: [...new Set(ids)] });
@@ -438,11 +442,11 @@ function ResilienceSection({ data }: { data: MapData }) {
         <ul className="chips">
           {removal.map((id) => (
             <li key={id} className="chip">
-              <span>{names.get(id) ?? id}</span>
+              <span>{names.of(id)}</span>
               <button
                 type="button"
                 className="chip__remove"
-                aria-label={E.resilience.remove(names.get(id) ?? id)}
+                aria-label={E.resilience.remove(names.of(id))}
                 onClick={() => {
                   setRemoval(removal.filter((m) => m !== id));
                 }}

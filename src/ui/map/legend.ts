@@ -46,7 +46,7 @@ export type LegendSection =
       kind: 'marks';
       title: string;
       variable: string;
-      items: { mark: 'group' | 'path'; label: string }[];
+      items: { mark: 'group' | 'path' | 'highlight'; label: string }[];
     };
 
 /** Layout and selection marks the legend explains besides the encodings. */
@@ -56,6 +56,8 @@ export interface LegendExtras {
   groupBy: string;
   group: number;
   path: boolean;
+  /** Members highlighted by an insight or a saved view. */
+  highlight?: number;
 }
 
 export interface LegendRadii {
@@ -174,7 +176,8 @@ export function legendSections(
       reportingLines: extras.layout === 'hierarchy' ? L.reportingLines : null,
     });
   }
-  if (extras && (extras.group > 0 || extras.path)) {
+  const highlighted = extras?.highlight ?? 0;
+  if (extras && (extras.group > 0 || extras.path || highlighted > 0)) {
     sections.push({
       kind: 'marks',
       title: L.marks,
@@ -182,6 +185,9 @@ export function legendSections(
       items: [
         ...(extras.path ? [{ mark: 'path' as const, label: L.path }] : []),
         ...(extras.group > 0 ? [{ mark: 'group' as const, label: L.group(extras.group) }] : []),
+        ...(highlighted > 0
+          ? [{ mark: 'highlight' as const, label: L.highlighted(highlighted) }]
+          : []),
       ],
     });
   }

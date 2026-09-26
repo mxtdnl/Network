@@ -3,6 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { serialiseProject } from '../../src/data/projectFile';
+import type { Project } from '../../src/data/schema';
 import { syntheticProject } from '../fixtures/synthetic';
 
 // Phase 5: composite weighting, layouts, linked views, ego view, shortest
@@ -37,7 +38,7 @@ async function loadDemo(page: Page) {
   await expect(nodes(page)).toHaveCount(40);
 }
 
-async function openSynthetic(page: Page) {
+async function openSynthetic(page: Page, edit: (p: Project) => void = () => undefined) {
   await page.getByRole('button', { name: 'Project' }).click();
   const chooser = page.waitForEvent('filechooser');
   await page.getByRole('menuitem', { name: 'Open project…' }).click();
@@ -46,7 +47,14 @@ async function openSynthetic(page: Page) {
   ).setFiles({
     name: 'synthetic.ona.json',
     mimeType: 'application/json',
-    buffer: Buffer.from(serialiseProject(syntheticProject())),
+    buffer: Buffer.from(
+      serialiseProject(
+        ((p: Project) => {
+          edit(p);
+          return p;
+        })(syntheticProject()),
+      ),
+    ),
   });
   await expect(nodes(page)).toHaveCount(250, { timeout: 60_000 });
 }
@@ -493,8 +501,11 @@ test('rank stability on 250 members: progress, cancel; the hierarchy needs manag
 }) => {
   test.setTimeout(240_000);
   await start(page);
-  // A 250-member network takes long enough to show progress and cancel.
-  await openSynthetic(page);
+  // Enough resamples that the run cannot finish before the test cancels it,
+  // however slow the page is next to the worker.
+  await openSynthetic(page, (p) => {
+    p.settings.bootstrap.replicates = 20_000;
+  });
   await page.getByRole('tab', { name: 'Table' }).click();
   await page.getByRole('button', { name: 'Run resampling' }).click();
   const progress = page.getByRole('progressbar', { name: 'Resampling progress' });

@@ -30,7 +30,17 @@ export type {
   PathResult,
   ResilienceResult,
 } from '../engine/types';
-export type { BootstrapMetric, CompositeFormula, ResilienceSnapshot } from '../engine/types';
+export type {
+  BootstrapMetric,
+  CompositeFormula,
+  InsightOutcome,
+  InsightRuleId,
+  InsightUnavailable,
+  InsightView,
+  Observation,
+  ResilienceSnapshot,
+} from '../engine/types';
+export { INSIGHT_RULES, INSIGHT_RULE_ORDER } from '../engine/insights';
 export { buildAnalysisInput };
 export { FI_CLASS } from '../engine/types';
 // Pure helpers the linked views call on the weights a result already holds.

@@ -82,7 +82,8 @@ async function resultFor(project: Project, s: MapSettings): Promise<AnalysisResu
 
 async function model(patch: Partial<MapSettings> = {}, project = demo): Promise<MapModel> {
   const s = { ...initialMapSettings(), ...patch };
-  return buildMapModel(project, await resultFor(project, s), s, theme);
+  const names = project.members.map((m) => m.display_name);
+  return buildMapModel(project, await resultFor(project, s), s, theme, names);
 }
 
 describe('valence colours', () => {

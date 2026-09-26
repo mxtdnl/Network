@@ -93,6 +93,8 @@ function modelFor(data: MapData, ref: string): MapModel {
     data.result,
     { ...data.settings, layer: ref, sizeMetric },
     data.theme,
+    // Names as the linked model has them, so anonymisation applies here too.
+    data.model.nodes.map((node) => node.name),
   );
 }
 

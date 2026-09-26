@@ -205,7 +205,9 @@ export class MapController {
         performance.now(),
       );
     }
-    if ((!this.fitted || kindChanged) && this.width > 0) {
+    // Positions restored from a saved view are fitted, so the view looks as it was saved.
+    const restored = this.layout.takeRestored();
+    if ((!this.fitted || kindChanged || restored) && this.width > 0) {
       this.fit();
       this.fitted = true;
     }

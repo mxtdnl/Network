@@ -6,6 +6,7 @@
 import { reciprocity, rescaleUnsigned, scaleSigned, signedPart, symmetrise } from './aggregate';
 import { compositeFormula, compositeMatrix } from './composite';
 import { denseGraph, pathGraph, tieCount, type DenseGraph } from './graphs';
+import { observe } from './insights';
 import { bootstrap } from './metrics/bootstrap';
 import { multiplex, type MultiplexLayer } from './metrics/multiplex';
 import {
@@ -231,6 +232,16 @@ export async function analysePrepared(
   }
   s.progress(1, 'done');
 
+  const insights = observe({
+    ids: input.memberIds,
+    directed,
+    refs,
+    refOrder: p.refs.map((r) => r.ref),
+    attributes: input.attributes,
+    signed: p.signedScaled,
+    multiplex: mx,
+  });
+
   return {
     inputKey: input.inputKey,
     view: input.settings.view,
@@ -242,6 +253,7 @@ export async function analysePrepared(
     multiplex: mx,
     composite: p.composite,
     coverage: input.coverage ?? null,
+    insights,
     warnings,
   };
 }

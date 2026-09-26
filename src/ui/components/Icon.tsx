@@ -11,7 +11,8 @@ interface IconProps {
     | 'close'
     | 'expand'
     | 'collapse'
-    | 'chevron-up';
+    | 'chevron-up'
+    | 'chevron-down';
 }
 
 export function Icon({ name }: IconProps) {
@@ -55,6 +56,15 @@ export function Icon({ name }: IconProps) {
         />
       )}
       {name === 'collapse' && (
+        <path
+          d="M3.5 6 8 10.5 12.5 6"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      )}
+      {name === 'chevron-down' && (
         <path
           d="M3.5 6 8 10.5 12.5 6"
           fill="none"

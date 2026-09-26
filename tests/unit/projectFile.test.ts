@@ -2,7 +2,14 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { createProject } from '../../src/data/defaults';
-import { migrate, MIGRATIONS, ProjectFileError, type Migration } from '../../src/data/migrations';
+import {
+  migrate,
+  MIGRATIONS,
+  ProjectFileError,
+  savedViewV1toV2,
+  type Migration,
+} from '../../src/data/migrations';
+import { V1_PROJECT, V1_VIEW_MIGRATED } from '../fixtures/migrations/v1';
 import { parseProject, projectFileName, serialiseProject } from '../../src/data/projectFile';
 import { SCHEMA_VERSION, type Project } from '../../src/data/schema';
 
@@ -62,28 +69,28 @@ export function richProject(): Project {
       name: 'Finance links',
       caption: 'Who connects Finance to Operations?',
       created_at: '2026-09-26T11:00:00.000Z',
-      analysis: {
-        view: 'symmetrised',
-        symmetrise: 'min',
-        activeLayer: 'composite',
-        weights: { connection_strength: 0.5, informal_collaboration: 0.5 },
-        signedTreatment: { valence: 'multiplier' },
+      weights: {
         preset: 'custom',
-        nodeSizeMetric: 'betweenness',
-        nodeFill: { kind: 'attribute', key: 'team' },
+        custom: { connection_strength: 0.5, informal_collaboration: 0.5 },
+        customTreatment: { valence: 'multiplier' },
       },
       map: {
-        layout: 'grouped',
-        groupBy: 'team',
-        positions: { A01: { x: 1.5, y: -2, pinned: true } },
-        viewport: { x: 0, y: 0, k: 1.25 },
+        view: 'symmetrised',
+        symmetrise: 'min',
+        layer: 'composite',
+        sizeMetric: 'betweenness',
+        fill: { kind: 'attribute', key: 'team' },
         threshold: 0.2,
         layerToggles: { connection_strength: true },
+        hideOffLayers: false,
         filters: [{ key: 'team', values: ['Finance'] }],
-        egoView: { member: 'A01', depth: 2 },
-        path: null,
+        layout: 'grouped',
+        groupBy: 'team',
+        ego: { member: 'A01', depth: 2 },
+        highlight: ['A03'],
       },
-      selection: ['A01', 'A03'],
+      positions: { A01: { x: 1.5, y: -2, pinned: true } },
+      selection: { member: null, group: ['A01', 'A03'] },
     },
   ];
   p.settings = {
@@ -135,19 +142,56 @@ describe('save → load round trip', () => {
 });
 
 describe('schema versions and migrations', () => {
-  const v1 = () => JSON.parse(serialiseProject(richProject())) as Record<string, unknown>;
+  const v2 = () => JSON.parse(serialiseProject(richProject())) as Record<string, unknown>;
 
-  it('has a registry whose version-1 step is the identity', () => {
-    expect(MIGRATIONS.map((m) => [m.from, m.to])).toEqual([[1, 1]]);
-    const file = v1();
-    expect(migrate(file)).toStrictEqual(file);
+  it('has one registered step, from version 1 to version 2', () => {
+    expect(MIGRATIONS.map((m) => [m.from, m.to])).toEqual([[1, 2]]);
+    expect(SCHEMA_VERSION).toBe(2);
+  });
+
+  it('migrates the version 1 fixture: saved views take the version 2 shape', () => {
+    const loaded = parseProject(V1_PROJECT);
+    expect(loaded.schema_version).toBe(2);
+    // Everything but the saved views and the version is unchanged.
+    expect({ ...loaded, saved_views: [] }).toStrictEqual({ ...richProject(), saved_views: [] });
+    expect(loaded.saved_views).toStrictEqual([V1_VIEW_MIGRATED]);
+    // And the migrated file round-trips as version 2.
+    expect(parseProject(serialiseProject(loaded))).toStrictEqual(loaded);
+  });
+
+  it('carries defaults for fields a version 1 view left out', () => {
+    expect(savedViewV1toV2({ id: 'x', name: 'n', caption: '', created_at: 't' })).toStrictEqual({
+      id: 'x',
+      name: 'n',
+      caption: '',
+      created_at: 't',
+      weights: { preset: 'custom', custom: {}, customTreatment: {} },
+      map: {
+        view: 'directed',
+        symmetrise: 'mean',
+        layer: 'composite',
+        sizeMetric: 'betweenness',
+        fill: { kind: 'community' },
+        threshold: 0,
+        layerToggles: {},
+        hideOffLayers: false,
+        filters: [],
+        layout: 'force',
+        groupBy: null,
+        ego: null,
+        highlight: [],
+      },
+      positions: {},
+      selection: { member: null, group: [] },
+    });
+    expect(savedViewV1toV2('not a view')).toBe('not a view');
   });
 
   it('refuses a file from a newer version with a clear message', () => {
-    const text = JSON.stringify({ ...v1(), schema_version: SCHEMA_VERSION + 1 });
+    const text = JSON.stringify({ ...v2(), schema_version: SCHEMA_VERSION + 1 });
     expect(() => parseProject(text)).toThrow(ProjectFileError);
     expect(() => parseProject(text)).toThrow(
-      'This file was saved by a newer version of Graticule (schema 2). Update Graticule to open it.',
+      `This file was saved by a newer version of Graticule (schema ${String(SCHEMA_VERSION + 1)}). Update Graticule to open it.`,
     );
   });
 

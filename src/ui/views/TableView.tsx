@@ -7,6 +7,7 @@ import { DIRECTED_METRICS, SYMMETRISED_METRICS, metricCopy } from '../copy/metri
 import { tableCopy } from '../copy/table';
 import { rankInterval } from '../map/rank';
 import { drawableLayers, useMapData, type MapData } from '../map/useMapModel';
+import { useMemberNames } from '../state/names';
 import { useAppStore, type SizeMetric } from '../state/store';
 import { cancelBootstrap, runBootstrap } from '../state/tools';
 import { downloadText, toCsv } from './csv';
@@ -48,6 +49,7 @@ function MetricsTable({ data }: { data: MapData }) {
   const setRightPanel = useAppStore((s) => s.setRightPanel);
   const setMap = useAppStore((s) => s.setMap);
   const setStatus = useAppStore((s) => s.setStatus);
+  const names = useMemberNames();
   const [sort, setSort] = useState<{ key: SortKey; descending: boolean }>({
     key: settings.sizeMetric,
     descending: true,
@@ -86,7 +88,7 @@ function MetricsTable({ data }: { data: MapData }) {
       out.push({
         index: node.index,
         id: m.id,
-        name: m.display_name,
+        name: names.of(m.id),
         group: fillAttr ? (m.attributes[fillAttr.key] ?? '') : '',
         community: ref?.communities ? (ref.communities.membership[node.index] ?? 0) + 1 : null,
         values,
@@ -122,7 +124,7 @@ function MetricsTable({ data }: { data: MapData }) {
       if (xn !== yn) return xn ? -1 : 1;
       return (xn && yn ? dir * (x - y) : 0) || a.name.localeCompare(b.name, 'en-GB');
     });
-  }, [model, project, metrics, ref, fillAttr, interval, sort]);
+  }, [model, project, names, metrics, ref, fillAttr, interval, sort]);
 
   const formatted = useMemo(() => {
     const out: Partial<Record<SizeMetric, string[]>> = {};

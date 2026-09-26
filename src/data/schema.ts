@@ -7,7 +7,7 @@
 // wave) key with no tie at all means the rating was never entered. Both count
 // as "not rated" everywhere; only the coverage view tells them apart (plan Q1).
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 export const APP_NAME = 'Graticule';
 export const APP_VERSION = '0.2.0';
 export const PROJECT_FILE_EXTENSION = '.ona.json';
@@ -75,45 +75,64 @@ export interface Tie {
   wave: number;
 }
 
-// Analysis and map state captured by a saved view (plan §1.3). Phases 5 and 6
-// give these their behaviour; the file format carries them from the start.
+// Saved views (spec §8, schema version 2). A saved view records everything
+// needed to show the map again as it was: the composite weights, the map's
+// encodings, filters and layout, where each member was drawn and whether it
+// was pinned, and the selection. Field names inside `weights`, `map` and
+// `selection` follow the app's state (ui/state/store.ts) so a view is restored
+// without translation. Version 1's shape is converted by migrations.ts.
 export type LayerRef = string;
-export interface AnalysisSettings {
-  view: 'directed' | 'symmetrised';
-  symmetrise: 'mean' | 'min' | 'max';
-  activeLayer: LayerRef;
-  weights: Record<LayerKey, number>;
-  signedTreatment: Record<LayerKey, 'positive' | 'filterNegative' | 'multiplier'>;
-  preset: 'formal' | 'informal' | 'health' | 'custom';
-  nodeSizeMetric: string;
-  nodeFill: { kind: 'attribute'; key: AttributeKey } | { kind: 'community' };
-}
+export type Preset = 'formal' | 'informal' | 'health' | 'custom';
+export type SignedTreatment = 'positive' | 'filterNegative' | 'multiplier';
 
 export interface AttributeFilter {
   key: AttributeKey;
   values: string[];
 }
 
-export interface MapState {
-  layout: 'force' | 'grouped' | 'circular' | 'hierarchy';
-  groupBy: AttributeKey | null;
-  positions: Record<MemberId, { x: number; y: number; pinned: boolean }>;
-  viewport: { x: number; y: number; k: number };
+export interface SavedWeights {
+  preset: Preset;
+  /** Raw slider values under Custom; layers without an entry use their default weight. */
+  custom: Record<LayerKey, number>;
+  customTreatment: Record<LayerKey, SignedTreatment>;
+}
+
+export interface SavedMapSettings {
+  view: 'directed' | 'symmetrised';
+  symmetrise: 'mean' | 'min' | 'max';
+  /** The layer the map draws ties from: a layer key or 'composite'. */
+  layer: LayerRef;
+  /** Node-size metric (engine NodeMetricKey). */
+  sizeMetric: string;
+  fill: { kind: 'attribute'; key: AttributeKey } | { kind: 'community' };
   threshold: number;
   layerToggles: Record<LayerKey, boolean>;
+  hideOffLayers: boolean;
   filters: AttributeFilter[];
-  egoView: { member: MemberId; depth: 1 | 2 } | null;
-  path: { from: MemberId; to: MemberId } | null;
+  layout: 'force' | 'grouped' | 'circular' | 'hierarchy';
+  groupBy: AttributeKey | null;
+  ego: { member: MemberId; depth: 1 | 2 } | null;
+  /** Members highlighted on the map; the rest are faded. */
+  highlight: MemberId[];
+}
+
+export interface SavedPosition {
+  x: number;
+  y: number;
+  pinned: boolean;
 }
 
 export interface SavedView {
   id: ViewId;
   name: string;
+  /** Shown under the map in presentation mode. */
   caption: string;
   created_at: ISODateTime;
-  analysis: AnalysisSettings;
-  map: MapState;
-  selection: MemberId[];
+  weights: SavedWeights;
+  map: SavedMapSettings;
+  /** Layout coordinates by member; empty when the map had not been drawn. */
+  positions: Record<MemberId, SavedPosition>;
+  selection: { member: MemberId | null; group: MemberId[] };
 }
 
 export interface ProjectSettings {

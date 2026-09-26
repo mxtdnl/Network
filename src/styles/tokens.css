@@ -141,6 +141,10 @@
   --map-legend-column: 180px; /* narrowest legend column */
   --map-zoom-button: 32px; /* same as --control-height */
   --popover-width: 280px; /* metric explanation popover */
+  --map-label-size: var(--t--1-size); /* member names on the map; t-1 when presenting */
+  --map-group-size: var(--t-0-size); /* group names in the grouped and circular layouts */
+  --presentation-legend-width: 360px; /* legend column in presentation mode, as --col-right */
+  --presentation-idle: 2000ms; /* presentation hides the cursor and controls after this long at rest (design-system §5.3) */
 }
 
 @media (prefers-reduced-motion: reduce) {

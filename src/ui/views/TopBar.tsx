@@ -9,12 +9,15 @@ import { clearAllLocalData, setPersistenceOn } from '../state/persistenceSync';
 import { loadDemo, openProjectFile, saveProjectFile } from '../state/projectActions';
 import { useAppStore } from '../state/store';
 import { useCoverage } from './CoveragePanel';
+import { savedViewsCopy } from '../copy/savedViews';
+import { setNamesHidden } from '../state/names';
+import { startPresentation } from '../state/presentation';
 
 type Pending = 'open' | 'demo' | null;
 
 export function TopBar() {
   const anonymise = useAppStore((s) => s.ui.anonymise);
-  const setAnonymise = useAppStore((s) => s.setAnonymise);
+  const views = useAppStore((s) => s.data.project?.saved_views.length ?? 0);
   const openNotice = useAppStore((s) => s.openNotice);
   const setImportOpen = useAppStore((s) => s.setImportOpen);
   const project = useAppStore((s) => s.data.project);
@@ -63,8 +66,16 @@ export function TopBar() {
             {coverageCopy.topBar(percent(coverage.rate))}
           </p>
         )}
-        <Switch label={shellCopy.hideNames} checked={anonymise} onChange={setAnonymise} />
-        <button type="button" className="button button--text" disabled>
+        <Switch label={shellCopy.hideNames} checked={anonymise} onChange={setNamesHidden} />
+        <button
+          type="button"
+          className="button button--text"
+          disabled={views === 0}
+          title={views === 0 ? savedViewsCopy.presentHelp : undefined}
+          onClick={() => {
+            startPresentation(0);
+          }}
+        >
           {shellCopy.present}
         </button>
         <MenuButton

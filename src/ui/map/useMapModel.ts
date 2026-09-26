@@ -15,6 +15,7 @@ import {
   type MapModel,
 } from './model';
 import { readMapTheme, type MapTheme } from './theme';
+import { useMemberNames, type MemberNames } from '../state/names';
 import { mapCopy } from '../copy/map';
 
 let cachedTheme: MapTheme | null = null;
@@ -122,10 +123,14 @@ export function layoutRequest(
   result: AnalysisResult,
   settings: MapSettings,
   revision: number,
+  memberNames: MemberNames,
 ): LayoutRequest {
-  const names = project.members.map((m) => m.display_name);
+  // Names order members within groups; codes order them differently, so the key changes with them.
+  const names = memberNames.byIndex;
   const weights = result.refs[settings.layer]?.weights;
   const base = `${String(revision)}|${String(project.members.length)}`;
+  // Names order members within groups, so codes lay them out differently; the force layout ignores names.
+  const naming = memberNames.anonymised ? '|coded' : '|named';
   switch (settings.layout) {
     case 'grouped':
     case 'circular': {
@@ -134,7 +139,7 @@ export function layoutRequest(
       const weightKey =
         settings.layout === 'grouped' ? `|${result.inputKey}|${settings.layer}` : '';
       return {
-        key: `${base}|${settings.layout}|${settings.groupBy ?? ''}${weightKey}`,
+        key: `${base}${naming}|${settings.layout}|${settings.groupBy ?? ''}${weightKey}`,
         spec: { kind: settings.layout, group, groups: labels, names },
         weights,
       };
@@ -145,7 +150,11 @@ export function layoutRequest(
         project.members.map((m) => (attr ? (m.attributes[attr.key] ?? null) : null)),
         project.members.map((m) => m.id),
       );
-      return { key: `${base}|hierarchy`, spec: { kind: 'hierarchy', parent, names }, weights };
+      return {
+        key: `${base}${naming}|hierarchy`,
+        spec: { kind: 'hierarchy', parent, names },
+        weights,
+      };
     }
     default:
       return {
@@ -179,11 +188,12 @@ export function useMapData(): MapData | null {
   const removal = useAppStore((s) =>
     s.tools.resilience && s.tools.showRemoval ? s.tools.removal : null,
   );
+  const names = useMemberNames();
   return useMemo(() => {
     if (!project || !result || result.memberIds.length !== project.members.length) return null;
     const theme = mapTheme();
     const settings = effectiveSettings(project, result, raw);
-    const model = buildMapModel(project, result, settings, theme);
+    const model = buildMapModel(project, result, settings, theme, names.byIndex);
     const informal = roleLayer(project, 'informal');
     const overlay =
       settings.layout === 'hierarchy' && informal && result.refs[informal.key]
@@ -191,12 +201,12 @@ export function useMapData(): MapData | null {
         : undefined;
     const mapModel =
       overlay || (removal && removal.length > 0)
-        ? buildMapModel(project, result, settings, theme, {
+        ? buildMapModel(project, result, settings, theme, names.byIndex, {
             ...(overlay ? { edgeLayer: overlay } : {}),
             ...(removal ? { removed: new Set(removal) } : {}),
           })
         : model;
-    const layout = layoutRequest(project, result, settings, revision);
+    const layout = layoutRequest(project, result, settings, revision, names);
     return { project, result, settings, model, mapModel, layout, theme };
-  }, [project, revision, result, raw, removal]);
+  }, [project, revision, result, raw, removal, names]);
 }
