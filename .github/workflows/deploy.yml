@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Manual redeploy from the Actions tab, e.g. after a repository rename.
+  workflow_dispatch:
 
 permissions:
   contents: read
