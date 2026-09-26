@@ -87,6 +87,10 @@ Phase 0 decisions D1–D13, Phase 1 decisions D14–D25 and Phase 3 decisions D3
 
 ## Resolved questions
 
+Q24 (member panel actions): on 2026-09-26 the owner approved placing Show ego network, Add to subgroup and Remove in simulation under the attributes (D64).
+
+Q23 (hierarchy overlay): on 2026-09-26 the owner confirmed that over the formal hierarchy the map draws informal collaboration ties, while node size, fill and ranks follow "Ties from" (D62).
+
 Q22 (layer toggles): on 2026-09-26 the owner asked for an option to remove ties as well; built as D59.
 
 Q21 (edge style when a rating is missing): on 2026-09-26 the owner accepted the dotted style for now and said no style is perhaps best. Kept dotted (D53) for the time being. To revisit: "no style" would draw these ties as plain solid lines, which is the formal-only style, so it needs a distinct unstyled look (for example thinner, or excluded from the style legend with a note) before it can replace dotted.
@@ -98,10 +102,6 @@ Q19 (SheetJS source): on 2026-09-26 the owner allowed `cdn.sheetjs.com` in the e
 On 2026-09-26 the owner approved `docs/plan.md` §6 Q1–Q17 with their proposed defaults. Q18 is moot because Phase 0 was merged to `main` by pull request. The flat indigo hue in the categorical palette (design-system §2.1) is accepted as proposed.
 
 ## Open questions
-
-Q23 (hierarchy overlay): spec §7 says the composite drives edge width, and spec §8 asks for the formal hierarchy "with informal ties overlaid". Over the hierarchy the map therefore draws informal collaboration ties (width from that layer), while node size, fill and ranks still follow "Ties from" (D62). Confirm, or say whether the overlay should follow "Ties from" instead.
-
-Q24 (member panel actions): design-system §5.2 places "Show ego network" and "Remove in simulation" at the bottom of the member panel; they are placed under the attributes (D64) because the ties lists push the bottom out of view. Confirm the move.
 
 Q25 (preset weights): the preset weights (method notes §6, "Presets") are this build's conventions, not taken from a source. Confirm or supply your own.
 
