@@ -160,6 +160,7 @@ function refResult(p: Prepared, r: PreparedRef, warnings: EngineWarning[]): RefR
       mixing: mix,
     },
     communities: communities(denseGraph(r.symmetric, p.n, false), p.input.settings.seed),
+    weights: r.view.slice(),
   };
 }
 

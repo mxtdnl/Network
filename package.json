@@ -22,6 +22,9 @@
     "fixtures": "python3 scripts/generate_fixtures.py"
   },
   "dependencies": {
+    "d3-force": "^3.0.0",
+    "d3-selection": "^3.0.0",
+    "d3-zoom": "^3.0.0",
     "graphology": "^0.26.0",
     "graphology-communities-louvain": "^2.0.2",
     "graphology-components": "^1.5.4",
@@ -39,6 +42,9 @@
     "@fontsource/fira-sans": "^5.3.0",
     "@fontsource/fira-sans-condensed": "^5.3.0",
     "@playwright/test": "^1.63.0",
+    "@types/d3-force": "^3.0.10",
+    "@types/d3-selection": "^3.0.12",
+    "@types/d3-zoom": "^3.0.8",
     "@types/node": "^22.20.4",
     "@types/papaparse": "^5.5.2",
     "@types/react": "^19.3.0",

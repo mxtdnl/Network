@@ -1,0 +1,595 @@
+/* Phase 4: map view, legend, map controls and member panel. Every value comes
+   from tokens.css. The map itself is drawn on a canvas from the same tokens
+   (src/ui/map/theme.ts). */
+
+/* Map view fills its tab panel edge to edge. */
+.map {
+  position: relative;
+  height: calc(100% + var(--s-5) * 2);
+  margin: calc(var(--s-5) * -1);
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.map__stage {
+  position: absolute;
+  inset: 0;
+}
+
+.map__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.map__canvas:active {
+  cursor: grabbing;
+}
+
+.map__canvas--member {
+  cursor: pointer;
+}
+
+.map__message {
+  color: var(--graphite);
+}
+
+/* Coverage warning: top left, inside the map so it travels with it. */
+.map__coverage,
+.map__notice {
+  position: absolute;
+  inset-inline-start: var(--s-4);
+  max-width: var(--measure);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  background: var(--paper);
+  border: var(--line-width) solid var(--stone);
+  border-radius: var(--r-control);
+}
+
+.map__coverage {
+  top: var(--s-4);
+  font-weight: var(--weight-medium);
+}
+
+.map__coverage .icon {
+  margin-top: calc((var(--t-0-line) - var(--icon-size)) / 2);
+}
+
+.map__notice {
+  top: calc(var(--s-4) + var(--s-8));
+  color: var(--graphite);
+}
+
+.map__coverage + .map__notice {
+  top: calc(var(--s-4) + var(--s-8) + var(--s-5));
+}
+
+/* Focusable members: visually hidden; focus is drawn on the canvas as an ink
+   ring outside a paper halo, keeping the accent out of the map (design-system §6). */
+.map__nodes {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
+
+.map__node {
+  position: absolute;
+  width: var(--line-width);
+  height: var(--line-width);
+  margin: calc(var(--line-width) * -1);
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Legend: lower left, paper ground, 1 px stone boundary, no shadow (design-system §5.1). */
+/* Legend: lower left, paper ground, 1 px stone boundary, no shadow
+   (design-system §5.1). A strip that flows into as many columns as the map
+   is wide, so it costs the network as little height as possible. */
+.legend {
+  position: absolute;
+  inset-inline-start: var(--s-4);
+  inset-inline-end: calc(var(--map-zoom-button) + var(--s-4) * 2);
+  inset-block-end: var(--s-4);
+  max-height: 50%;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--map-legend-column), 1fr));
+  gap: var(--s-3) var(--s-5);
+  padding: var(--s-3) var(--s-4);
+  background: var(--paper);
+  border: var(--line-width) solid var(--stone);
+  border-radius: var(--r-control);
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+  color: var(--graphite);
+}
+
+.legend__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.legend__title {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+.legend__samples {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--s-3);
+}
+
+.legend__samples--list {
+  gap: 0 var(--s-3);
+}
+
+.legend__sample {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+}
+
+.legend__svg {
+  flex: none;
+  overflow: visible;
+}
+
+.legend__node {
+  fill: var(--field);
+  stroke: var(--ink);
+  stroke-width: var(--line-width);
+}
+
+.legend__edge {
+  stroke: var(--stone);
+}
+
+.legend__edge--not-rated {
+  stroke: var(--cat-other);
+}
+
+.legend__arrow {
+  fill: var(--stone);
+}
+
+.legend__dot {
+  flex: none;
+  width: var(--s-3);
+  height: var(--s-3);
+  border: var(--line-width) solid var(--ink);
+  border-radius: var(--r-chip);
+}
+
+.legend__dot--cat-1 {
+  background: var(--cat-1);
+}
+.legend__dot--cat-2 {
+  background: var(--cat-2);
+}
+.legend__dot--cat-3 {
+  background: var(--cat-3);
+}
+.legend__dot--cat-4 {
+  background: var(--cat-4);
+}
+.legend__dot--cat-5 {
+  background: var(--cat-5);
+}
+.legend__dot--cat-6 {
+  background: var(--cat-6);
+}
+.legend__dot--cat-7 {
+  background: var(--cat-7);
+}
+.legend__dot--cat-8 {
+  background: var(--cat-8);
+}
+.legend__dot--other {
+  background: var(--cat-other);
+  border-style: dashed;
+}
+
+.legend__sample--ramp {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.legend__ramp {
+  display: grid;
+  grid-template-columns: repeat(7, var(--map-legend-swatch));
+  height: var(--s-2);
+}
+
+.legend__step--n3 {
+  background: var(--val-n3);
+}
+.legend__step--n2 {
+  background: var(--val-n2);
+}
+.legend__step--n1 {
+  background: var(--val-n1);
+}
+.legend__step--0 {
+  background: var(--val-0);
+}
+.legend__step--p1 {
+  background: var(--val-p1);
+}
+.legend__step--p2 {
+  background: var(--val-p2);
+}
+.legend__step--p3 {
+  background: var(--val-p3);
+}
+
+.legend__ramp-labels {
+  display: flex;
+  justify-content: space-between;
+}
+
+.legend__note {
+  margin-top: var(--s-1);
+}
+
+/* Zoom controls: lower right, the one overlay group on the map (e-1). */
+.map__zoom {
+  position: absolute;
+  inset-inline-end: var(--s-4);
+  inset-block-end: var(--s-4);
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s-3);
+}
+
+.map__unpin {
+  background: var(--paper);
+  border: var(--line-width) solid var(--stone);
+}
+
+.map__zoom-buttons {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: var(--line-width) solid var(--stone);
+  border-radius: var(--r-overlay);
+  box-shadow: var(--e-1);
+}
+
+.map__zoom-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--map-zoom-button);
+  height: var(--map-zoom-button);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--r-overlay);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.map__zoom-button:hover {
+  background: var(--field);
+}
+
+/* Left column: map controls above the layer manager */
+.workspace__section {
+  margin-bottom: var(--s-6);
+}
+
+.map-controls__group {
+  margin: 0 0 var(--s-4);
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.map-controls__group > legend {
+  padding: 0;
+  margin-bottom: var(--s-1);
+}
+
+.map-controls .select,
+.map-controls .text-input {
+  width: 100%;
+}
+
+.field__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.field__value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Segmented control: native radios, one boundary, the checked option filled. */
+.segmented {
+  display: inline-flex;
+  border: var(--line-width) solid var(--stone);
+  border-radius: var(--r-control);
+  background: var(--paper);
+}
+
+.segmented__option {
+  position: relative;
+  display: inline-flex;
+}
+
+.segmented__input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.segmented__label {
+  display: inline-flex;
+  align-items: center;
+  min-height: calc(var(--control-height) - var(--line-width) * 2);
+  padding-inline: var(--s-4);
+  border-radius: var(--r-control);
+  font-weight: var(--weight-medium);
+}
+
+.segmented__input:checked + .segmented__label {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.segmented__input:focus-visible + .segmented__label {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+/* Range slider: stone track, accent thumb (design-system §1). */
+.range {
+  width: 100%;
+  min-height: var(--target-min);
+  margin: 0;
+  background: transparent;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Filter chips (r-chip) */
+.chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: var(--target-min);
+  padding-inline: var(--s-3) var(--s-1);
+  background: var(--paper);
+  border: var(--line-width) solid var(--stone);
+  border-radius: var(--r-chip);
+}
+
+.chip__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--target-min);
+  height: var(--target-min);
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--r-chip);
+  cursor: pointer;
+}
+
+.filter-add {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-2);
+}
+
+.search-results {
+  list-style: none;
+  margin-top: var(--s-1);
+}
+
+.search-results__item {
+  min-height: var(--target-min);
+  padding-inline: 0;
+}
+
+/* Member panel (design-system §5.2) */
+.member {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+.member__title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+.member__name {
+  font-size: var(--t-2-size);
+  line-height: var(--t-2-line);
+  font-weight: var(--weight-semibold);
+}
+
+.member__close {
+  flex: none;
+  min-width: var(--control-height);
+}
+
+.member__attributes {
+  margin: 0;
+}
+
+.definition-list__row {
+  display: contents;
+}
+
+.link-button {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.member__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.member__heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+.member__heading {
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+  font-weight: var(--weight-semibold);
+}
+
+.member__layer-select {
+  max-width: 50%;
+}
+
+.member__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.member__table th,
+.member__table td {
+  padding: var(--s-1) 0;
+  vertical-align: baseline;
+}
+
+.member__table thead th {
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+  font-weight: var(--weight-medium);
+  color: var(--graphite);
+}
+
+.member__table tbody th {
+  text-align: start;
+  font-weight: var(--weight-regular);
+}
+
+.member__table td {
+  padding-inline-start: var(--s-4);
+}
+
+.member__metric {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+}
+
+.member__note,
+.member__none {
+  color: var(--graphite);
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+}
+
+.member__disclosure {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--r-control);
+  font-weight: var(--weight-medium);
+  text-align: start;
+  cursor: pointer;
+}
+
+/* Metric explanation: a tooltip popover on an info button (e-1, r-overlay). */
+/* The popover is placed from the row's label cell, so it stays inside the column. */
+.member__metrics tbody th {
+  position: relative;
+}
+
+.metric-info {
+  display: inline-flex;
+}
+
+.metric-info__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--target-min);
+  height: var(--target-min);
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--r-control);
+  color: var(--graphite);
+  cursor: help;
+}
+
+.metric-info__popover {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + var(--s-1));
+  inset-inline-start: 0;
+  width: min(var(--popover-width), calc(var(--col-right) - var(--s-5) * 2));
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  background: var(--paper);
+  border: var(--line-width) solid var(--stone);
+  border-radius: var(--r-overlay);
+  box-shadow: var(--e-1);
+  color: var(--ink);
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+  font-weight: var(--weight-regular);
+  text-align: start;
+  white-space: normal;
+}
+
+.metric-info__caveat,
+.metric-info__technical {
+  color: var(--graphite);
+}
+
+.metric-info__flag {
+  font-weight: var(--weight-medium);
+}

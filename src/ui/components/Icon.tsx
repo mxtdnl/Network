@@ -1,7 +1,7 @@
 // Functional glyphs only (design-system §7, item 7). Drawn in currentColor.
 
 interface IconProps {
-  name: 'warning' | 'info' | 'check';
+  name: 'warning' | 'info' | 'check' | 'plus' | 'minus' | 'fit' | 'close' | 'expand' | 'collapse';
 }
 
 export function Icon({ name }: IconProps) {
@@ -20,6 +20,38 @@ export function Icon({ name }: IconProps) {
           <path d="M8 7v4.5" stroke="currentColor" strokeLinecap="round" />
           <circle cx="8" cy="4.75" r="0.75" fill="currentColor" />
         </>
+      )}
+      {name === 'plus' && <path d="M8 3v10M3 8h10" stroke="currentColor" strokeLinecap="round" />}
+      {name === 'minus' && <path d="M3 8h10" stroke="currentColor" strokeLinecap="round" />}
+      {name === 'fit' && (
+        <path
+          d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      )}
+      {name === 'close' && (
+        <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeLinecap="round" />
+      )}
+      {name === 'expand' && (
+        <path
+          d="M6 3.5 10.5 8 6 12.5"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      )}
+      {name === 'collapse' && (
+        <path
+          d="M3.5 6 8 10.5 12.5 6"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       )}
       {name === 'check' && (
         <path
