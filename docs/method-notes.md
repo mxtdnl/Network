@@ -284,16 +284,20 @@ The engine returns the formula as a structure (terms, weights, filters, multipli
 
 **Meaning.** Starting points for the weights, named for the question being asked. Each names raw slider values for the layers it uses; every other enabled layer gets weight 0 and is left out. The engine normalises the summed layers' weights to 1, so only their proportions matter, and a layer a preset names but the project has not enabled is simply absent.
 
+One rule applies to every preset: the layer that defines it has twice the raw weight of each supporting layer.
+
 | Preset | Raw weights | Signed layers |
 |---|---|---|
-| Formal structure | formal collaboration 0.6, connection strength 0.2, workflow dependency 0.2 | none used |
-| Informal network | informal collaboration 0.4, connection strength 0.2, advice 0.2, idea sharing 0.2 | none used |
-| Relationship health | valence 0.4, connection strength 0.2, benevolence-based trust 0.2, interpersonal safety 0.2, energy 0.2 | valence and energy as positive ratings |
+| Formal structure | formal collaboration 0.4, workflow dependency 0.2 | none used |
+| Informal network | informal collaboration 0.4, advice 0.2, idea sharing 0.2 | none used |
+| Relationship health | connection strength, benevolence-based trust, interpersonal safety and energy 0.2 each | valence as a multiplier, energy as positive ratings |
 | Custom | the analyst's own slider values; a layer never moved uses its default weight (1) | as chosen |
 
-With only the four core layers enabled, Formal structure gives formal collaboration 0.75 and connection strength 0.25; Informal network gives informal collaboration 0.67 and connection strength 0.33; Relationship health gives valence (positive ratings) 0.67 and connection strength 0.33.
+Why these layers. Formal structure uses the ties created by role or process: formal collaboration (defined in spec §4.2 as required by role, process or reporting line) and workflow dependency. Informal network uses discretionary ties: informal collaboration, advice (the core informal relation in Cross & Parker, 2004) and idea sharing. Neither uses connection strength, so the two presets differ only in what defines them. Relationship health sums relational layers and lets valence, the overall affective quality of the relationship, scale the result, so a negative relationship lowers the composite (by up to half) instead of being scored like a neutral one. It leaves out competence-based trust, which concerns expertise rather than the relationship, and the conflict layers, which are frequencies that the composite could only add, so frequent conflict would raise the score.
 
-**Caveats.** The presets are conventions chosen for this tool, not published standards. Moving a slider under a preset switches to Custom, starting from the preset's values.
+With only the four core layers enabled, Formal structure is formal collaboration alone (1.00), Informal network is informal collaboration alone (1.00), and Relationship health is connection strength (1.00) scaled by valence.
+
+**Caveats.** The presets are conventions chosen for this tool and approved by the owner, not published standards; the 2 : 1 ratio in particular is a convention. Moving a slider under a preset switches to Custom, starting from the preset's values.
 
 ### Shortest path
 

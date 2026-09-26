@@ -107,10 +107,10 @@ test('weights: presets, sliders, signed treatment, live formula and animated lay
   const canvas = page.locator('canvas.map__canvas');
   await page.getByLabel('Preset').selectOption({ label: 'Formal structure' });
   await expect(canvas).toHaveAttribute('data-transition', 'running');
-  await expect(formula(page)).toContainText('0.75×Formal collaboration');
-  await expect(formula(page)).toContainText('0.25×Connection strength');
+  await expect(formula(page)).toContainText('1.00×Formal collaboration');
+  await expect(formula(page)).not.toContainText('Connection strength');
   await expect(formula(page)).not.toContainText('Informal collaboration');
-  await expect(leftColumn(page).locator('output', { hasText: 'Not used' })).toHaveCount(2);
+  await expect(leftColumn(page).locator('output', { hasText: 'Not used' })).toHaveCount(3);
   await settled(page);
   await shot(page, 'weights-formal-structure');
 
@@ -148,7 +148,7 @@ test('weights: presets, sliders, signed treatment, live formula and animated lay
     }).observe(c as Element, { attributes: true });
   });
   await page.getByLabel('Preset').selectOption({ label: 'Relationship health' });
-  await expect(formula(page)).toContainText('Valence, positive ratings');
+  await expect(formula(page)).toContainText('× (1 + 0.5 × Valence)');
   await page.waitForTimeout(1000);
   expect(await page.evaluate(() => (window as unknown as { __moved: boolean }).__moved)).toBe(
     false,

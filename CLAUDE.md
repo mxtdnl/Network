@@ -87,6 +87,8 @@ Phase 0 decisions D1–D13, Phase 1 decisions D14–D25 and Phase 3 decisions D3
 
 ## Resolved questions
 
+Q25 (preset weights): on 2026-09-26 the owner asked for one rule (the defining layer twice each supporting layer), valence as a multiplier in Relationship health, and connection strength dropped from Formal structure and Informal network. Built as described in `docs/method-notes.md` §6, "Presets" (amends D60).
+
 Q24 (member panel actions): on 2026-09-26 the owner approved placing Show ego network, Add to subgroup and Remove in simulation under the attributes (D64).
 
 Q23 (hierarchy overlay): on 2026-09-26 the owner confirmed that over the formal hierarchy the map draws informal collaboration ties, while node size, fill and ranks follow "Ties from" (D62).
@@ -103,7 +105,7 @@ On 2026-09-26 the owner approved `docs/plan.md` §6 Q1–Q17 with their proposed
 
 ## Open questions
 
-Q25 (preset weights): the preset weights (method notes §6, "Presets") are this build's conventions, not taken from a source. Confirm or supply your own.
+None.
 
 ## Phase status
 

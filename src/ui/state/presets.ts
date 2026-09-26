@@ -17,24 +17,23 @@ interface PresetDefinition {
   treatment: Record<LayerKey, SignedTreatment>;
 }
 
+// One rule for every preset: the defining layer has twice the raw weight of
+// each supporting layer. Relationship health uses valence as a multiplier, so
+// negative ratings lower the composite rather than being ignored; its weight
+// only switches it on.
 export const PRESET_DEFINITIONS: Record<Exclude<Preset, 'custom'>, PresetDefinition> = {
   // Ties required by role, process or reporting line.
   formal: {
-    weights: { formal_collaboration: 0.6, connection_strength: 0.2, workflow_dependency: 0.2 },
+    weights: { formal_collaboration: 0.4, workflow_dependency: 0.2 },
     treatment: {},
   },
   // Collaboration and help that happen outside formal channels.
   informal: {
-    weights: {
-      informal_collaboration: 0.4,
-      connection_strength: 0.2,
-      advice: 0.2,
-      idea_sharing: 0.2,
-    },
+    weights: { informal_collaboration: 0.4, advice: 0.2, idea_sharing: 0.2 },
     treatment: {},
   },
-  // The affective quality of relationships: positive valence and energy,
-  // with trust and safety where those layers are collected.
+  // The quality of relationships: valence scales the composite, which sums
+  // connection strength, positive energy and, where collected, trust and safety.
   health: {
     weights: {
       valence: 0.4,
@@ -43,7 +42,7 @@ export const PRESET_DEFINITIONS: Record<Exclude<Preset, 'custom'>, PresetDefinit
       interpersonal_safety: 0.2,
       energy: 0.2,
     },
-    treatment: { valence: 'positive', energy: 'positive' },
+    treatment: { valence: 'multiplier', energy: 'positive' },
   },
 };
 

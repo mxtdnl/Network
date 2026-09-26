@@ -119,11 +119,14 @@ describe('presets', () => {
   it('a preset leaves unlisted layers out with weight 0', () => {
     const w = effectiveWeights(demo, { ...initialWeightState(), preset: 'formal' });
     expect(w.weights).toEqual({
-      connection_strength: 0.2,
+      connection_strength: 0,
       valence: 0,
       informal_collaboration: 0,
-      formal_collaboration: 0.6,
+      formal_collaboration: 0.4,
     });
+    const health = effectiveWeights(demo, { ...initialWeightState(), preset: 'health' });
+    expect(health.signedTreatment.valence).toBe('multiplier');
+    expect(health.weights.connection_strength).toBe(0.2);
     const informal = effectiveWeights(demo, { ...initialWeightState(), preset: 'informal' });
     expect(weightsKey(informal)).not.toBe(weightsKey(w));
   });

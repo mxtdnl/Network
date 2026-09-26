@@ -12,10 +12,10 @@ export const weightsCopy = {
     custom: 'Custom',
   } satisfies Record<Preset, string>,
   presetHelp: {
-    formal: 'Formal collaboration, with connection strength and workflow dependency.',
-    informal: 'Informal collaboration, with connection strength, advice and idea sharing.',
+    formal: 'Formal collaboration, with workflow dependency.',
+    informal: 'Informal collaboration, with advice and idea sharing.',
     health:
-      'Positive valence and energy, with connection strength, benevolence-based trust and interpersonal safety.',
+      'Connection strength, positive energy, benevolence-based trust and interpersonal safety, scaled by valence.',
     custom: 'Your own weights. Moving a slider under a preset starts from its values.',
   } satisfies Record<Preset, string>,
   share: 'Share',
