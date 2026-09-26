@@ -47,6 +47,13 @@ export interface FixtureRef {
       seed: number;
     } | null;
   };
+  shortest_paths?: {
+    from: number;
+    to: number;
+    distance: Num;
+    count?: number;
+    paths: number[][];
+  }[];
   resilience?: {
     removed: number[];
     members: number;

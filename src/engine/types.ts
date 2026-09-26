@@ -2,6 +2,10 @@
 // (plan §1.2). Pure data: no functions, no graph objects, so every value can
 // cross the worker boundary by structured clone or transfer.
 //
+import type { CoverageResult } from '../data/coverage';
+
+export type { CoverageResult };
+
 // Conventions (docs/method-notes.md):
 // - Matrices are n × n, row-major, `m[i * n + j]` for the tie i → j.
 // - Inside the engine a missing rating is NaN (CLAUDE.md D2); `null` exists only
@@ -59,6 +63,8 @@ export interface AnalysisInput {
   /** One n × n tensor per layer, aligned with `layers`; NaN = not rated, diagonal NaN. */
   ratings: Float64Array[];
   settings: EngineSettings;
+  /** Data coverage, computed from the project on the main thread (CLAUDE.md D29), passed through. */
+  coverage?: CoverageResult | null;
 }
 
 // ------------------------------------------------------------ node metrics
@@ -151,6 +157,8 @@ export interface CommunityResult {
   modularity: number;
   resolution: number;
   seed: number;
+  /** Louvain runs from the seeded stream; the best partition is kept. */
+  restarts: number;
 }
 
 export type RefKind = 'unsigned' | 'positive' | 'negative' | 'composite';
@@ -271,6 +279,8 @@ export interface AnalysisResult {
   signed: Record<LayerKey, SignedResult>;
   multiplex: MultiplexResult | null;
   composite: CompositeFormula | null;
+  /** Response rates and the threshold flag (spec §6), or null when the input had none. */
+  coverage: CoverageResult | null;
   warnings: EngineWarning[];
 }
 
@@ -301,6 +311,19 @@ export interface ResilienceResult {
     averageDistance: number;
     averageHops: number;
   };
+}
+
+// --------------------------------------------------------------------- path
+
+export interface PathResult {
+  ref: LayerRef;
+  /** Members along one shortest path, from the first member to the second. */
+  members: MemberId[];
+  /** Sum of 1/w along the path. */
+  distance: number;
+  hops: number;
+  /** How many distinct paths share this shortest length. */
+  shortestPaths: number;
 }
 
 // ---------------------------------------------------------------- bootstrap

@@ -10,6 +10,7 @@ import type {
   BootstrapResult,
   LayerRef,
   MemberId,
+  PathResult,
   ResilienceResult,
 } from './types';
 
@@ -19,6 +20,7 @@ export type EngineRequest =
   | { id: RequestId; kind: 'analyse'; input: AnalysisInput }
   | { id: RequestId; kind: 'resilience'; inputKey: string; ref: LayerRef; removed: MemberId[] }
   | { id: RequestId; kind: 'bootstrap'; inputKey: string; opts: BootstrapOptions }
+  | { id: RequestId; kind: 'path'; inputKey: string; ref: LayerRef; from: MemberId; to: MemberId }
   | { id: RequestId; kind: 'cancel'; target: RequestId };
 
 export type EngineErrorCode = 'staleInput' | 'invalidRequest' | 'internal';
@@ -28,12 +30,13 @@ export type EngineResponse =
   | { id: RequestId; kind: 'analysis'; result: AnalysisResult }
   | { id: RequestId; kind: 'resilience'; result: ResilienceResult }
   | { id: RequestId; kind: 'bootstrap'; result: BootstrapResult }
+  | { id: RequestId; kind: 'path'; result: PathResult | null }
   | { id: RequestId; kind: 'cancelled' }
   | { id: RequestId; kind: 'error'; code: EngineErrorCode; message: string };
 
 export type ResultResponse = Extract<
   EngineResponse,
-  { kind: 'analysis' | 'resilience' | 'bootstrap' }
+  { kind: 'analysis' | 'resilience' | 'bootstrap' | 'path' }
 >;
 
 /** Collects the distinct ArrayBuffers under a value, for a transfer list. */

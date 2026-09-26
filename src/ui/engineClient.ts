@@ -18,6 +18,7 @@ import type {
   BootstrapResult,
   LayerRef,
   MemberId,
+  PathResult,
   ResilienceResult,
 } from '../engine/types';
 import type { Project } from '../data/schema';
@@ -26,6 +27,7 @@ export type {
   AnalysisResult,
   BootstrapOptions,
   BootstrapResult,
+  PathResult,
   ResilienceResult,
 } from '../engine/types';
 export { buildAnalysisInput };
@@ -108,6 +110,20 @@ export class EngineClient {
     return this.request(
       { kind: 'resilience', inputKey, ref, removed },
       'resilience',
+      undefined,
+      (r) => r.result,
+    );
+  }
+
+  path(
+    inputKey: string,
+    ref: LayerRef,
+    from: MemberId,
+    to: MemberId,
+  ): Operation<PathResult | null> {
+    return this.request(
+      { kind: 'path', inputKey, ref, from, to },
+      'path',
       undefined,
       (r) => r.result,
     );

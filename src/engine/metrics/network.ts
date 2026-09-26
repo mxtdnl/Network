@@ -16,6 +16,7 @@ import type {
 } from '../types';
 
 export const LOUVAIN_RESOLUTION = 1;
+export const LOUVAIN_RESTARTS = 10;
 
 export function density(g: DenseGraph): number {
   return graphDensity(toGraphology(g));
@@ -178,34 +179,41 @@ export function mixing(g: DenseGraph, column: AttributeColumn): GroupMixing {
 }
 
 /**
- * Louvain communities on an undirected graph (graphology-communities-louvain,
- * seeded), with the modularity of the partition found (graphology-metrics).
- * Null when the graph has no ties.
+ * Louvain communities on an undirected graph (graphology-communities-louvain),
+ * with the modularity of the partition found (graphology-metrics). Louvain is
+ * a heuristic whose result depends on the random order it visits members, so
+ * it runs LOUVAIN_RESTARTS times from one seeded random stream and keeps the
+ * partition with the highest modularity (the first, on a tie). The same data
+ * and seed always give the same partition. Null when the graph has no ties.
  */
 export function communities(g: DenseGraph, seed: number): CommunityResult | null {
   if (g.directed) throw new Error('communities: expects the symmetrised graph');
   const graph = toGraphology(g);
   if (graph.size === 0) return null;
-  const found = louvain(graph, {
-    getEdgeWeight: 'weight',
-    resolution: LOUVAIN_RESOLUTION,
-    rng: mulberry32(seed),
-  });
-  // Renumber communities by their lowest member index so labels are stable.
-  const relabel = new Map<number, number>();
-  const membership = new Int32Array(g.n);
-  for (let i = 0; i < g.n; i++) {
-    const c = found[String(i)] as number;
-    if (!relabel.has(c)) relabel.set(c, relabel.size);
-    membership[i] = relabel.get(c) as number;
+  const rng = mulberry32(seed);
+  let best: { membership: Int32Array; count: number; modularity: number } | null = null;
+  for (let run = 0; run < LOUVAIN_RESTARTS; run++) {
+    const found = louvain(graph, {
+      getEdgeWeight: 'weight',
+      resolution: LOUVAIN_RESOLUTION,
+      // Classic local moving (every member revisited each sweep, as NetworkX
+      // does); graphology's default fast queue can stop in poorer optima.
+      fastLocalMoves: false,
+      rng,
+    });
+    // Renumber communities by their lowest member index so labels are stable.
+    const relabel = new Map<number, number>();
+    const membership = new Int32Array(g.n);
+    for (let i = 0; i < g.n; i++) {
+      const c = found[String(i)] as number;
+      if (!relabel.has(c)) relabel.set(c, relabel.size);
+      membership[i] = relabel.get(c) as number;
+    }
+    const q = partitionModularity(g, membership);
+    if (!best || q > best.modularity) best = { membership, count: relabel.size, modularity: q };
   }
-  return {
-    membership,
-    count: relabel.size,
-    modularity: partitionModularity(g, membership),
-    resolution: LOUVAIN_RESOLUTION,
-    seed,
-  };
+  if (!best) return null;
+  return { ...best, resolution: LOUVAIN_RESOLUTION, seed, restarts: LOUVAIN_RESTARTS };
 }
 
 /** Modularity of a fixed partition (graphology-metrics), undirected or directed. */

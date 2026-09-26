@@ -179,9 +179,9 @@ A member with fewer than two contacts, or no closed triangle, has clustering 0 a
 
 Q = (1 / 2m) Σ_ij [w_ij − γ s_i s_j / 2m] δ(c_i, c_j),
 
-with m the total tie weight, s_i the strength of i, and γ = 1 (the resolution). Communities are found on the symmetrised graph of the layer, combined by the chosen rule, in both views. The search is seeded (the project's random seed), so the same data and seed give the same result. Communities are numbered in order of their earliest member.
+with m the total tie weight, s_i the strength of i, and γ = 1 (the resolution). Communities are found on the symmetrised graph of the layer, combined by the chosen rule, in both views. The search visits members in a random order, so it is run ten times from one stream seeded with the project's random seed, and the partition with the highest modularity is kept; the same data and seed always give the same result. Each run uses classic local moving (every member is reconsidered on every sweep, as in NetworkX). Communities are numbered in order of their earliest member.
 
-**Caveats.** Louvain is a heuristic: it finds a good partition, not necessarily the best, and a different node order or seed can give a different one of similar quality. Graticule uses graphology's implementation, whose partitions differ from NetworkX's; on the reference cases its modularity is within 0.016 of NetworkX's (sometimes higher). Modularity around 0.3 or above is usually read as clear community structure; values near 0 mean none. The resolution γ = 1 is the same default as NetworkX; larger values find smaller communities.
+**Caveats.** Louvain is a heuristic: it finds a good partition, not necessarily the best, and a different node order or seed can give a different one of similar quality. Graticule uses graphology's implementation, whose partitions can differ from NetworkX's; on every reference case its modularity is equal to or higher than NetworkX's. With a single run, or with graphology's default fast local moving, it fell up to 0.015 short. Modularity around 0.3 or above is usually read as clear community structure; values near 0 mean none. The resolution γ = 1 is the same default as NetworkX; larger values find smaller communities.
 
 ### Centralisation
 
@@ -280,6 +280,22 @@ The engine returns the formula as a structure (terms, weights, filters, multipli
 
 **Caveats.** The composite is only as meaningful as the weights: it is a statement of priorities, not a measurement. Re-normalising over rated layers means a pair rated on one layer only is scored on that layer alone.
 
+### Shortest path
+
+**Meaning.** The strongest route between two members: the chain of ties along which the total distance is smallest.
+
+**Formula.** Dijkstra's algorithm with tie length 1/w in the current view (following tie direction in the directed view). The result gives the members along one shortest path, its distance (Σ 1/w), its number of steps, and how many different paths share that shortest distance. When several do, the one whose members, read back from the destination, come earliest in the member list is shown.
+
+**Caveats.** A shortest path is one route among possibly several; the count of equally short paths says how many. Paths of equal length are detected by floating-point equality, as in NetworkX. Not computed on negative sub-layers.
+
+### Data coverage
+
+**Meaning.** The share of possible ratings that were given, per rater and overall.
+
+**Formula.** coverage_i = (ratings given by i) / ((n − 1) × enabled layers), over wave 1, including categorical layers; overall coverage is the same ratio over all raters. A rating of 0 counts as given; declined and not entered are counted separately. Below the threshold (default 80 %) a warning states that whole-network metrics may be unreliable.
+
+**Caveats.** Computed from the project on the main thread, because the engine's NaN cannot tell "declined" from "not entered"; the analysis result carries the same figures.
+
 ### Stability of rankings (bootstrap)
 
 **Meaning.** How much a member's rank on a metric depends on exactly who took part.
@@ -319,8 +335,8 @@ Conventions applied in the fixture script rather than taken from NetworkX:
 | Eigenvector centrality | Computed on the whole graph, even when not strongly connected | Largest (strongly) connected group only; others not defined |
 | Effective size | SciPy code path (used when SciPy is installed) divides by the wrong row maximum in 3.6.1 | Documented formula, via NetworkX's per-node code; a member with incoming ties only is not treated as isolated (NetworkX's per-node code checks outgoing ties only) |
 | Degree (directed) | `degree_centrality` sums in and out | In and out reported separately, not normalised |
-| Louvain | Different implementation and node order | Tested by the modularity of NetworkX's own partition (exact, 10⁻⁹) and by requiring Graticule's modularity to be no more than 0.02 below NetworkX's, not by equal partitions |
+| Louvain | Different implementation and node order | Tested by the modularity of NetworkX's own partition (exact, 10⁻⁹) and by requiring Graticule's modularity to be no lower than NetworkX's (10⁻⁹), not by equal partitions |
 | Negative sub-layers | — | Strength, degree and clustering only |
 | Centralisation, E-I index, cross-group density, dyad reciprocity, signed in-valence and triads, multiplexity, resilience | No function (or it raises on disconnected graphs) | Plain Python from NetworkX components and shortest paths |
 
-Betweenness (weighted and binary, directed and undirected, normalised), constraint, clustering, density, overall reciprocity, components and fixed-partition modularity need no adjustment: graphology and the custom code match NetworkX's own functions directly.
+Shortest paths (distance and number of equal paths, via `dijkstra_path_length` and `all_shortest_paths`), betweenness (weighted and binary, directed and undirected, normalised), constraint, clustering, density, overall reciprocity, components and fixed-partition modularity need no adjustment: graphology and the custom code match NetworkX's own functions directly.

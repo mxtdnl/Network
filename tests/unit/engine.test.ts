@@ -3,11 +3,12 @@
 // resilience, the bootstrap, and the worker message interface.
 
 import { beforeEach, describe, expect, it } from 'vitest';
+import { computeCoverage } from '../../src/data/coverage';
 import { createProject } from '../../src/data/defaults';
 import { parseProject } from '../../src/data/projectFile';
 import type { Member, Project, Tie } from '../../src/data/schema';
 import { combine, reciprocity, symmetrise } from '../../src/engine/aggregate';
-import { analyse, prepare, runBootstrap, runResilience } from '../../src/engine/analyse';
+import { analyse, prepare, runBootstrap, runPath, runResilience } from '../../src/engine/analyse';
 import { compositeFormula, compositeMatrix } from '../../src/engine/composite';
 import {
   denseGraph,
@@ -298,6 +299,41 @@ describe('composite (spec §7)', () => {
   });
 });
 
+// ------------------------------------------------------ coverage and paths
+
+describe('coverage and shortest paths', () => {
+  it('passes data coverage through to the result', async () => {
+    const r = await analyse(demoInput());
+    expect(r.coverage).toEqual(computeCoverage(demo));
+    expect(r.coverage?.declined).toBeGreaterThan(0);
+  });
+
+  it('returns a deterministic shortest path, or null when there is none', () => {
+    // a → b → d and a → c → d are equally short; the lower-index route is chosen.
+    const input: AnalysisInput = {
+      inputKey: 'p',
+      memberIds: ['a', 'b', 'c', 'd', 'e'],
+      attributes: {},
+      layers: [layer('s')],
+      ratings: [tensor(5, { '0,1': 5, '1,3': 5, '0,2': 5, '2,3': 5, '0,3': 1 })],
+      settings: settings(),
+    };
+    const p = prepare(input);
+    expect(runPath(p, 's', 'a', 'd')).toEqual({
+      ref: 's',
+      members: ['a', 'b', 'd'],
+      distance: 2,
+      hops: 2,
+      shortestPaths: 2,
+    });
+    expect(runPath(p, 's', 'd', 'a')).toBeNull();
+    expect(runPath(p, 's', 'a', 'e')).toBeNull();
+    expect(() => runPath(prepare(demoInput()), 'valence-', 'FIN01', 'FIN02')).toThrow(
+      /negative sub-layer/,
+    );
+  });
+});
+
 // ---------------------------------------------------------- resilience
 
 describe('resilience', () => {
@@ -464,6 +500,16 @@ describe('engine worker handler', () => {
       opts: { ref: 'composite', metric: 'inStrength', replicates: 3, dropFraction: 0.1, seed: 1 },
     });
     expect(out.at(-1)?.kind).toBe('bootstrap');
+    await handle({
+      id: 5,
+      kind: 'path',
+      inputKey: 'k1',
+      ref: 'composite',
+      from: 'FIN01',
+      to: 'PEO01',
+    });
+    const path = out.at(-1);
+    expect(path?.kind === 'path' && path.result?.members[0]).toBe('FIN01');
     await handle({ id: 4, kind: 'resilience', inputKey: 'old', ref: 'composite', removed: [] });
     expect(out.at(-1)).toMatchObject({ id: 4, kind: 'error', code: 'staleInput' });
   });
@@ -504,6 +550,13 @@ describe('engine client', () => {
     await expect(first.promise).rejects.toBeInstanceOf(EngineCancelledError);
     expect((await second.promise).inputKey).toBe('b');
     expect(worker.sent.map((m) => m.kind)).toEqual(['analyse', 'cancel', 'analyse']);
+  });
+
+  it('requests a shortest path against the last analysis', async () => {
+    const client = new EngineClient(fakeWorker());
+    await client.analyse(demoInput({}, 'k')).promise;
+    const path = await client.path('k', 'composite', 'FIN01', 'PEO01').promise;
+    expect(path?.members.at(-1)).toBe('PEO01');
   });
 
   it('surfaces engine errors', async () => {

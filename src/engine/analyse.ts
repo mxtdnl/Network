@@ -5,7 +5,7 @@
 
 import { reciprocity, rescaleUnsigned, scaleSigned, signedPart, symmetrise } from './aggregate';
 import { compositeFormula, compositeMatrix } from './composite';
-import { denseGraph, tieCount, type DenseGraph } from './graphs';
+import { denseGraph, pathGraph, tieCount, type DenseGraph } from './graphs';
 import { bootstrap } from './metrics/bootstrap';
 import { multiplex, type MultiplexLayer } from './metrics/multiplex';
 import {
@@ -18,6 +18,7 @@ import {
 } from './metrics/network';
 import { metricKeysFor, nodeMetrics } from './metrics/node';
 import { resilience } from './metrics/resilience';
+import { shortestPath } from './paths';
 import { signedResult } from './metrics/signed';
 import { Scheduler, type RunControl } from './schedule';
 import {
@@ -33,6 +34,7 @@ import {
   type LayerRef,
   type MemberId,
   type RefKind,
+  type PathResult,
   type RefResult,
   type ResilienceResult,
 } from './types';
@@ -219,6 +221,7 @@ export async function analysePrepared(
     signed,
     multiplex: mx,
     composite: p.composite,
+    coverage: input.coverage ?? null,
     warnings,
   };
 }
@@ -253,4 +256,30 @@ export async function runBootstrap(
     assertNotNegative(p, opts.ref, opts.metric);
   }
   return bootstrap(viewGraph(p, opts.ref), opts, control);
+}
+
+/**
+ * Shortest path (distance 1/w) between two members on a layer in the current
+ * view; null when there is no path. Refused on negative sub-layers (plan Q11).
+ */
+export function runPath(
+  p: Prepared,
+  ref: LayerRef,
+  from: MemberId,
+  to: MemberId,
+): PathResult | null {
+  assertNotNegative(p, ref, 'A shortest path');
+  const ids = p.input.memberIds;
+  const a = ids.indexOf(from);
+  const b = ids.indexOf(to);
+  if (a < 0 || b < 0) throw new Error(`Unknown member ${a < 0 ? from : to}`);
+  const found = shortestPath(pathGraph(viewGraph(p, ref)), a, b);
+  if (!found) return null;
+  return {
+    ref,
+    members: found.path.map((i) => ids[i] as MemberId),
+    distance: found.distance,
+    hops: found.path.length - 1,
+    shortestPaths: found.count,
+  };
 }

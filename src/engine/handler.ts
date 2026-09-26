@@ -3,7 +3,14 @@
 // inputKey) for resilience and bootstrap requests, and one AbortController per
 // running request so 'cancel' can stop it between steps.
 
-import { analysePrepared, prepare, runBootstrap, runResilience, type Prepared } from './analyse';
+import {
+  analysePrepared,
+  prepare,
+  runBootstrap,
+  runPath,
+  runResilience,
+  type Prepared,
+} from './analyse';
 import { transferables, type EngineRequest, type EngineResponse, type RequestId } from './protocol';
 import { CancelledError } from './schedule';
 
@@ -46,6 +53,11 @@ export function createEngineHandler(post: Post): (request: EngineRequest) => Pro
             { id, kind: 'resilience', result: runResilience(p, request.ref, request.removed) },
             true,
           );
+          break;
+        }
+        case 'path': {
+          const p = current(prepared, request.inputKey);
+          send({ id, kind: 'path', result: runPath(p, request.ref, request.from, request.to) });
           break;
         }
         case 'bootstrap': {

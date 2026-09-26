@@ -7,7 +7,13 @@
 // docs/method-notes.md; tolerances are never widened to force a pass.
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { analysePrepared, prepare, runResilience, type Prepared } from '../../src/engine/analyse';
+import {
+  analysePrepared,
+  prepare,
+  runPath,
+  runResilience,
+  type Prepared,
+} from '../../src/engine/analyse';
 import { compositeFormula, compositeMatrix } from '../../src/engine/composite';
 import { denseGraph } from '../../src/engine/graphs';
 import { partitionModularity } from '../../src/engine/metrics/network';
@@ -229,6 +235,36 @@ for (const name of CASES) {
                 const sym = run('mean').result.refs[ref]?.communities;
                 expect(mine?.membership).toEqual(sym?.membership);
                 expect(mine?.modularity).toBe(sym?.modularity);
+              });
+            }
+
+            if (fr.shortest_paths) {
+              it('matches shortest paths: length, number of equal paths, and a valid path', () => {
+                const { prepared } = run(view);
+                const ids = prepared.input.memberIds;
+                const problems: string[] = [];
+                for (const fx of fr.shortest_paths ?? []) {
+                  const res = runPath(prepared, ref, ids[fx.from] as string, ids[fx.to] as string);
+                  if (fx.distance === null) {
+                    expect(res).toBeNull();
+                    continue;
+                  }
+                  if (!res) throw new Error(`no path ${String(fx.from)} → ${String(fx.to)}`);
+                  problems.push(
+                    ...compareScalar(
+                      'shortest path distance',
+                      res.distance,
+                      fx.distance,
+                      tol.default,
+                    ),
+                  );
+                  expect(res.shortestPaths).toBe(fx.count);
+                  const mine = res.members.map((m) => ids.indexOf(m));
+                  if ((fx.count ?? 0) <= fx.paths.length) expect(fx.paths).toContainEqual(mine);
+                  expect(res.hops).toBe(mine.length - 1);
+                }
+                record('shortest path counts and membership (exact)', 0, 0);
+                expect(problems).toEqual([]);
               });
             }
 

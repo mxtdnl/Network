@@ -1,7 +1,10 @@
 // Builds the engine's AnalysisInput from a project (plan §1.2). This is the only
 // place a missing rating (`null` or an absent tie) becomes NaN (CLAUDE.md D2);
 // a rating of 0 stays 0. Wave 1 only; categorical layers are not analysed.
+// Coverage needs the declined / not-entered distinction, which NaN loses, so
+// it is computed here from the project (src/data/coverage.ts, D29).
 
+import { computeCoverage } from '../data/coverage';
 import { DEFAULT_WAVE, isCategorical, type AnalysisSettings, type Project } from '../data/schema';
 import type { AnalysisInput, AttributeColumn, EngineLayer, EngineSettings } from './types';
 
@@ -67,5 +70,6 @@ export function buildAnalysisInput(
     layers,
     ratings,
     settings: engineSettings(project, options),
+    coverage: computeCoverage(project),
   };
 }

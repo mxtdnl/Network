@@ -66,7 +66,7 @@ TOLERANCES = {
     "default": 1e-9,
     "eigenvector": 1e-6,
     "modularity_fixed_partition": 1e-9,
-    "louvain_modularity_floor": 0.02,
+    "louvain_modularity_floor": 1e-9,
 }
 
 # ---------------------------------------------------------------- helpers
@@ -658,6 +658,30 @@ def resilience(G, removed):
     }
 
 
+def path_pairs(n):
+    return [(0, n - 1), (n - 1, 0), (1, n // 2), (2, n // 3)]
+
+
+def shortest_paths(G, n):
+    """Weighted shortest paths (distance 1/w) for fixed pairs, with every equally short path."""
+    out = []
+    for s, t in path_pairs(n):
+        if not nx.has_path(G, s, t):
+            out.append({"from": s, "to": t, "distance": None, "paths": []})
+            continue
+        paths = sorted(nx.all_shortest_paths(G, s, t, weight="distance"))
+        out.append(
+            {
+                "from": s,
+                "to": t,
+                "distance": nx.dijkstra_path_length(G, s, t, weight="distance"),
+                "count": len(paths),
+                "paths": paths[:200],
+            }
+        )
+    return out
+
+
 def signed_results(case, layer, view):
     n = case.n
     s = directed_weights(case, layer)
@@ -798,6 +822,7 @@ def run_case(case):
                 entry["network"]["communities"] = communities(G)
             if kind != "negative":
                 entry["resilience"] = [resilience(G, r) for r in case.removals]
+                entry["shortest_paths"] = shortest_paths(G, n)
             refs[ref] = entry
         views[view] = {
             "refs": refs,
@@ -841,7 +866,8 @@ def main():
                 "average clustering, components, Louvain and modularity",
                 "python": "symmetrisation, rescaling, composite, dyad reciprocity, centralisation, "
                 "E-I index, cross-group density, signed in-valence and triads, multiplexity, "
-                "resilience reachability and averages (from networkx shortest paths)",
+                "resilience reachability and averages (from networkx shortest paths); "
+                "shortest paths use nx.all_shortest_paths and nx.dijkstra_path_length",
             },
             "views": run_case(case),
         }
