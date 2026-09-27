@@ -14,7 +14,9 @@ The analysis engine is `src/engine/`. Formulas below use this notation:
 
 ### 1.1 Not rated is not zero
 
-A rating of 0 means "no connection" or "never". A missing rating means the person did not answer. The two are never treated alike: a missing rating does not create a tie, is not counted as a 0 in averages, and is counted as missing in data coverage. Inside the engine a missing rating is the value NaN; in project files it is `null` or an absent tie.
+A rating of 0 means "no connection" or "never" (on a signed layer, "neutral"). A missing rating means the person did not answer. The two are never treated alike: a missing rating does not create a tie, is not counted as a 0 in averages, and is counted as missing in data coverage. Inside the engine a missing rating is the value NaN; in project files it is `null` or an absent tie.
+
+A third state, **does not apply**, records that the rater said the question has no answer for that colleague, such as the quality of a relationship they do not have. It is neither 0 nor missing. Metrics treat it like a missing rating (no tie), but coverage leaves it out of the ratings that were possible, because there was nothing to give. In project files it is `null` with `not_applicable: true`; in ties files and matrix entry it is written `n/a`.
 
 ### 1.2 Rescaling
 
@@ -331,7 +333,7 @@ With only the four core layers enabled, Formal structure is formal collaboration
 
 **Meaning.** The share of possible ratings that were given, per rater and overall.
 
-**Formula.** coverage_i = (ratings given by i) / ((n − 1) × enabled layers), over wave 1, including categorical layers; overall coverage is the same ratio over all raters. A rating of 0 counts as given; declined and not entered are counted separately. Below the threshold (default 80 %) a warning states that whole-network metrics may be unreliable.
+**Formula.** coverage_i = (ratings given by i) / ((n − 1) × enabled layers − ratings i marked "does not apply"), over wave 1, including categorical layers; overall coverage is the same ratio over all raters. A rating of 0 counts as given; declined and not entered are counted separately. Below the threshold (default 80 %) a warning states that whole-network metrics may be unreliable.
 
 **Caveats.** Computed from the project on the main thread, because the engine's NaN cannot tell "declined" from "not entered"; the analysis result carries the same figures.
 
@@ -423,8 +425,10 @@ Responses are confidential and carry the respondent's name: the analyst sees who
 
 ### Colleagues not selected
 
-With "select colleagues, then rate them", a colleague the respondent did not select is recorded as the lowest point of each unsigned layer (0: "Never" or "No meaningful working connection"), and as not rated on signed and categorical layers, because 0 on a signed layer means neutral, a quality nobody reported (CLAUDE.md D88). The analyst can change this per layer, and respondents are told what is recorded before they select anyone. A consequence for coverage: signed layers are not rated for colleagues not selected, so a nomination survey with valence rarely reaches the coverage threshold on its own.
+With "select colleagues, then rate them", a colleague the respondent did not select is recorded as the lowest point of each unsigned layer (0: "Never" or "No meaningful working connection"), and as "does not apply" on signed and categorical layers, because 0 on a signed layer means neutral, a quality nobody reported (CLAUDE.md D88, D102). The analyst can change this per layer, and respondents are told what is recorded before they select anyone. Because "does not apply" is left out of coverage, a complete response counts as complete.
+
+The analyst can also name colleagues every respondent is asked about, whether or not they select them (D103), and every question must be answered for every colleague a respondent is asked about (D104). Where a question may have no answer for a colleague, the survey offers "Does not apply" beside the scale (by default on signed layers), so a respondent never has to choose between a false "neutral" and leaving the question blank. The respondent's own "does not apply" is recorded exactly as the one for colleagues not selected.
 
 ### Completion-time estimate
 
-Estimated time = 60 s to read the introduction and agree + 5 s per rating + (with selection) 2 s per colleague considered, where ratings = colleagues × questions for a full roster, or the expected number of selections (default 12) × questions with selection. These are conventions, not measurements; the owner approved them as proposed (CLAUDE.md Q31). The warning limit defaults to 15 minutes.
+Estimated time = 60 s to read the introduction and agree + 5 s per rating + (with selection) 2 s per colleague considered, where ratings = colleagues × questions for a full roster, or, with selection, the larger of the expected number of selections (default 12) and the number of required colleagues, × questions. These are conventions, not measurements; the owner approved them as proposed (CLAUDE.md Q31). The warning limit defaults to 15 minutes.

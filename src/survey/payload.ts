@@ -37,6 +37,8 @@ export interface SurveyPayload {
   layers: SurveyLayer[];
   entry: SurveyEntry;
   nominationQuestion: string;
+  /** Roster positions every respondent is asked about (D103). */
+  required: number[];
   texts: SurveyTexts;
   deadline: string | null;
   estimateMinutes: number;
@@ -66,6 +68,7 @@ function layerToJson(l: SurveyLayer): Json {
     l.categories ?? null,
     l.category_labels ?? null,
     l.unselected === 'zero' ? 1 : 0,
+    l.offer_not_applicable ? 1 : 0,
   ];
 }
 
@@ -81,6 +84,7 @@ function toJson(p: SurveyPayload, personal: Personal | null): Json {
     p.layers.map(layerToJson),
     p.entry === 'nominate' ? 1 : 0,
     p.nominationQuestion,
+    p.required,
     p.texts.introduction,
     p.texts.confidentiality,
     p.texts.return_instructions,
@@ -104,11 +108,11 @@ function fail(): never {
 }
 
 function layerFromJson(v: unknown): SurveyLayer {
-  if (!Array.isArray(v) || v.length !== 11) fail();
-  const [key, label, q, scale, min, max, signed, sl, cats, cl, zero] = v as unknown[];
+  if (!Array.isArray(v) || v.length !== 12) fail();
+  const [key, label, q, scale, min, max, signed, sl, cats, cl, zero, na] = v as unknown[];
   if (!isStr(key) || !isStr(label) || !isStr(q) || !SCALES.has(scale as string)) fail();
-  if (!isNum(min) || !isNum(max) || (signed !== 0 && signed !== 1) || (zero !== 0 && zero !== 1))
-    fail();
+  const flag = (x: unknown) => x === 0 || x === 1;
+  if (!isNum(min) || !isNum(max) || !flag(signed) || !flag(zero) || !flag(na)) fail();
   if (sl !== null && !isStrRecord(sl)) fail();
   if (cats !== null && !(Array.isArray(cats) && cats.every(isStr))) fail();
   if (cl !== null && !isStrRecord(cl)) fail();
@@ -123,12 +127,13 @@ function layerFromJson(v: unknown): SurveyLayer {
     ...(sl ? { scale_labels: sl } : {}),
     ...(cats ? { categories: cats } : {}),
     ...(cl ? { category_labels: cl } : {}),
-    unselected: zero === 1 ? 'zero' : 'not_rated',
+    unselected: zero === 1 ? 'zero' : 'not_applicable',
+    offer_not_applicable: na === 1,
   };
 }
 
 function fromJson(v: unknown): { payload: SurveyPayload; personal: Personal | null } {
-  if (!Array.isArray(v) || v.length !== 19 || v[0] !== PAYLOAD_FORMAT) fail();
+  if (!Array.isArray(v) || v.length !== 20 || v[0] !== PAYLOAD_FORMAT) fail();
   const [
     ,
     id,
@@ -140,6 +145,7 @@ function fromJson(v: unknown): { payload: SurveyPayload; personal: Personal | nu
     layers,
     entry,
     nq,
+    required,
     intro,
     conf,
     ret,
@@ -159,6 +165,13 @@ function fromJson(v: unknown): { payload: SurveyPayload; personal: Personal | nu
   if ((entry !== 0 && entry !== 1) || !isStr(nq) || !isStr(intro) || !isStr(conf) || !isStr(ret))
     fail();
   if (deadline !== null && !isStr(deadline)) fail();
+  if (
+    !Array.isArray(required) ||
+    !required.every(
+      (i) => Number.isInteger(i) && (i as number) >= 0 && (i as number) < names.length,
+    )
+  )
+    fail();
   if (!isNum(estimate) || !isStr(pub) || !isStr(fp)) fail();
   const roster = names.map((name, i) => {
     const values: unknown = attrLabels.length > 0 ? attrValues[i] : [];
@@ -187,6 +200,7 @@ function fromJson(v: unknown): { payload: SurveyPayload; personal: Personal | nu
       layers: layers.map(layerFromJson),
       entry: entry === 1 ? 'nominate' : 'full',
       nominationQuestion: nq,
+      required: required as number[],
       texts: { introduction: intro, confidentiality: conf, return_instructions: ret },
       deadline: deadline,
       estimateMinutes: estimate,

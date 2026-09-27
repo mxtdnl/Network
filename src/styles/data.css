@@ -696,6 +696,12 @@ a {
   color: var(--ink);
 }
 
+/* Does not apply: the field ground and "n/a", so it reads neither as 0 nor as missing. */
+.matrix__cell--not-applicable {
+  background-color: var(--field);
+  color: var(--graphite);
+}
+
 .matrix__cell--self {
   background-color: var(--field);
   cursor: not-allowed;

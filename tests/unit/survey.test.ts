@@ -70,8 +70,13 @@ function bodyFor(
     survey.versions.find((v) => v.version === (opts.version ?? 1)) ?? currentVersion(survey);
   const position = version.roster.indexOf(memberId);
   const answers: Record<string, Answer[]> = {};
-  for (const l of version.layers)
-    answers[l.key] = version.roster.map((_, j) => (j === position ? null : fill(l.key, j)));
+  const notApplicable: Record<string, number[]> = {};
+  for (const l of version.layers) {
+    const given = version.roster.map((_, j) => (j === position ? null : fill(l.key, j)));
+    // NA stands for the respondent's "Does not apply".
+    notApplicable[l.key] = given.flatMap((a, j) => (a === NA ? [j] : []));
+    answers[l.key] = given.map((a) => (a === NA ? null : a));
+  }
   return {
     survey_id: survey.id,
     version: version.version,
@@ -80,8 +85,11 @@ function bodyFor(
     submitted_at: opts.at ?? NOW,
     nominated: opts.nominated === undefined ? null : opts.nominated,
     answers,
+    not_applicable: notApplicable,
   };
 }
+
+const NA = 'test:does-not-apply';
 
 async function envelopeText(survey: Survey, body: ResponseBody) {
   const result = await fileTransport.submit(
@@ -352,7 +360,7 @@ describe('import', () => {
     expect(parseProject(serialiseProject(next))).toStrictEqual(next);
   });
 
-  it('stores colleagues not selected as 0 on unsigned layers and leaves signed layers unrated', async () => {
+  it('stores colleagues not selected as 0 on unsigned layers and as "does not apply" on valence', async () => {
     const { project, survey, privateKey } = await setup(demoProject(), { entry: 'nominate' });
     const empty = { ...project, ties: [] };
     const v = currentVersion(survey);
@@ -360,22 +368,83 @@ describe('import', () => {
     const body = bodyFor(
       survey,
       'FIN01',
-      (l, j) => (nominated.includes(j) ? (l === 'valence' ? 2 : 4) : null),
+      (l, j) => (nominated.includes(j) ? (l === 'valence' ? (j === 2 ? NA : 2) : 4) : null),
       { nominated },
     );
     const plan = await importTexts(empty, survey, privateKey, [
       (await envelopeText(survey, body)).text,
     ]);
+    expect(plan.report.skippedRows).toBe(0);
     const next = applyImport(empty, plan, NOW);
     const get = (ratee: string, layer: string) =>
-      next.ties.find((t) => t.rater_id === 'FIN01' && t.ratee_id === ratee && t.variable === layer)
-        ?.value;
-    expect(get('FIN02', 'connection_strength')).toBe(4);
-    expect(get(must(v.roster[10]), 'connection_strength')).toBe(0);
-    expect(get(must(v.roster[10]), 'valence')).toBeUndefined();
-    expect(get('FIN02', 'valence')).toBe(2);
-    // Every rating is either a nomination answer or a stored 0.
-    expect(next.ties.filter((t) => t.rater_id === 'FIN01')).toHaveLength(39 * 3 + 2); // three unsigned layers, valence for the two selected
+      next.ties.find((t) => t.rater_id === 'FIN01' && t.ratee_id === ratee && t.variable === layer);
+    expect(get('FIN02', 'connection_strength')?.value).toBe(4);
+    expect(get('FIN02', 'valence')?.value).toBe(2);
+    // Answered "Does not apply": not 0 (neutral), not missing.
+    expect(get('FIN03', 'valence')).toMatchObject({ value: null, not_applicable: true });
+    const other = must(v.roster[10]);
+    expect(get(other, 'connection_strength')?.value).toBe(0);
+    expect(get(other, 'valence')).toMatchObject({ value: null, not_applicable: true });
+    // Every pair has a rating or a "does not apply".
+    expect(next.ties.filter((t) => t.rater_id === 'FIN01')).toHaveLength(39 * 4);
+    // Coverage: "does not apply" is left out, so a complete response is 100 %.
+    const fin01 = computeCoverage(next).raters.find((r) => r.id === 'FIN01');
+    expect(fin01).toMatchObject({
+      rated: 39 * 3 + 1,
+      notApplicable: 38,
+      possible: 39 * 3 + 1,
+      rate: 1,
+    });
+  });
+
+  it('asks everyone about the required colleagues, selected or not', async () => {
+    const base = demoProject();
+    const { project, survey, privateKey } = await setup(base, {
+      entry: 'nominate',
+      required: ['PEO08', 'OPE01'],
+    });
+    const v = currentVersion(survey);
+    // Stored in roster order, and sent to respondents as roster positions.
+    expect(v.required).toStrictEqual(['OPE01', 'PEO08']);
+    expect(payloadFor(survey, v, project).required).toStrictEqual([
+      v.roster.indexOf('OPE01'),
+      v.roster.indexOf('PEO08'),
+    ]);
+    const ope01 = v.roster.indexOf('OPE01');
+    // FIN01 selects only FIN02 but answers about OPE01 too.
+    const body = bodyFor(survey, 'FIN01', (_l, j) => (j === 1 || j === ope01 ? 3 : null), {
+      nominated: [1],
+    });
+    const empty = { ...project, ties: [] };
+    const plan = await importTexts(empty, survey, privateKey, [
+      (await envelopeText(survey, body)).text,
+    ]);
+    const next = applyImport(empty, plan, NOW);
+    const tie = (ratee: string) =>
+      next.ties.find(
+        (t) =>
+          t.rater_id === 'FIN01' && t.ratee_id === ratee && t.variable === 'connection_strength',
+      );
+    expect(tie('OPE01')?.value).toBe(3);
+    expect(tie('OPE02')?.value).toBe(0);
+    // Changing the list changes what respondents are asked: a new version.
+    const draft = draftFor(project, { entry: 'nominate', required: ['OPE01'] });
+    expect(updateSurvey(survey, draft, project, NOW).versions).toHaveLength(2);
+    expect(estimateSeconds(40, 4, 'nominate', 3, 20)).toBe(60 + 39 * 2 + 20 * 4 * 5);
+  });
+
+  it('offers "Does not apply" on signed layers by default and round-trips it through the link', async () => {
+    const { project, survey } = await setup(demoProject());
+    const v = currentVersion(survey);
+    expect(v.layers.map((l) => [l.key, l.offer_not_applicable, l.unselected])).toStrictEqual([
+      ['connection_strength', false, 'zero'],
+      ['valence', true, 'not_applicable'],
+      ['informal_collaboration', false, 'zero'],
+      ['formal_collaboration', false, 'zero'],
+    ]);
+    const { links } = await buildLinks(survey, project, BASE);
+    const read = await readLink(new URL(must(links[0]).url).hash.slice('#/respond/'.length));
+    expect(read.payload.layers).toStrictEqual(v.layers);
   });
 
   it('rejects an unknown token, a token that does not match its roster position, and a tampered file', async () => {

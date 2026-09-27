@@ -7,9 +7,10 @@
 // - Every problem carries the spreadsheet row number (the header is row 1).
 // - Rows that share a key are all skipped, because choosing one would be a
 //   silent decision.
-// - Two things are read rather than rejected, and are reported as notes: an
+// - Three things are read rather than rejected, and are reported as notes: an
 //   empty value cell is a rating that was not given (stored as null, never 0),
-//   and an empty wave cell is wave 1 (spec §2).
+//   "n/a" is a rating that does not apply (null, marked not applicable;
+//   CLAUDE.md D102), and an empty wave cell is wave 1 (spec §2).
 // Issues are structured; the wording lives in ui/copy/import.ts.
 
 import { DEFAULT_ATTRIBUTES } from '../defaults';
@@ -23,6 +24,7 @@ import {
   type MemberId,
   type Tie,
 } from '../schema';
+import { NOT_APPLICABLE_TEXT } from '../ratings';
 import { normaliseHeader, type RawTable } from './table';
 
 export type ErrorCode =
@@ -43,7 +45,12 @@ export type ErrorCode =
   | 'duplicate';
 
 export type NoteCode =
-  'not_rated' | 'disabled_layer' | 'later_wave' | 'new_attribute' | 'other_sheets';
+  | 'not_rated'
+  | 'not_applicable'
+  | 'disabled_layer'
+  | 'later_wave'
+  | 'new_attribute'
+  | 'other_sheets';
 
 export type FileKind = 'members' | 'ties';
 
@@ -460,11 +467,15 @@ export function validateTies(table: RawTable, context: TieContext): TiesResult {
 
     const text = cell(cells, index, 'value');
     let value: Tie['value'] = null;
+    let notApplicable = false;
     if (text !== '' && layer) {
       if (isCategorical(layer)) {
         const categories = layer.categories ?? [];
         if (categories.includes(text)) value = text;
+        else if (text.toLowerCase() === NOT_APPLICABLE_TEXT) notApplicable = true;
         else err('unknown_category', 'value', text, { categories, variable: layer.key });
+      } else if (text.toLowerCase() === NOT_APPLICABLE_TEXT) {
+        notApplicable = true;
       } else if (!NUMBER.test(text)) {
         err('non_numeric', 'value', text, { variable: layer.key });
       } else {
@@ -488,7 +499,14 @@ export function validateTies(table: RawTable, context: TieContext): TiesResult {
       variable !== '' &&
       !rowErrors.some((e) => e.code === 'invalid_wave')
     ) {
-      const tie: Tie = { rater_id: rater, ratee_id: ratee, variable, value, wave };
+      const tie: Tie = {
+        rater_id: rater,
+        ratee_id: ratee,
+        variable,
+        value,
+        wave,
+        ...(notApplicable ? { not_applicable: true as const } : {}),
+      };
       candidates.push({ row, tie, key: tieKey(rater, ratee, variable, wave) });
     }
   }
@@ -519,7 +537,7 @@ export function validateTies(table: RawTable, context: TieContext): TiesResult {
   // Notes summarise what was read without being rejected.
   const notes: Issue[] = [];
   const count = (pred: (t: Tie) => boolean) => ties.filter(pred).length;
-  const notRated = count((t) => t.value === null);
+  const notRated = count((t) => t.value === null && !t.not_applicable);
   if (notRated > 0) {
     notes.push({
       file,
@@ -529,6 +547,18 @@ export function validateTies(table: RawTable, context: TieContext): TiesResult {
       column: 'value',
       value: null,
       detail: { count: notRated },
+    });
+  }
+  const na = count((t) => t.not_applicable === true);
+  if (na > 0) {
+    notes.push({
+      file,
+      severity: 'note',
+      code: 'not_applicable',
+      row: null,
+      column: 'value',
+      value: null,
+      detail: { count: na },
     });
   }
   for (const layer of context.layers) {

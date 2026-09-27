@@ -106,6 +106,8 @@ export const importCopy = {
           : `The same rater, person rated, variable and wave also appear on ${rowList(d.rows)}. All of these rows are skipped; keep one.`;
       case 'not_rated':
         return `${n(d.count ?? 0, 'row has', 'rows have')} an empty value. ${(d.count ?? 0) === 1 ? 'It is' : 'They are'} stored as not rated, not as 0.`;
+      case 'not_applicable':
+        return `${n(d.count ?? 0, 'row says', 'rows say')} n/a. ${(d.count ?? 0) === 1 ? 'It is' : 'They are'} stored as “does not apply”: not 0, and left out of coverage.`;
       case 'disabled_layer':
         return `${n(d.count ?? 0, 'rating is', 'ratings are')} for ${d.variable ?? ''}, a layer that is turned off. They are imported and used when you turn the layer on.`;
       case 'later_wave':

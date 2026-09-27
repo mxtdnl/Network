@@ -29,6 +29,8 @@ export interface ResponseBody {
   nominated: number[] | null;
   /** Per layer key, one entry per roster position; null where not answered. */
   answers: Record<string, Answer[]>;
+  /** Per layer key, the roster positions answered "Does not apply" (D102). */
+  not_applicable: Record<string, number[]>;
 }
 
 export interface Envelope extends Sealed {
@@ -143,6 +145,7 @@ export function readArmoured(text: string): ArmourResult {
 function toBody(v: unknown): ResponseBody {
   const b = v as Record<string, unknown>;
   const answers: unknown = b.answers;
+  const na: unknown = b.not_applicable;
   const ok =
     typeof v === 'object' &&
     v !== null &&
@@ -159,6 +162,11 @@ function toBody(v: unknown): ResponseBody {
       (list) =>
         Array.isArray(list) &&
         list.every((a) => a === null || isStr(a) || (typeof a === 'number' && Number.isFinite(a))),
+    ) &&
+    typeof na === 'object' &&
+    na !== null &&
+    Object.values(na as Record<string, unknown>).every(
+      (list) => Array.isArray(list) && list.every(isInt),
     );
   if (!ok) throw new EnvelopeError('The response body is not in the expected form.');
   return v as ResponseBody;

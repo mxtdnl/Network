@@ -32,6 +32,7 @@ import { Dialog } from '../../components/Dialog';
 import { Icon } from '../../components/Icon';
 import { surveyCopy } from '../../copy/survey';
 import { setUnlockedKey } from '../../state/surveyKeys';
+import { useMemberNames } from '../../state/names';
 import { useAppStore } from '../../state/store';
 import { downloadText } from './download';
 
@@ -49,6 +50,7 @@ function newDraft(project: Project): SurveyDraft {
     wave: 1,
     settings: { ...DEFAULT_SURVEY_SETTINGS },
     sharedAttributes: [],
+    required: [],
   };
 }
 
@@ -93,6 +95,7 @@ export function SurveySetup({ project, survey, onDone, onCancel }: Props) {
       draft.layers.length,
       draft.entry,
       draft.settings.expected_nominations,
+      draft.required.length,
     ),
   );
   const overLimit = minutes > draft.settings.burden_limit_minutes;
@@ -237,6 +240,15 @@ export function SurveySetup({ project, survey, onDone, onCancel }: Props) {
             />
             {error('nominationQuestion')}
           </div>
+        )}
+        {draft.entry === 'nominate' && (
+          <RequiredPicker
+            project={project}
+            required={draft.required}
+            onChange={(required) => {
+              set({ required });
+            }}
+          />
         )}
       </fieldset>
 
@@ -646,17 +658,106 @@ function LayerFields({
             className="select"
             value={layer.unselected}
             onChange={(e) => {
-              onChange({ unselected: e.currentTarget.value === 'zero' ? 'zero' : 'not_rated' });
+              onChange({
+                unselected: e.currentTarget.value === 'zero' ? 'zero' : 'not_applicable',
+              });
             }}
           >
             <option value="zero">
               {S.unselectedZero(lowest ? `${String(layer.min)} (${lowest})` : String(layer.min))}
             </option>
-            <option value="not_rated">{S.unselectedNone}</option>
+            <option value="not_applicable">{S.unselectedNone}</option>
           </select>
         </div>
       )}
+      <label className="radio-list__option">
+        <input
+          type="checkbox"
+          checked={layer.offer_not_applicable}
+          aria-describedby={`${ruleId}-na`}
+          onChange={(e) => {
+            onChange({ offer_not_applicable: e.currentTarget.checked });
+          }}
+        />
+        {S.offerNa}
+      </label>
+      <p id={`${ruleId}-na`} className="field__help survey-setup__option-help">
+        {S.offerNaHelp}
+      </p>
     </div>
+  );
+}
+
+// Colleagues every respondent is asked about, whether or not they select them
+// (D103): a searchable checklist of the roster.
+function RequiredPicker({
+  project,
+  required,
+  onChange,
+}: {
+  project: Project;
+  required: string[];
+  onChange: (ids: string[]) => void;
+}) {
+  const names = useMemberNames();
+  const [query, setQuery] = useState('');
+  const searchId = useId();
+  const chosen = new Set(required);
+  const q = query.trim().toLowerCase();
+  const shown = project.members.filter((m) => q === '' || names.of(m.id).toLowerCase().includes(q));
+  const toggle = (id: string, on: boolean) => {
+    onChange(on ? [...required, id] : required.filter((x) => x !== id));
+  };
+  return (
+    <fieldset className="survey-setup__subgroup survey-required">
+      <legend className="field__label">{S.required}</legend>
+      <p className="field__help">{S.requiredHelp}</p>
+      <div className="survey-required__bar">
+        <label htmlFor={searchId} className="visually-hidden">
+          {S.requiredSearch}
+        </label>
+        <input
+          id={searchId}
+          type="search"
+          className="text-input"
+          placeholder={S.requiredSearch}
+          value={query}
+          onChange={(e) => {
+            setQuery(e.currentTarget.value);
+          }}
+        />
+        <p className="num" role="status">
+          {S.requiredCount(chosen.size)}
+        </p>
+        {chosen.size > 0 && (
+          <button
+            type="button"
+            className="button button--text"
+            onClick={() => {
+              onChange([]);
+            }}
+          >
+            {S.requiredClear}
+          </button>
+        )}
+      </div>
+      <ul className="survey-required__list">
+        {shown.map((m) => (
+          <li key={m.id}>
+            <label className="radio-list__option">
+              <input
+                type="checkbox"
+                checked={chosen.has(m.id)}
+                onChange={(e) => {
+                  toggle(m.id, e.currentTarget.checked);
+                }}
+              />
+              {names.of(m.id)}
+            </label>
+          </li>
+        ))}
+      </ul>
+    </fieldset>
   );
 }
 

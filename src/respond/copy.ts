@@ -69,10 +69,14 @@ export const respondCopy = {
   nominate: {
     title: 'Who you work with',
     selectedCount: (n: number) => `${plural(n, 'person', 'people')} selected`,
-    askedAbout: 'You will be asked about each person you select.',
+    askedAbout:
+      'You will be asked about each person you select, and every question needs an answer.',
     unselectedIntro: 'For anyone you do not select, we record:',
     unselectedValue: (layer: string, label: string) => `${layer}: ${label}`,
-    unselectedBlank: (layers: string) => `Nothing is recorded for ${layers}.`,
+    requiredHeading: 'Everyone is asked about',
+    requiredBody:
+      'The survey asks everyone about these colleagues, so you do not need to select them.',
+    othersHeading: 'Anyone else you work with',
     search: 'Search by name',
     noMatch: (q: string) => `No one matches “${q}”.`,
     listLabel: 'Colleagues',
@@ -93,6 +97,15 @@ export const respondCopy = {
     back: 'Back',
     colleague: 'Colleague',
     option: (value: string, label: string | undefined) => (label ? `${value}, ${label}` : value),
+    notApplicable: 'Does not apply',
+    everyQuestion: 'Answer every question.',
+    everyQuestionNa:
+      'Answer every question. Where a question has no answer for a colleague, choose “Does not apply”.',
+    notAnswered: 'Not answered yet',
+    personMissing: (n: number, name: string) =>
+      `${plural(n, 'question about', 'questions about')} ${name} ${n === 1 ? 'is' : 'are'} not answered yet. Answer ${n === 1 ? 'it' : 'them'} to continue.`,
+    questionMissing: (n: number) =>
+      `${plural(n, 'colleague has', 'colleagues have')} no answer yet. Answer for everyone listed to continue.`,
     selected: (label: string) => `Selected: ${label}`,
     noneToRate:
       'You did not select anyone, so there is nothing to rate. Go back to select colleagues, or check your answers.',
@@ -101,8 +114,8 @@ export const respondCopy = {
   review: {
     title: 'Check your answers',
     body: 'You can change any answer before you finish.',
-    unanswered: (n: number) =>
-      `${plural(n, 'question is', 'questions are')} not answered. You can leave ${n === 1 ? 'it' : 'them'} blank and still finish.`,
+    unanswered: (n: number) => `${plural(n, 'question is', 'questions are')} not answered yet.`,
+    blocked: 'Answer every question before you finish. Use the links above to change your answers.',
     allAnswered: 'Every question is answered.',
     notAnswered: 'Not answered',
     change: (name: string) => `Change answers about ${name}`,

@@ -81,9 +81,23 @@ async function saveDownload(
 
 async function setUpSurvey(
   page: Page,
-  opts: { alwaysPackage?: boolean; screenshots?: boolean } = {},
+  opts: { alwaysPackage?: boolean; screenshots?: boolean; required?: string[] } = {},
 ) {
   await page.getByRole('button', { name: 'Set up a survey' }).click();
+  // Colleagues everyone is asked about (D103).
+  for (const name of opts.required ?? []) {
+    await page.getByPlaceholder('Search by name').fill(name.split(' ')[0] ?? name);
+    await page.getByRole('checkbox', { name }).check();
+  }
+  if (opts.required?.length) {
+    await page.getByPlaceholder('Search by name').fill('');
+    await expect(page.getByText(`${String(opts.required.length)} ticked`)).toBeVisible();
+    if (opts.screenshots) {
+      await page
+        .locator('.survey-required')
+        .screenshot({ path: join(screenshotDir, 'dashboard-01b-required-colleagues.png') });
+    }
+  }
   await page
     .getByLabel('Introduction')
     .fill(
@@ -217,6 +231,12 @@ test.describe.configure({ mode: 'serial' });
 async function rateTable(page: Page, values: Record<string, string[]>, screenshots?: string) {
   for (const [q, question] of LAYERS.entries()) {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(question);
+    if (q === 0) {
+      // Every question needs an answer: "Next" says what is missing and stays.
+      await page.getByRole('button', { name: 'Next question' }).click();
+      await expect(page.getByRole('alert')).toContainText('have no answer yet');
+      if (screenshots) await shot(page, `${screenshots}-07-rate-missing`);
+    }
     for (const [name, marks] of Object.entries(values)) {
       await page
         .getByRole('radio', { name: new RegExp(`^${name}: ${marks[q] ?? ''}(,|$)`) })
@@ -244,6 +264,18 @@ async function ratePeople(
   const people = Object.entries(values);
   for (const [i, [name, marks]] of people.entries()) {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(name);
+    if (first) {
+      // Every question needs an answer: "Next" says what is missing and stays.
+      await page
+        .getByRole('group', { name: LAYERS[0] ?? '' })
+        .getByRole('radio')
+        .first()
+        .check();
+      await page.getByRole('button', { name: 'Next person' }).click();
+      await expect(page.getByRole('alert')).toContainText('not answered yet');
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(name);
+      if (opts.screenshots) await shot(page, `${opts.screenshots}-07-rate-missing`);
+    }
     for (const [q, question] of LAYERS.entries()) {
       await page
         .getByRole('group', { name: question })
@@ -285,7 +317,7 @@ test('full cycle: set up, three respondents (one on a phone), return by file and
   await expect(page.getByRole('heading', { name: 'Run a survey' })).toBeVisible();
   await shot(page, 'dashboard-00-intro');
   await expectNoAxeViolations(page, 'survey intro');
-  await setUpSurvey(page, { screenshots: true });
+  await setUpSurvey(page, { screenshots: true, required: ['Hana Isobar'] });
   await shot(page, 'dashboard-03-created');
   await expectNoAxeViolations(page, 'dashboard');
   const links = await exportLinks(page);
@@ -301,7 +333,11 @@ test('full cycle: set up, three respondents (one on a phone), return by file and
   await nominate(r1.page, ['Bram Contour', 'Chiara Azimuth'], 'respond-desktop');
   await rateTable(
     r1.page,
-    { 'Bram Contour': ['4', '\\+2', '3', '5'], 'Chiara Azimuth': ['2', '−1', '1', '0'] },
+    {
+      'Hana Isobar': ['3', '0', '2', '3'],
+      'Bram Contour': ['4', '\\+2', '3', '5'],
+      'Chiara Azimuth': ['2', 'Does not apply', '1', '0'],
+    },
     'respond-desktop',
   );
   await expect(r1.page.getByRole('heading', { name: 'Check your answers' })).toBeVisible();
@@ -330,6 +366,7 @@ test('full cycle: set up, three respondents (one on a phone), return by file and
   await ratePeople(
     r2.page,
     {
+      'Hana Isobar': ['2', 'Does not apply', '1', '1'],
       'Ada Meridian': ['5', '\\+3', '4', '4'],
       'Dev Bearing': ['1', '0', '0', '2'],
       'Elif Datum': ['3', '−2', '2', '3'],
@@ -409,13 +446,19 @@ test('full cycle: set up, three respondents (one on a phone), return by file and
     wave: 1,
   });
   expect(tie('FIN01', 'FIN02', 'valence')?.value).toBe(2);
-  expect(tie('FIN01', 'FIN03', 'valence')?.value).toBe(-1);
+  // "Does not apply" is its own state: not 0 (neutral), not missing.
+  expect(tie('FIN01', 'FIN03', 'valence')).toMatchObject({ value: null, not_applicable: true });
+  // The required colleague was rated by everyone who responded.
+  expect(tie('FIN01', 'FIN08', 'connection_strength')?.value).toBe(3);
+  expect(tie('FIN01', 'FIN08', 'valence')?.value).toBe(0);
+  expect(tie('FIN02', 'FIN08', 'valence')).toMatchObject({ value: null, not_applicable: true });
+  expect(tie('FIN03', 'FIN08', 'connection_strength')?.value).toBe(3);
   expect(tie('FIN01', 'FIN03', 'formal_collaboration')?.value).toBe(0);
   expect(tie('FIN02', 'FIN01', 'connection_strength')?.value).toBe(5);
   expect(tie('FIN02', 'FIN05', 'valence')?.value).toBe(-2);
-  // Not selected: 0 on unsigned layers, nothing on valence (D88).
+  // Not selected: 0 on unsigned layers, "does not apply" on valence (D88, D102).
   expect(tie('FIN01', 'OPE03', 'connection_strength')?.value).toBe(0);
-  expect(tie('FIN01', 'OPE03', 'valence')).toBeUndefined();
+  expect(tie('FIN01', 'OPE03', 'valence')).toMatchObject({ value: null, not_applicable: true });
   expect(saved.surveys[0]?.log.filter((e) => e.kind === 'accepted')).toHaveLength(3);
   // Coverage updates from the survey: three raters now have ratings.
   const coverage = computeCoverage(saved);
@@ -483,6 +526,9 @@ async function keyboardOnly(page: Page, name: string): Promise<string> {
   await press('Enter');
   // Each question: Tab into the row's radio group, arrow to the value.
   for (const [q] of LAYERS.entries()) {
+    // The required colleague comes first, then the one selected.
+    await tabTo(/^Hana Isobar: /);
+    await press('ArrowRight', 3);
     await tabTo(/^Ada Meridian: /);
     // The first radio of a group takes focus unchecked; ArrowRight moves and checks.
     await press('ArrowRight', 3);

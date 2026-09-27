@@ -31,7 +31,7 @@ import {
   type Progress,
   type Step,
 } from './progress';
-import { answerLabel, Scale, scaleOptions } from './Scale';
+import { answerLabel, NOT_APPLICABLE, Scale, scaleOptions } from './Scale';
 import { useWide } from './useWide';
 
 type Loaded = { payload: SurveyPayload; personal: Personal; packageText?: string };
@@ -290,9 +290,14 @@ function Survey({ loaded }: { loaded: Loaded }) {
   const toRate = useMemo(() => {
     const everyone = payload.roster.map((_, i) => i).filter((i) => i !== personal.position);
     if (!nominate) return everyone;
+    // Required colleagues first, then those selected, each in roster order (D103).
+    const required = new Set(payload.required);
     const chosen = new Set(progress.nominated ?? []);
-    return everyone.filter((i) => chosen.has(i));
-  }, [payload.roster, personal.position, nominate, progress.nominated]);
+    return [
+      ...everyone.filter((i) => required.has(i)),
+      ...everyone.filter((i) => chosen.has(i) && !required.has(i)),
+    ];
+  }, [payload.roster, payload.required, personal.position, nominate, progress.nominated]);
 
   const setAnswer = (layer: string, position: number, value: Answer) => {
     update((p) => ({
@@ -594,11 +599,18 @@ function Nominate({
   const [warned, setWarned] = useState(false);
   const searchId = useId();
   const chosen = new Set(progress.nominated ?? []);
+  const required = new Set(payload.required.filter((i) => i !== self));
   const q = query.trim().toLowerCase();
   const people = payload.roster
     .map((r, i) => ({ ...r, i }))
-    .filter((r) => r.i !== self)
+    .filter((r) => r.i !== self && !required.has(r.i))
     .filter((r) => q === '' || r.name.toLowerCase().includes(q));
+  const detail = (attributes: (string | null)[]) =>
+    attributes.some((a) => a) ? (
+      <span className="respond__person-detail">
+        {attributes.filter((a): a is string => !!a).join(', ')}
+      </span>
+    ) : null;
   const zero = payload.layers.filter(
     (l) => l.unselected === 'zero' && l.scale_type !== 'categorical',
   );
@@ -624,11 +636,31 @@ function Nominate({
           {zero.map((l) => (
             <li key={l.key}>{C.nominate.unselectedValue(l.label, answerLabel(l, l.min))}</li>
           ))}
+          {blank.map((l) => (
+            <li key={l.key}>{C.nominate.unselectedValue(l.label, C.rate.notApplicable)}</li>
+          ))}
         </ul>
-        {blank.length > 0 && (
-          <p>{C.nominate.unselectedBlank(blank.map((l) => l.label).join(', '))}</p>
-        )}
       </div>
+      {required.size > 0 && (
+        <section className="respond__required" aria-labelledby="required-heading">
+          <h2 id="required-heading" className="respond__subheading">
+            {C.nominate.requiredHeading}
+          </h2>
+          <p className="respond__text">{C.nominate.requiredBody}</p>
+          <ul className="respond__list">
+            {[...required].map((i) => {
+              const r = payload.roster[i];
+              return r ? (
+                <li key={i}>
+                  {r.name}
+                  {detail(r.attributes)}
+                </li>
+              ) : null;
+            })}
+          </ul>
+          <h2 className="respond__subheading">{C.nominate.othersHeading}</h2>
+        </section>
+      )}
       <label htmlFor={searchId} className="respond__label">
         {C.nominate.search}
       </label>
@@ -660,17 +692,13 @@ function Nominate({
                   }}
                 />
                 <span className="respond__person-name">{r.name}</span>
-                {r.attributes.some((a) => a) && (
-                  <span className="respond__person-detail">
-                    {r.attributes.filter((a): a is string => !!a).join(', ')}
-                  </span>
-                )}
+                {detail(r.attributes)}
               </label>
             </li>
           ))}
         </ul>
       </fieldset>
-      {warned && chosen.size === 0 && (
+      {warned && chosen.size === 0 && required.size === 0 && (
         <p role="alert" className="respond__error">
           {C.nominate.noneSelected}
         </p>
@@ -689,7 +717,7 @@ function Nominate({
           type="button"
           className="button button--primary"
           onClick={() => {
-            if (chosen.size === 0 && !warned) {
+            if (chosen.size === 0 && required.size === 0 && !warned) {
               setWarned(true);
               return;
             }
@@ -702,6 +730,14 @@ function Nominate({
       </div>
     </>
   );
+}
+
+/** Moves focus to the first unanswered question on screen after a blocked "Next". */
+function focusFirstMissing() {
+  requestAnimationFrame(() => {
+    const target = document.querySelector<HTMLInputElement>('[data-missing] input');
+    target?.focus();
+  });
 }
 
 function Rate({
@@ -724,6 +760,9 @@ function Rate({
   back: Step;
 }) {
   const wide = useWide();
+  // Set when the respondent tries to move on with questions unanswered; the
+  // key names the screen, so the message does not follow them to the next one.
+  const [blocked, setBlocked] = useState<string | null>(null);
   const value = (layer: string, i: number): Answer => progress.answers[layer]?.[String(i)] ?? null;
 
   if (toRate.length === 0) {
@@ -763,12 +802,18 @@ function Rate({
     if (!layer) return null;
     const options = scaleOptions(layer);
     const last = qi === payload.layers.length - 1;
+    const screen = `q${String(qi)}`;
+    const missing = toRate.filter((i) => value(layer.key, i) === null);
+    const showMissing = blocked === screen && missing.length > 0;
     return (
       <>
         <p className="respond__position num">{C.rate.question(qi + 1, payload.layers.length)}</p>
         <h1 ref={heading} tabIndex={-1} className="respond__title respond__question">
           {layer.question_wording}
         </h1>
+        <p className="respond__hint">
+          {layer.offer_not_applicable ? C.rate.everyQuestionNa : C.rate.everyQuestion}
+        </p>
         <table className="rate-table">
           <caption className="visually-hidden">{layer.question_wording}</caption>
           <thead>
@@ -777,7 +822,11 @@ function Rate({
                 {C.rate.colleague}
               </th>
               {options.map((o) => (
-                <th key={String(o.value)} scope="col" className="rate-table__point">
+                <th
+                  key={String(o.value)}
+                  scope="col"
+                  className={o.na ? 'rate-table__point rate-table__point--na' : 'rate-table__point'}
+                >
                   <span className="rate-table__mark num">{o.mark}</span>
                   {o.label && <span className="rate-table__label">{o.label}</span>}
                 </th>
@@ -787,19 +836,31 @@ function Rate({
           <tbody>
             {toRate.map((i) => {
               const person = payload.roster[i];
-              const rowId = `row-${layer.key}-${String(i)}`;
+              const rowMissing = showMissing && value(layer.key, i) === null;
               return (
-                <tr key={i}>
-                  <th scope="row" id={rowId} className="rate-table__name">
+                <tr
+                  key={i}
+                  className={rowMissing ? 'rate-table__row--missing' : undefined}
+                  data-missing={rowMissing ? '' : undefined}
+                >
+                  <th scope="row" className="rate-table__name">
                     {person?.name}
                     {person?.attributes.some((a) => a) && (
                       <span className="respond__person-detail">
                         {person.attributes.filter((a): a is string => !!a).join(', ')}
                       </span>
                     )}
+                    {rowMissing && (
+                      <span className="rate-table__missing">{C.rate.notAnswered}</span>
+                    )}
                   </th>
                   {options.map((o) => (
-                    <td key={String(o.value)} className="rate-table__cell">
+                    <td
+                      key={String(o.value)}
+                      className={
+                        o.na ? 'rate-table__cell rate-table__cell--na' : 'rate-table__cell'
+                      }
+                    >
                       <label className="rate-table__hit">
                         <input
                           type="radio"
@@ -818,11 +879,17 @@ function Rate({
             })}
           </tbody>
         </table>
+        {showMissing && (
+          <p role="alert" className="respond__error">
+            {C.rate.questionMissing(missing.length)}
+          </p>
+        )}
         <div className="respond__actions respond__actions--sticky">
           <button
             type="button"
             className="button button--text"
             onClick={() => {
+              setBlocked(null);
               if (qi === 0) go(back);
               else update((p) => ({ ...p, question: qi - 1 }));
             }}
@@ -833,6 +900,12 @@ function Rate({
             type="button"
             className="button button--primary"
             onClick={() => {
+              if (missing.length > 0) {
+                setBlocked(screen);
+                focusFirstMissing();
+                return;
+              }
+              setBlocked(null);
               if (last) go('review');
               else update((p) => ({ ...p, question: qi + 1 }));
             }}
@@ -848,6 +921,9 @@ function Rate({
   const position = toRate[pi] ?? 0;
   const person = payload.roster[position];
   const last = pi === toRate.length - 1;
+  const screen = `p${String(position)}`;
+  const missing = payload.layers.filter((l) => value(l.key, position) === null);
+  const showMissing = blocked === screen && missing.length > 0;
   return (
     <>
       <p className="respond__position num">{C.rate.person(pi + 1, toRate.length)}</p>
@@ -859,6 +935,11 @@ function Rate({
           {person.attributes.filter((a): a is string => !!a).join(', ')}
         </p>
       )}
+      <p className="respond__hint">
+        {payload.layers.some((l) => l.offer_not_applicable)
+          ? C.rate.everyQuestionNa
+          : C.rate.everyQuestion}
+      </p>
       {payload.layers.map((layer) => (
         <Scale
           key={`${layer.key}-${String(position)}`}
@@ -866,16 +947,24 @@ function Rate({
           name={`${layer.key}-${String(position)}`}
           legend={layer.question_wording}
           value={value(layer.key, position)}
+          missing={showMissing && value(layer.key, position) === null}
+          missingText={C.rate.notAnswered}
           onChange={(v) => {
             setAnswer(layer.key, position, v);
           }}
         />
       ))}
+      {showMissing && (
+        <p role="alert" className="respond__error">
+          {C.rate.personMissing(missing.length, person?.name ?? '')}
+        </p>
+      )}
       <div className="respond__actions respond__actions--sticky">
         <button
           type="button"
           className="button button--text"
           onClick={() => {
+            setBlocked(null);
             if (pi === 0) go(back);
             else update((p) => ({ ...p, person: pi - 1 }));
           }}
@@ -886,6 +975,12 @@ function Rate({
           type="button"
           className="button button--primary"
           onClick={() => {
+            if (missing.length > 0) {
+              setBlocked(screen);
+              focusFirstMissing();
+              return;
+            }
+            setBlocked(null);
             if (last) go('review');
             else update((p) => ({ ...p, person: pi + 1 }));
           }}
@@ -932,9 +1027,15 @@ function Review({
     setFailed(false);
     try {
       const answers: Record<string, Answer[]> = {};
+      const notApplicable: Record<string, number[]> = {};
       const rated = new Set(toRate);
-      for (const l of payload.layers)
-        answers[l.key] = payload.roster.map((_, i) => (rated.has(i) ? value(l.key, i) : null));
+      for (const l of payload.layers) {
+        answers[l.key] = payload.roster.map((_, i) => {
+          const v = rated.has(i) ? value(l.key, i) : null;
+          return v === NOT_APPLICABLE ? null : v;
+        });
+        notApplicable[l.key] = toRate.filter((i) => value(l.key, i) === NOT_APPLICABLE);
+      }
       const body: ResponseBody = {
         survey_id: payload.surveyId,
         version: payload.version,
@@ -943,6 +1044,7 @@ function Review({
         submitted_at: new Date().toISOString(),
         nominated: nominate ? [...(progress.nominated ?? [])] : null,
         answers,
+        not_applicable: notApplicable,
       };
       const envelope = await encryptResponse(body, payload.publicKey, payload.keyFingerprint);
       onEncrypted(await fileTransport.submit(envelope));
@@ -959,7 +1061,7 @@ function Review({
         {C.review.title}
       </h1>
       <p className="respond__text">{C.review.body}</p>
-      <p className="respond__text num">
+      <p className={unanswered > 0 ? 'respond__error num' : 'respond__text num'}>
         {unanswered > 0 ? C.review.unanswered(unanswered) : C.review.allAnswered}
       </p>
       <ul className="review">
@@ -1027,7 +1129,8 @@ function Review({
         <button
           type="button"
           className="button button--primary"
-          disabled={busy}
+          disabled={busy || unanswered > 0}
+          aria-describedby={unanswered > 0 ? 'review-blocked' : undefined}
           onClick={() => {
             void encrypt();
           }}
@@ -1035,6 +1138,11 @@ function Review({
           {C.review.encrypt}
         </button>
       </div>
+      {unanswered > 0 && (
+        <p id="review-blocked" className="respond__hint">
+          {C.review.blocked}
+        </p>
+      )}
     </>
   );
 }

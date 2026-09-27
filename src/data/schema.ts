@@ -6,6 +6,12 @@
 // is `null` records that the rater declined to rate; a (rater, ratee, variable,
 // wave) key with no tie at all means the rating was never entered. Both count
 // as "not rated" everywhere; only the coverage view tells them apart (plan Q1).
+//
+// A third state, "does not apply", is a `null` tie with `not_applicable: true`:
+// the rater said the question has no answer for this colleague (for example
+// the quality of a relationship they do not have). It is not 0 (on a signed
+// layer 0 is "neutral") and it is not missing: metrics treat it as no rating,
+// and coverage leaves it out of the ratings that were possible (CLAUDE.md D102).
 
 export const SCHEMA_VERSION = 3;
 export const APP_NAME = 'Graticule';
@@ -77,6 +83,8 @@ export interface Tie {
   value: RatingValue;
   /** Survey wave; 1 unless stated (spec §2). */
   wave: number;
+  /** The rater said the question does not apply to this colleague; `value` is then null. */
+  not_applicable?: true;
   /** Where the rating came from (spec §4.2). Absent on ties saved before
    *  schema version 3: "Not recorded", never guessed. */
   source?: TieSource;
@@ -169,8 +177,8 @@ export interface ProjectMeta {
 // are never stored.
 export type SurveyId = string;
 export type SurveyEntry = 'nominate' | 'full';
-/** What a colleague who was not nominated is stored as, per layer (CLAUDE.md D88). */
-export type UnselectedRule = 'zero' | 'not_rated';
+/** What a colleague who was not selected is stored as, per layer (CLAUDE.md D88, D102). */
+export type UnselectedRule = 'zero' | 'not_applicable';
 
 export interface SurveyLayer {
   key: LayerKey;
@@ -184,6 +192,8 @@ export interface SurveyLayer {
   categories?: string[];
   category_labels?: Record<string, string>;
   unselected: UnselectedRule;
+  /** Respondents may answer "Does not apply" as well as a scale point (D102). */
+  offer_not_applicable: boolean;
 }
 
 export interface SurveyVersion {
@@ -196,6 +206,8 @@ export interface SurveyVersion {
   nomination_question: string;
   /** Attributes shown to respondents beside names. */
   shared_attributes: AttributeKey[];
+  /** Colleagues every respondent is asked about, selected or not (D103). */
+  required: MemberId[];
 }
 
 export interface SurveyTexts {

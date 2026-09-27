@@ -142,6 +142,12 @@ function MatrixKey({ layer }: { layer: LayerDefinition }) {
           <span className="matrix-key__swatch matrix__cell--not-rated" aria-hidden="true" />
           {matrixCopy.keyNotRated}
         </li>
+        <li>
+          <span className="matrix-key__swatch matrix__cell--not-applicable" aria-hidden="true">
+            {matrixCopy.naMark}
+          </span>
+          {matrixCopy.keyNotApplicable}
+        </li>
         {layer.scale_type !== 'categorical' && (
           <li>
             <span className="matrix-key__swatch matrix-key__swatch--zero" aria-hidden="true">
@@ -315,6 +321,8 @@ function MatrixGrid({ layer, members, ties, helpId }: GridProps) {
       if (tieAt(active.r, active.c)) {
         applyRatings(layer.key, [{ rater: rater.id, ratee: ratee.id, kind: 'clear' }]);
       }
+    } else if (parsed.kind === 'not_applicable') {
+      applyRatings(layer.key, [{ rater: rater.id, ratee: ratee.id, kind: 'not_applicable' }]);
     } else {
       applyRatings(layer.key, [
         { rater: rater.id, ratee: ratee.id, kind: 'set', value: parsed.value },
@@ -580,6 +588,13 @@ function Cell({ id, r, c, layer, tie, state, active, editor }: CellProps) {
     content = <span className="visually-hidden">{matrixCopy.notRated}</span>;
   else if (state === 'declined')
     content = <span className="visually-hidden">{matrixCopy.declined}</span>;
+  else if (state === 'not-applicable')
+    content = (
+      <>
+        <span aria-hidden="true">{matrixCopy.naMark}</span>
+        <span className="visually-hidden">{matrixCopy.notApplicable}</span>
+      </>
+    );
   else if (value !== null) content = formatRating(layer, value);
   return (
     <div

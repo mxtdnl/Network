@@ -61,6 +61,7 @@ export function draftFor(project: Project, patch: Partial<SurveyDraft> = {}): Su
     wave: 1,
     settings: { ...DEFAULT_SURVEY_SETTINGS },
     sharedAttributes: [],
+    required: [],
     ...patch,
   };
 }

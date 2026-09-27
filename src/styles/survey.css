@@ -342,3 +342,22 @@
 .survey-table tbody th {
   font-weight: var(--weight-regular);
 }
+
+/* Colleagues everyone is asked about: a scrolling checklist of the roster. */
+.survey-required__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin-block: var(--s-2);
+}
+
+.survey-required__list {
+  list-style: none;
+  max-height: calc(var(--control-height) * 8);
+  overflow-y: auto;
+  padding: var(--s-1) var(--s-2);
+  border: var(--line-width) solid var(--field);
+  border-radius: var(--r-control);
+  columns: 2 var(--matrix-label-width);
+}

@@ -90,6 +90,9 @@ export const matrixCopy = {
   corner: 'Rows rate columns',
   keyHeading: 'Cell key',
   keyNotRated: 'Not rated',
+  keyNotApplicable: 'Does not apply (type n/a)',
+  naMark: 'n/a',
+  notApplicable: 'does not apply',
   keyZero: 'Rated 0',
   keyValue: 'Rated, shaded by value',
   keySelf: 'Self-pair, not recorded',
@@ -103,7 +106,7 @@ export const matrixCopy = {
   editValue: 'Rating',
   selfBlocked: 'Self-ratings are not recorded.',
   invalid: (text: string, min: number, max: number) =>
-    `“${text}” was not entered: use a number from ${String(min)} to ${String(max)}, or clear the cell.`,
+    `“${text}” was not entered: use a number from ${String(min)} to ${String(max)}, n/a if the question does not apply, or clear the cell.`,
   invalidCategory: (text: string, options: string) =>
     `“${text}” was not entered: use one of ${options}.`,
   pasted: (set: number, cleared: number) =>
@@ -137,7 +140,7 @@ export const coverageCopy = {
     none: 'Not recorded',
   },
   explain:
-    'The share of possible ratings that were given, across enabled layers. A rating of 0 counts as given; declined and never-entered ratings do not.',
+    'The share of possible ratings that were given, across enabled layers. A rating of 0 counts as given; declined and never-entered ratings do not. A rating marked “does not apply” was never possible, so it is left out altogether.',
   threshold: 'Warn below',
   thresholdHelp: 'Below this response rate, whole-network metrics may be unreliable.',
   thresholdInvalid: 'Enter a whole number from 0 to 100.',
@@ -148,6 +151,7 @@ export const coverageCopy = {
     rate: 'Response rate',
     rated: 'Rated',
     declined: 'Declined',
+    notApplicable: 'Does not apply',
     notEntered: 'Not entered',
   },
   totals: 'All raters',

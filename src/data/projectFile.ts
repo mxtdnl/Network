@@ -211,6 +211,10 @@ export function checkProject(file: Obj): string[] {
         }
       }
       need(
+        t.not_applicable === undefined || (t.not_applicable === true && value === null),
+        `${at} is marked not applicable but has a value; use null.`,
+      );
+      need(
         t.source === undefined || TIE_SOURCES.has(t.source as string),
         `${at} has an unknown source ${JSON.stringify(t.source)}.`,
       );
@@ -366,7 +370,7 @@ export function checkSavedView(v: Obj): string[] {
 }
 
 const ENTRIES = new Set(['nominate', 'full']);
-const UNSELECTED = new Set(['zero', 'not_rated']);
+const UNSELECTED = new Set(['zero', 'not_applicable']);
 const REJECT_REASONS = new Set([
   'unreadable',
   'other_survey',
@@ -447,6 +451,7 @@ export function checkSurvey(v: Obj): string[] {
       need(ENTRIES.has(ver.entry as string), `${at} has an unknown entry method.`);
       need(isStr(ver.nomination_question), `${at} has no nomination question.`);
       need(isStrArray(ver.shared_attributes), `${at} has invalid shared attributes.`);
+      need(isStrArray(ver.required), `${at} has an invalid list of required colleagues.`);
       need(
         Array.isArray(ver.layers) &&
           ver.layers.length > 0 &&
@@ -461,6 +466,7 @@ export function checkSurvey(v: Obj): string[] {
               isNum(l.max) &&
               isBool(l.signed) &&
               UNSELECTED.has(l.unselected as string) &&
+              isBool(l.offer_not_applicable) &&
               (l.scale_labels === undefined || isStrRecord(l.scale_labels)) &&
               (l.categories === undefined || isStrArray(l.categories)) &&
               (l.category_labels === undefined || isStrRecord(l.category_labels)),

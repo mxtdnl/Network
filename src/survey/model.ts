@@ -33,14 +33,20 @@ export const DEFAULT_SURVEY_SETTINGS: SurveySettings = {
   link_mode: 'auto',
 };
 
+/** With selection, the respondent rates the larger of the expected selections
+ *  and the required colleagues (who are usually among those selected). */
 export function estimateSeconds(
   rosterSize: number,
   layerCount: number,
   entry: SurveyEntry,
   expectedNominations: number,
+  requiredCount = 0,
 ): number {
   const colleagues = Math.max(0, rosterSize - 1);
-  const rated = entry === 'nominate' ? Math.min(colleagues, expectedNominations) : colleagues;
+  const rated =
+    entry === 'nominate'
+      ? Math.min(colleagues, Math.max(expectedNominations, requiredCount))
+      : colleagues;
   const scan = entry === 'nominate' ? colleagues * ESTIMATE.secondsPerNominationScan : 0;
   return ESTIMATE.overheadSeconds + scan + rated * layerCount * ESTIMATE.secondsPerRating;
 }
@@ -58,12 +64,15 @@ export interface SurveyDraft {
   wave: number;
   settings: SurveySettings;
   sharedAttributes: string[];
+  /** Colleagues every respondent is asked about, selected or not (D103). */
+  required: MemberId[];
 }
 
 export const DEFAULT_NOMINATION_QUESTION = 'Select everyone you have a working relationship with.';
 
-/** A survey layer from a project layer: 0 for colleagues not selected on unsigned
- *  layers, not rated on signed and categorical layers (CLAUDE.md D88). */
+/** A survey layer from a project layer. Colleagues not selected: 0 on unsigned
+ *  layers, "does not apply" on signed and categorical ones (D88, D102). Signed
+ *  layers offer "Does not apply" as an answer, because their 0 means neutral. */
 export function surveyLayerFrom(layer: LayerDefinition): SurveyLayer {
   return {
     key: layer.key,
@@ -76,7 +85,8 @@ export function surveyLayerFrom(layer: LayerDefinition): SurveyLayer {
     ...(layer.scale_labels ? { scale_labels: { ...layer.scale_labels } } : {}),
     ...(layer.categories ? { categories: [...layer.categories] } : {}),
     ...(layer.category_labels ? { category_labels: { ...layer.category_labels } } : {}),
-    unselected: layer.signed || isCategorical(layer) ? 'not_rated' : 'zero',
+    unselected: layer.signed || isCategorical(layer) ? 'not_applicable' : 'zero',
+    offer_not_applicable: layer.signed,
   };
 }
 
@@ -113,6 +123,11 @@ function versionFrom(
     entry: draft.entry,
     nomination_question: draft.nominationQuestion,
     shared_attributes: [...draft.sharedAttributes],
+    // Only members on the roster, in roster order; meaningless for a full roster.
+    required:
+      draft.entry === 'nominate'
+        ? project.members.map((m) => m.id).filter((id) => draft.required.includes(id))
+        : [],
   };
 }
 
@@ -164,6 +179,7 @@ export function draftFromSurvey(s: Survey): SurveyDraft {
     wave: s.wave,
     settings: { ...s.settings },
     sharedAttributes: [...v.shared_attributes],
+    required: [...v.required],
   };
 }
 
@@ -176,7 +192,9 @@ export function needsNewVersion(s: Survey, draft: SurveyDraft, project: Project)
     JSON.stringify(v.layers) !== JSON.stringify(draft.layers) ||
     v.entry !== draft.entry ||
     v.nomination_question !== draft.nominationQuestion ||
-    JSON.stringify(v.shared_attributes) !== JSON.stringify(draft.sharedAttributes)
+    JSON.stringify(v.shared_attributes) !== JSON.stringify(draft.sharedAttributes) ||
+    JSON.stringify(v.required) !==
+      JSON.stringify(versionFrom(draft, project, v.version, v.created_at).required)
   );
 }
 
@@ -247,8 +265,15 @@ export function payloadFor(s: Survey, version: SurveyVersion, project: Project):
     nominationQuestion: version.nomination_question,
     texts: s.texts,
     deadline: s.deadline,
+    required: version.required.map((id) => version.roster.indexOf(id)).filter((i) => i >= 0),
     estimateMinutes: estimateMinutes(
-      estimateSeconds(version.roster.length, version.layers.length, version.entry, expected),
+      estimateSeconds(
+        version.roster.length,
+        version.layers.length,
+        version.entry,
+        expected,
+        version.required.length,
+      ),
     ),
     publicKey: s.key.public_key,
     keyFingerprint: s.key.fingerprint,

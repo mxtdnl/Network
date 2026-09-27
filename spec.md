@@ -51,6 +51,8 @@ Each layer is a configurable definition:
 
 Store unrated pairs as `null`. "Rated 0" and "not rated" must never be conflated anywhere in the pipeline.
 
+A rating can also be marked **does not apply**: the rater says the question has no answer for that colleague, for example the quality of a relationship they do not have. It is stored as `null` with a `not_applicable` flag, written `n/a` in ties files and matrix entry. It is distinct from 0 (on a signed layer, 0 means neutral) and from a missing rating: metrics treat it as no rating, and coverage leaves it out of the ratings that were possible.
+
 Each tie records its `source`: `self_report` for a rating imported from a survey response collected in Graticule (section 15), `imported` for a CSV or XLSX import, and `entered` for matrix entry. Ties saved before this field existed have no recorded source, and are shown as "Not recorded", never guessed. A tie from a survey response also records the survey and its version.
 
 Core layers (enabled by default):
@@ -163,7 +165,7 @@ For path-based metrics, weight is converted to distance as 1/w. The method notes
 - average path length.
 
 **Data coverage.**
-- Response rate per rater and overall.
+- Response rate per rater and overall. Ratings marked "does not apply" are left out of the ratings that were possible.
 - A configurable threshold, default 80%. Below it, a persistent warning states that whole-network metrics may be unreliable.
 
 **Stability (optional).** A node-dropping bootstrap shows how stable the centrality rankings are. Rankings are displayed as intervals, not single ranks.
@@ -383,8 +385,10 @@ The analyst runs a whole-network survey inside Graticule, with no backend. Each 
   - **Layers:** which enabled layers to include, with editable question wording and scale labels. Categorical layers (primary channel) can be included.
   - **Direction:** respondents rate their outgoing ties (their view of each colleague). This is fixed.
   - **Entry method:**
-    - *Nomination then rating* (the default): the respondent first selects the colleagues they have a working relationship with, then rates only those. The nomination question is editable. For each layer the analyst chooses what a colleague who is not selected is stored as: `0` (the default for unsigned layers) or not rated. The default for signed layers is not rated, because 0 on a signed layer means neutral, not absent. The respondent is told in plain words what not selecting someone means, for example "If you do not select someone, we will record that you have no regular working contact with them."
+    - *Nomination then rating* (the default): the respondent first selects the colleagues they have a working relationship with, then rates only those. The nomination question is editable. For each layer the analyst chooses what a colleague who is not selected is stored as: `0` (the default for unsigned layers) or "does not apply" (section 4.2). The default for signed and categorical layers is "does not apply", because 0 on a signed layer means neutral, not absent. The respondent is told in plain words what not selecting someone records.
+    - *Required colleagues:* with nomination, the analyst can tick colleagues whom every respondent is asked about, whether or not they select them, for example a leadership team. Changing the list after links have been issued creates a new version.
     - *Full roster:* the respondent rates every colleague on every layer.
+  - **Answers are required:** every question must be answered for every colleague the respondent is asked about. Per layer, the analyst chooses whether to offer "Does not apply" as an answer beside the scale; it is offered by default on signed layers, where 0 is a real answer (neutral).
   - **Texts:** introduction, confidentiality statement and return instructions (where to send the response, for example an email address or a file-request link). The survey cannot be issued while any of the three is empty.
   - **Deadline:** optional; shown to respondents.
   - **Estimated completion time:** calculated from roster size, the number of layers and the entry method, using stated per-item times (recorded in `docs/method-notes.md`), and shown to the analyst and to respondents. Nomination uses an expected number of nominations, which the analyst can edit.
@@ -430,9 +434,9 @@ The analyst runs a whole-network survey inside Graticule, with no backend. Each 
   1. **Welcome:** the purpose (introduction text), the estimated time, the deadline if set, the confidentiality statement, and who will see the results.
   2. **Consent:** a required confirmation before any question is shown.
   3. **Name confirmation:** "Are you [name]?" If not, the page asks them not to continue and to tell the sender, and does not show the survey.
-  4. **Nomination** (if used): a searchable roster, with the meaning of not selecting someone stated above the list.
-  5. **Rating:** one colleague at a time on phones; a compact table on desktop. The question wording and scale labels are always visible while rating.
-  6. **Review:** every answer, grouped by colleague, each editable; unanswered items are listed and may be left unanswered.
+  4. **Nomination** (if used): a searchable roster, with the meaning of not selecting someone stated above the list, and the required colleagues listed separately as already included.
+  5. **Rating:** one colleague at a time on phones; a compact table on desktop. The question wording and scale labels are always visible while rating. Every question needs an answer; "Does not apply", where offered, sits apart from the scale. Moving on with a question unanswered is refused with a message naming what is missing.
+  6. **Review:** every answer, grouped by colleague, each editable. The response cannot be finished while any question is unanswered.
   7. **Submit.**
 - **Honest wording.** Responses are confidential, not anonymous: the analyst sees who gave which ratings, because the method requires it. The respondent screens say so. The word "anonymous" never appears in respondent mode.
 - **Progress.** Answers are saved on the device after every change, keyed by survey id and token, so the respondent can close the page and resume. "Clear my answers from this device" is always available. Saved answers are deleted automatically after a successful submission. The welcome screen says that answers are saved on this device until submitted.

@@ -660,3 +660,58 @@
   white-space: nowrap;
   border: 0;
 }
+
+/* "Does not apply" (D102): apart from the scale, so it is never read as a point on it. */
+.scale__na {
+  display: flex;
+  margin-top: var(--s-3);
+}
+
+.scale__na .scale__option {
+  flex: 1;
+  border-radius: var(--r-control);
+  border-style: dashed;
+}
+
+.scale__na .scale__option:has(.scale__input:checked) {
+  border-style: solid;
+}
+
+/* A question left unanswered after "Next": marked by a bar and words, not colour alone. */
+.scale--missing {
+  padding-inline-start: var(--s-3);
+  border-inline-start: var(--indicator-width) solid var(--ink);
+}
+
+.scale__missing,
+.rate-table__missing {
+  display: block;
+  margin-bottom: var(--s-2);
+  font-size: var(--t-0-size);
+  line-height: var(--t-0-line);
+  font-weight: var(--weight-semibold);
+}
+
+.rate-table__missing {
+  margin: var(--s-1) 0 0;
+}
+
+.rate-table__row--missing th {
+  border-inline-start: var(--indicator-width) solid var(--ink);
+}
+
+.rate-table__point--na,
+.rate-table__cell--na {
+  border-inline-start: var(--line-width) dashed var(--stone);
+}
+
+.respond__hint {
+  margin-bottom: var(--s-4);
+  color: var(--graphite);
+  font-size: var(--t-0-size);
+  line-height: var(--t-0-line);
+}
+
+.respond__required .respond__subheading {
+  margin-top: var(--s-4);
+}

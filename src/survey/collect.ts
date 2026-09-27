@@ -8,6 +8,7 @@
 // report. applyImport then writes the ties and the log in one step.
 
 import { validateTies, type FileReport } from '../data/import/validate';
+import { NOT_APPLICABLE_TEXT } from '../data/ratings';
 import { tableFromCells } from '../data/import/table';
 import {
   isCategorical,
@@ -257,7 +258,13 @@ function mapResponse(
   const currentLayers = new Set(current.layers.map((l) => l.key));
   const projectLayers = new Map(project.layers.map((l) => [l.key, l]));
   const currentRoster = new Set(current.roster);
-  const nominated = a.body.nominated ? new Set(a.body.nominated) : null;
+  // Asked about: the colleagues selected plus those the version requires (D103).
+  const nominated = a.body.nominated
+    ? new Set([
+        ...a.body.nominated,
+        ...version.required.map((id) => version.roster.indexOf(id)).filter((i) => i >= 0),
+      ])
+    : null;
   const rosterNow = new Set(version.roster);
   note.notAsked = current.roster.filter((id) => !rosterNow.has(id) && id !== a.memberId);
 
@@ -268,13 +275,16 @@ function mapResponse(
       continue;
     }
     const answers = a.body.answers[layer.key] ?? [];
+    const na = new Set(a.body.not_applicable[layer.key] ?? []);
     version.roster.forEach((ratee, position) => {
       if (position === a.body.position) return;
       let value: string | null;
       if (nominated && !nominated.has(position)) {
-        // Not selected: stored as the rule the respondent was told (D88).
-        if (layer.unselected !== 'zero' || isCategorical(projectLayer)) return;
-        value = '0';
+        // Not selected: stored as the rule the respondent was told (D88, D102).
+        value =
+          layer.unselected === 'zero' && !isCategorical(projectLayer) ? '0' : NOT_APPLICABLE_TEXT;
+      } else if (na.has(position)) {
+        value = NOT_APPLICABLE_TEXT;
       } else {
         const answer = answers[position] ?? null;
         value = answer === null ? '' : String(answer);

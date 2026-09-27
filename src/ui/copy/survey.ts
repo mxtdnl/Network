@@ -38,7 +38,16 @@ export const surveyCopy = {
     scalePoint: (v: string) => `Label for ${v}`,
     unselected: 'If a colleague is not selected, record',
     unselectedZero: (label: string) => `The lowest point: ${label}`,
-    unselectedNone: 'Nothing (not rated)',
+    unselectedNone: 'Does not apply (left out of coverage)',
+    offerNa: 'Offer “Does not apply” as an answer',
+    offerNaHelp:
+      'Every question must be answered for each colleague a respondent is asked about. Offer this where some colleagues cannot be rated, such as the quality of a relationship someone does not have. It is recorded apart from every scale point, including 0, and left out of coverage.',
+    required: 'Colleagues everyone is asked about',
+    requiredHelp:
+      'Every respondent rates these colleagues, whether or not they select them, for example a leadership team whose ties the survey is about. Changing this list after links are sent creates a new version.',
+    requiredSearch: 'Search by name',
+    requiredCount: (n: number) => `${String(n)} ticked`,
+    requiredClear: 'Untick all',
     entry: 'How respondents choose colleagues',
     nominate: 'Select colleagues, then rate them',
     nominateHelp:
