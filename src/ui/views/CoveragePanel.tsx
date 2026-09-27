@@ -49,6 +49,18 @@ export function CoveragePanel() {
         {coverageCopy.counts(coverage.rated, coverage.possible)}
       </p>
       <p className="coverage__explain">{coverageCopy.explain}</p>
+      <h3 className="coverage__subheading">{coverageCopy.sourcesHeading}</h3>
+      <dl className="definition-list definition-list--wide">
+        {(['self_report', 'imported', 'entered', 'none'] as const).map((k) => {
+          const n = project.ties.filter((t) => (t.source ?? 'none') === k).length;
+          return n === 0 ? null : (
+            <div key={k} className="coverage__source">
+              <dt>{coverageCopy.sources[k]}</dt>
+              <dd className="num">{n}</dd>
+            </div>
+          );
+        })}
+      </dl>
 
       <div className="field field--inline">
         <label htmlFor={thresholdId} className="field__label">

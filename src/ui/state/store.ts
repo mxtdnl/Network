@@ -24,7 +24,7 @@ import {
   type WeightState,
 } from './presets';
 
-export type CentreView = 'map' | 'matrix' | 'table' | 'compare';
+export type CentreView = 'map' | 'matrix' | 'table' | 'compare' | 'survey';
 export type RightPanel = 'member' | 'explore' | 'insights' | 'views' | 'coverage';
 export type MatrixMode = 'explore' | 'enter';
 export type CompareMode = 'layers' | 'formalInformal';
@@ -161,6 +161,9 @@ interface Actions {
   restoreLayer: (key: LayerKey) => void;
   applyRatings: (variable: LayerKey, changes: readonly RatingChange[]) => void;
   setCoverageThreshold: (threshold: number) => void;
+  /** A change the analysis reads (for example ties imported from survey
+   *  responses): the revision moves, so everything is recalculated. */
+  updateProject: (fn: (p: Project) => Project, status?: StatusMessage) => void;
   /**
    * Changes parts of the project the analysis does not read (saved views, the
    * anonymisation setting). The project is saved and persisted as usual, but
@@ -409,6 +412,9 @@ export const useAppStore = create<AppState>()((set, get) => {
     },
     setCoverageThreshold: (coverage_threshold) => {
       change((p) => ({ ...p, settings: { ...p.settings, coverage_threshold } }));
+    },
+    updateProject: (fn, status) => {
+      change(fn, status);
     },
     updateProjectViews: (fn) => {
       const { project } = get().data;

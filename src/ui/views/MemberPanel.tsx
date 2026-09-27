@@ -338,32 +338,34 @@ export function MemberPanel() {
         </button>
       </div>
       <dl className="definition-list member__attributes">
-        {project.attribute_definitions.map((a) => {
-          const v = member.attributes[a.key] ?? null;
-          return (
-            <div key={a.key} className="definition-list__row">
-              <dt>{a.label}</dt>
-              <dd>
-                {v === null ? (
-                  mapCopy.legend.notRecorded
-                ) : a.type === 'member_ref' && project.members.some((m) => m.id === v) ? (
-                  <button
-                    type="button"
-                    className="link-button"
-                    aria-label={P.selectManager(names.of(v))}
-                    onClick={() => {
-                      selectMember(v);
-                    }}
-                  >
-                    {names.of(v)}
-                  </button>
-                ) : (
-                  v
-                )}
-              </dd>
-            </div>
-          );
-        })}
+        {project.attribute_definitions
+          .filter((a) => a.type !== 'email')
+          .map((a) => {
+            const v = member.attributes[a.key] ?? null;
+            return (
+              <div key={a.key} className="definition-list__row">
+                <dt>{a.label}</dt>
+                <dd>
+                  {v === null ? (
+                    mapCopy.legend.notRecorded
+                  ) : a.type === 'member_ref' && project.members.some((m) => m.id === v) ? (
+                    <button
+                      type="button"
+                      className="link-button"
+                      aria-label={P.selectManager(names.of(v))}
+                      onClick={() => {
+                        selectMember(v);
+                      }}
+                    >
+                      {names.of(v)}
+                    </button>
+                  ) : (
+                    v
+                  )}
+                </dd>
+              </div>
+            );
+          })}
       </dl>
       <div className="member__actions">
         <button

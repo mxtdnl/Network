@@ -145,6 +145,14 @@
   --map-group-size: var(--t-0-size); /* group names in the grouped and circular layouts */
   --presentation-legend-width: 360px; /* legend column in presentation mode, as --col-right */
   --presentation-idle: 2000ms; /* presentation hides the cursor and controls after this long at rest (design-system §5.3) */
+
+  /* Respondent mode (spec §15.4, CLAUDE.md D93). Mobile-first; wide layout from --respond-wide. */
+  --respond-wide: 720px; /* read by script for matchMedia: the compact rating table starts here */
+  --respond-target: 48px; /* touch targets: meets Apple 44pt and Material 48dp (spec §12) */
+  --respond-column: 640px; /* reading column for welcome, consent and review */
+  --respond-table-width: 1040px; /* the desktop rating table */
+  --respond-gutter: var(--s-4); /* phone side margin (design-system §4.1) */
+  --respond-name-width: 240px; /* names column of the desktop rating table */
 }
 
 @media (prefers-reduced-motion: reduce) {

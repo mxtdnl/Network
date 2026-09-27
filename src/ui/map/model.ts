@@ -158,7 +158,7 @@ export function isToggledOn(settings: MapSettings, key: string): boolean {
 
 /** Attributes that can colour nodes or filter them (not member references). */
 export function groupAttributes(project: Project): AttributeDefinition[] {
-  return project.attribute_definitions.filter((a) => a.type !== 'member_ref');
+  return project.attribute_definitions.filter((a) => a.type !== 'member_ref' && a.type !== 'email');
 }
 
 /** Values of an attribute that members have, in display order: defined categories, then first appearance. */

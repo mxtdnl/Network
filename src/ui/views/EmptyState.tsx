@@ -8,6 +8,7 @@ import { useAppStore } from '../state/store';
 export function EmptyState() {
   const headingId = useId();
   const setImportOpen = useAppStore((s) => s.setImportOpen);
+  const setCentreView = useAppStore((s) => s.setCentreView);
   const copy = shellCopy.empty;
   return (
     <section className="empty-state" aria-labelledby={headingId}>
@@ -19,6 +20,15 @@ export function EmptyState() {
         <button
           type="button"
           className="button button--primary"
+          onClick={() => {
+            setCentreView('survey');
+          }}
+        >
+          {copy.runSurvey}
+        </button>
+        <button
+          type="button"
+          className="button button--secondary"
           onClick={() => {
             setImportOpen(true);
           }}

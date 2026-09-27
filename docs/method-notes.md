@@ -399,3 +399,32 @@ Quantiles use linear interpolation over the members whose value is defined (NumP
 **Caveats.** The thresholds are conventions chosen for this tool, not published standards; they are stated wherever a rule is shown so a reader can judge them. Every rule inherits the caveats of the metric it reads (sections 3 to 6): betweenness assumes shortest-path flow, the E-I index counts ties and favours larger groups, received strength depends on who answered. The rules describe positions in the network, which have many causes (role, tenure, location, workload, the survey itself); an observation is a reason to ask, not an answer. Below the coverage threshold the panel repeats the coverage warning.
 
 **Demo.** On the demo the rules find the structures it was built with (scripts/generate-demo.ts): the Operations broker, Finance as a silo, the pocket of reciprocated negative valence, formal-only ties between Product and Sales and informal-only ties between People and Product. Possible overload does not apply, because the demo has no advice or workflow dependency ratings. `tests/unit/insights.test.ts` checks each threshold at its boundary and the demo findings.
+
+## 9. Survey collection (respondent mode)
+
+Graticule can run the survey itself (spec §15). Each participant opens a personal link, answers in the browser and returns an encrypted response, which the analyst imports. This section states what that arrangement protects and what it does not, and the conventions behind the completion-time estimate.
+
+### What the encryption protects
+
+- **Reading a response.** Each response is encrypted on the respondent's device to the survey's public key: a fresh ECDH P-256 key pair per response, HKDF-SHA-256 and AES-256-GCM (`src/survey/crypto.ts`). Only the survey's private key can decrypt it. That key is stored in the project file only in encrypted form, under a key derived from the analyst's passphrase (PBKDF2-HMAC-SHA-256, 600,000 iterations). Whoever carries or stores a response file (email providers, file-sharing services, the respondent's own mailbox) cannot read it.
+- **Altering a response.** AES-GCM authenticates the whole response, and the unencrypted header (survey, version, key fingerprint) is bound to it. Any change makes the import reject the file as changed or damaged.
+- **Mixing up surveys.** A response encrypted for another survey or key, or answering a version the survey does not have, is rejected with its reason.
+- **Duplicates.** Every respondent has a random 128-bit token inside the encrypted response. Two responses with one token are duplicates: the one submitted latest (by the respondent's device clock) is kept and the event is logged. The same file imported twice changes nothing.
+
+### What it does not protect
+
+- **Who answered.** There is no server, so nothing proves identity. A respondent who forwards their link lets someone else answer as them. The token detects duplicates; it does not show who used it. The name check at the start of the survey ("This link was made for …") is a prompt, not authentication.
+- **The link itself.** The survey travels in the link's fragment, which browsers do not send to the web server, but email and chat security services can rewrite, scan and log whole links (CLAUDE.md, "Research"). Anyone who can see a link can therefore read the roster and questions and answer as its recipient. Links hold nothing the organisation does not already hold, apart from the token.
+- **Answers before submission.** While a respondent works, their answers are saved in the browser on their device, unencrypted, so they can resume. Anyone using that device and browser can see them until they are submitted or cleared. They are cleared automatically once the encrypted response has been copied or downloaded, and on request.
+- **The analyst's side.** Once decrypted and imported, ratings are ordinary project data: the project file, exports and the analyst's device need the same care as any personal data. A lost key and passphrase cannot be recovered; the responses encrypted to it are then unreadable by anyone.
+- **Timing.** The submission time comes from the respondent's device and can be wrong; it decides only which of two duplicates is kept.
+
+Responses are confidential and carry the respondent's name: the analyst sees who gave which ratings, because a whole-network design needs it (section 1, spec §3). The respondent screens say so and never describe the survey as anonymous.
+
+### Colleagues not selected
+
+With "select colleagues, then rate them", a colleague the respondent did not select is recorded as the lowest point of each unsigned layer (0: "Never" or "No meaningful working connection"), and as not rated on signed and categorical layers, because 0 on a signed layer means neutral, a quality nobody reported (CLAUDE.md D88). The analyst can change this per layer, and respondents are told what is recorded before they select anyone. A consequence for coverage: signed layers are not rated for colleagues not selected, so a nomination survey with valence rarely reaches the coverage threshold on its own.
+
+### Completion-time estimate
+
+Estimated time = 60 s to read the introduction and agree + 5 s per rating + (with selection) 2 s per colleague considered, where ratings = colleagues × questions for a full roster, or the expected number of selections (default 12) × questions with selection. These are conventions, not measurements; the owner approved them as proposed (CLAUDE.md Q31). The warning limit defaults to 15 minutes.

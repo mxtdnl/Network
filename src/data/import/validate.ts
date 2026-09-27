@@ -96,6 +96,8 @@ export interface TiesResult {
 }
 
 export const MEMBER_COLUMNS = ['id', 'display_name'] as const;
+/** Column read as members' email addresses for survey administration. */
+export const EMAIL_ATTRIBUTE = 'email';
 export const TIE_COLUMNS = ['rater_id', 'ratee_id', 'variable', 'value'] as const;
 export const OPTIONAL_TIE_COLUMNS = ['wave'] as const;
 
@@ -307,10 +309,12 @@ export function validateMembers(table: RawTable): MembersResult {
   const attributes: AttributeDefinition[] = DEFAULT_ATTRIBUTES.map((a) => ({ ...a }));
   for (const column of extraColumns) {
     const header = table.headers[index.get(column) ?? -1]?.trim() ?? column;
-    attributes.push({ key: column, label: header, type: 'categorical', builtin: false });
+    // An email column is survey administration data, never an analysis attribute (spec §4.1).
+    const type = column === EMAIL_ATTRIBUTE ? 'email' : 'categorical';
+    attributes.push({ key: column, label: header, type, builtin: false });
   }
   for (const def of attributes) {
-    if (def.type === 'member_ref') continue;
+    if (def.type === 'member_ref' || def.type === 'email') continue;
     const values = new Set<string>();
     for (const m of members) {
       const v = m.attributes[def.key];

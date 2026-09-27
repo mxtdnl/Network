@@ -29,7 +29,7 @@ const shot = (page: Page, name: string) =>
 
 test('import the templates, read the validation report and open the matrix', async ({ page }) => {
   await start(page);
-  await page.getByRole('button', { name: 'Import data' }).click();
+  await page.getByRole('button', { name: 'Import survey data' }).click();
   const dialog = page.getByRole('dialog', { name: 'Import data' });
   await expect(dialog).toBeVisible();
 
@@ -114,7 +114,7 @@ test('import the XLSX templates under the production CSP', async ({ page }) => {
     if (/content security policy/i.test(msg.text())) cspViolations.push(msg.text());
   });
   await start(page);
-  await page.getByRole('button', { name: 'Import data' }).click();
+  await page.getByRole('button', { name: 'Import survey data' }).click();
   const dialog = page.getByRole('dialog', { name: 'Import data' });
   await dialog.getByLabel('Members file').setInputFiles(join(templates, 'members.xlsx'));
   await dialog.getByLabel('Ties file').setInputFiles(join(templates, 'ties.xlsx'));
@@ -128,7 +128,7 @@ test('import the XLSX templates under the production CSP', async ({ page }) => {
 
 test('the validation report lists every seeded error with its row', async ({ page }) => {
   await start(page);
-  await page.getByRole('button', { name: 'Import data' }).click();
+  await page.getByRole('button', { name: 'Import survey data' }).click();
   const dialog = page.getByRole('dialog', { name: 'Import data' });
   await dialog.getByLabel('Members file').setInputFiles({
     name: 'members-with-errors.csv',
@@ -250,7 +250,7 @@ test('demo, layer manager, coverage, project files and local persistence', async
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe('demo-meridian-works.ona.json');
   const saved = readFileSync(await download.path(), 'utf8');
-  expect(JSON.parse(saved)).toMatchObject({ schema_version: 2 });
+  expect(JSON.parse(saved)).toMatchObject({ schema_version: 3 });
 
   await page.getByRole('button', { name: 'Project' }).click();
   const chooser = page.waitForEvent('filechooser');

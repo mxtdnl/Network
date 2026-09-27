@@ -43,6 +43,14 @@ export function EthicsNotice({ open, onClose }: EthicsNoticeProps) {
           </li>
         ))}
       </ul>
+      <h3 className="notice__section">{noticeCopy.survey.heading}</h3>
+      <ul className="notice__points">
+        {noticeCopy.survey.points.map((point) => (
+          <li key={point.heading} className="notice__point">
+            <strong className="notice__point-heading">{point.heading}</strong> {point.body}
+          </li>
+        ))}
+      </ul>
       <p className="notice__reopen">{noticeCopy.reopen}</p>
       <div className="dialog__actions">
         <button

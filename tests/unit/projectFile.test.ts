@@ -10,6 +10,7 @@ import {
   type Migration,
 } from '../../src/data/migrations';
 import { V1_PROJECT, V1_VIEW_MIGRATED } from '../fixtures/migrations/v1';
+import { V2_PROJECT } from '../fixtures/migrations/v2';
 import { parseProject, projectFileName, serialiseProject } from '../../src/data/projectFile';
 import { SCHEMA_VERSION, type Project } from '../../src/data/schema';
 
@@ -144,18 +145,30 @@ describe('save → load round trip', () => {
 describe('schema versions and migrations', () => {
   const v2 = () => JSON.parse(serialiseProject(richProject())) as Record<string, unknown>;
 
-  it('has one registered step, from version 1 to version 2', () => {
-    expect(MIGRATIONS.map((m) => [m.from, m.to])).toEqual([[1, 2]]);
-    expect(SCHEMA_VERSION).toBe(2);
+  it('has two registered steps, from version 1 to 2 and from 2 to 3', () => {
+    expect(MIGRATIONS.map((m) => [m.from, m.to])).toEqual([
+      [1, 2],
+      [2, 3],
+    ]);
+    expect(SCHEMA_VERSION).toBe(3);
+  });
+
+  it('migrates the version 2 fixture: an empty survey list, ties without a source', () => {
+    const loaded = parseProject(V2_PROJECT);
+    expect(loaded.schema_version).toBe(3);
+    expect(loaded.surveys).toStrictEqual([]);
+    expect(loaded).toStrictEqual(richProject());
+    expect(loaded.ties.every((t) => t.source === undefined)).toBe(true);
+    expect(parseProject(serialiseProject(loaded))).toStrictEqual(loaded);
   });
 
   it('migrates the version 1 fixture: saved views take the version 2 shape', () => {
     const loaded = parseProject(V1_PROJECT);
-    expect(loaded.schema_version).toBe(2);
+    expect(loaded.schema_version).toBe(3);
     // Everything but the saved views and the version is unchanged.
     expect({ ...loaded, saved_views: [] }).toStrictEqual({ ...richProject(), saved_views: [] });
     expect(loaded.saved_views).toStrictEqual([V1_VIEW_MIGRATED]);
-    // And the migrated file round-trips as version 2.
+    // And the migrated file round-trips as version 3.
     expect(parseProject(serialiseProject(loaded))).toStrictEqual(loaded);
   });
 

@@ -97,7 +97,12 @@ export function applyRatingChanges(
       continue;
     }
     pending.delete(key);
-    if (change.kind === 'set') ties.push({ ...t, value: change.value });
+    if (change.kind === 'set') {
+      // An edited rating is the analyst's entry now, whatever its origin.
+      const edited: Tie = { ...t, value: change.value, source: 'entered' };
+      delete edited.survey;
+      ties.push(edited);
+    }
   }
   for (const c of pending.values()) {
     if (c.kind === 'set') {
@@ -107,6 +112,7 @@ export function applyRatingChanges(
         variable,
         value: c.value,
         wave: DEFAULT_WAVE,
+        source: 'entered',
       });
     }
   }

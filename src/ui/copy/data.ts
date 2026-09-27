@@ -129,6 +129,13 @@ export const coverageCopy = {
   heading: 'Data coverage',
   topBar: (rate: string) => `Coverage ${rate}`,
   overall: 'Overall response rate',
+  sourcesHeading: 'Where the ratings came from',
+  sources: {
+    self_report: 'Survey responses',
+    imported: 'Imported files',
+    entered: 'Entered in the matrix',
+    none: 'Not recorded',
+  },
   explain:
     'The share of possible ratings that were given, across enabled layers. A rating of 0 counts as given; declined and never-entered ratings do not.',
   threshold: 'Warn below',

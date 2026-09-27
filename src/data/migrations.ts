@@ -27,6 +27,13 @@ export const MIGRATIONS: readonly Migration[] = [
         : file.saved_views,
     }),
   },
+  {
+    from: 2,
+    to: 3,
+    description:
+      'Projects hold surveys (respondent mode, spec §15). Existing ties keep no source: it was not recorded, so it is not guessed.',
+    up: (file) => ({ ...file, surveys: [] }),
+  },
 ];
 
 type Obj = Record<string, unknown>;

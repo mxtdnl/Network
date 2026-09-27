@@ -43,7 +43,8 @@ const isStrRecord = (v: unknown): v is Record<string, string> =>
   isObj(v) && Object.values(v).every(isStr);
 
 const SCALE_TYPES = new Set(['strength', 'frequency', 'signed', 'categorical']);
-const ATTRIBUTE_TYPES = new Set(['categorical', 'ordinal', 'member_ref']);
+const ATTRIBUTE_TYPES = new Set(['categorical', 'ordinal', 'member_ref', 'email']);
+const TIE_SOURCES = new Set(['self_report', 'imported', 'entered']);
 
 /** Lists every structural problem in a migrated project file. Empty when valid. */
 export function checkProject(file: Obj): string[] {
@@ -85,6 +86,10 @@ export function checkProject(file: Obj): string[] {
       need(ATTRIBUTE_TYPES.has(a.type as string), `${at} (${a.key}) has an unknown type.`);
       need(a.categories === undefined || isStrArray(a.categories), `${at} has invalid categories.`);
       need(isBool(a.builtin), `${at} (${a.key}) must say whether it is built in.`);
+      need(
+        a.shareable === undefined || isBool(a.shareable),
+        `${at} (${a.key}) has an invalid shareable flag.`,
+      );
     });
 
   // Members
@@ -205,6 +210,15 @@ export function checkProject(file: Obj): string[] {
           );
         }
       }
+      need(
+        t.source === undefined || TIE_SOURCES.has(t.source as string),
+        `${at} has an unknown source ${JSON.stringify(t.source)}.`,
+      );
+      need(
+        t.survey === undefined ||
+          (isObj(t.survey) && isStr(t.survey.id) && isNum(t.survey.version)),
+        `${at} has an invalid survey reference.`,
+      );
       if (isStr(rater) && isStr(ratee) && isStr(variable) && isNum(wave)) {
         const key = tieKey(rater, ratee, variable, wave);
         need(!tieKeys.has(key), `${at} duplicates an earlier rating of ${ratee} by ${rater}.`);
@@ -229,6 +243,21 @@ export function checkProject(file: Obj): string[] {
       viewIds.add(v.id);
       for (const problem of checkSavedView(v))
         problems.push(`${at} (${v.name as string}) ${problem}`);
+    });
+
+  const surveys = file.surveys;
+  const surveyIds = new Set<string>();
+  if (!Array.isArray(surveys)) problems.push('surveys must be a list.');
+  else
+    surveys.forEach((v: unknown, i) => {
+      const at = `Survey ${String(i + 1)}`;
+      if (!isObj(v) || !isStr(v.id) || v.id === '') {
+        problems.push(`${at} has no id.`);
+        return;
+      }
+      need(!surveyIds.has(v.id), `${at} repeats the id “${v.id}”.`);
+      surveyIds.add(v.id);
+      for (const problem of checkSurvey(v)) problems.push(`${at} (${v.id}) ${problem}`);
     });
 
   const s = file.settings;
@@ -333,6 +362,150 @@ export function checkSavedView(v: Obj): string[] {
     isObj(sel) && isNullableStr(sel.member) && isStrArray(sel.group),
     'has an invalid selection.',
   );
+  return problems;
+}
+
+const ENTRIES = new Set(['nominate', 'full']);
+const UNSELECTED = new Set(['zero', 'not_rated']);
+const REJECT_REASONS = new Set([
+  'unreadable',
+  'other_survey',
+  'other_key',
+  'tampered',
+  'unknown_version',
+  'unknown_token',
+  'token_mismatch',
+  'already_imported',
+  'closed',
+]);
+const isInt = (v: unknown): v is number => isNum(v) && Number.isInteger(v);
+
+/**
+ * Problems with one survey (schema version 3), each a sentence ending. Roster
+ * members may since have left the project; responses naming them are reported
+ * on import, so they are allowed here.
+ */
+export function checkSurvey(v: Obj): string[] {
+  const problems: string[] = [];
+  const need = (ok: boolean, message: string) => {
+    if (!ok) problems.push(message);
+  };
+  need(isStr(v.title), 'has no title.');
+  need(isStr(v.created_at), 'has no created_at.');
+  need(v.status === 'open' || v.status === 'closed', 'has an unknown status.');
+  need(isInt(v.wave) && v.wave >= 1, 'must have a whole-number wave of 1 or more.');
+  const t = v.texts;
+  need(
+    isObj(t) && isStr(t.introduction) && isStr(t.confidentiality) && isStr(t.return_instructions),
+    'has invalid texts.',
+  );
+  need(
+    v.deadline === null || (isStr(v.deadline) && /^\d{4}-\d{2}-\d{2}$/.test(v.deadline)),
+    'has an invalid deadline.',
+  );
+  const st = v.settings;
+  need(
+    isObj(st) &&
+      isNum(st.burden_limit_minutes) &&
+      st.burden_limit_minutes > 0 &&
+      isInt(st.expected_nominations) &&
+      st.expected_nominations >= 0 &&
+      (st.link_mode === 'auto' || st.link_mode === 'package'),
+    'has invalid settings.',
+  );
+  const k = v.key;
+  const w = isObj(k) ? k.wrapped : undefined;
+  need(
+    isObj(k) &&
+      isStr(k.public_key) &&
+      isStr(k.fingerprint) &&
+      isObj(w) &&
+      w.kdf === 'PBKDF2-SHA-256' &&
+      isInt(w.iterations) &&
+      isStr(w.salt) &&
+      isStr(w.iv) &&
+      isStr(w.ciphertext),
+    'has an invalid key.',
+  );
+  const versions = new Set<number>();
+  if (!Array.isArray(v.versions) || v.versions.length === 0) {
+    problems.push('has no versions.');
+  } else
+    v.versions.forEach((ver: unknown, i) => {
+      const at = `version entry ${String(i + 1)}`;
+      if (!isObj(ver) || !isInt(ver.version) || ver.version < 1) {
+        problems.push(`has an invalid ${at}.`);
+        return;
+      }
+      need(!versions.has(ver.version), `repeats version ${String(ver.version)}.`);
+      versions.add(ver.version);
+      need(isStr(ver.created_at), `${at} has no created_at.`);
+      need(
+        isStrArray(ver.roster) && ver.roster.length >= 2,
+        `${at} needs a roster of two or more.`,
+      );
+      need(ENTRIES.has(ver.entry as string), `${at} has an unknown entry method.`);
+      need(isStr(ver.nomination_question), `${at} has no nomination question.`);
+      need(isStrArray(ver.shared_attributes), `${at} has invalid shared attributes.`);
+      need(
+        Array.isArray(ver.layers) &&
+          ver.layers.length > 0 &&
+          ver.layers.every(
+            (l: unknown) =>
+              isObj(l) &&
+              isStr(l.key) &&
+              isStr(l.label) &&
+              isStr(l.question_wording) &&
+              SCALE_TYPES.has(l.scale_type as string) &&
+              isNum(l.min) &&
+              isNum(l.max) &&
+              isBool(l.signed) &&
+              UNSELECTED.has(l.unselected as string) &&
+              (l.scale_labels === undefined || isStrRecord(l.scale_labels)) &&
+              (l.categories === undefined || isStrArray(l.categories)) &&
+              (l.category_labels === undefined || isStrRecord(l.category_labels)),
+          ),
+        `${at} has invalid layers.`,
+      );
+    });
+  const tokens = new Set<string>();
+  const respondents = new Set<string>();
+  if (!Array.isArray(v.respondents)) problems.push('has no respondent list.');
+  else
+    v.respondents.forEach((r: unknown, i) => {
+      const at = `respondent ${String(i + 1)}`;
+      if (!isObj(r) || !isStr(r.member_id) || !isStr(r.token) || r.token === '') {
+        problems.push(`has an invalid ${at}.`);
+        return;
+      }
+      need(!tokens.has(r.token), `issues the same token twice.`);
+      tokens.add(r.token);
+      need(!respondents.has(r.member_id), `lists ${r.member_id} twice.`);
+      respondents.add(r.member_id);
+      need(isInt(r.version) && versions.has(r.version), `${at} names an unknown version.`);
+      need(isStr(r.issued_at), `${at} has no issued_at.`);
+    });
+  if (!Array.isArray(v.log)) problems.push('has no import log.');
+  else
+    v.log.forEach((e: unknown, i) => {
+      const at = `log entry ${String(i + 1)}`;
+      const ok =
+        isObj(e) &&
+        isStr(e.imported_at) &&
+        ((e.kind === 'accepted' &&
+          isStr(e.receipt) &&
+          isStr(e.member_id) &&
+          isInt(e.version) &&
+          isStr(e.submitted_at) &&
+          isInt(e.ratings) &&
+          isNullableStr(e.replaced_by)) ||
+          (e.kind === 'duplicate' && isStr(e.member_id) && isStr(e.kept) && isStr(e.set_aside)) ||
+          (e.kind === 'rejected' &&
+            isStr(e.source) &&
+            isNullableStr(e.receipt) &&
+            REJECT_REASONS.has(e.reason as string)));
+      need(ok, `has an invalid ${at}.`);
+    });
   return problems;
 }
 

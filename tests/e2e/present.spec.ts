@@ -233,7 +233,7 @@ test('saved views: name, caption, rename, reorder, restore, update and delete; k
   await page.getByRole('menuitem', { name: 'Save project' }).click();
   const file = await (await download).path();
   const saved = parseProject(readFileSync(file, 'utf8'));
-  expect(saved.schema_version).toBe(2);
+  expect(saved.schema_version).toBe(3);
   expect(saved.saved_views.map((v) => v.name)).toEqual([
     'Teams in a circle',
     'Whole team',

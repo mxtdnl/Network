@@ -323,6 +323,14 @@
   font-weight: var(--weight-semibold);
 }
 
+.notice__section {
+  margin-top: var(--s-5);
+  margin-bottom: var(--s-3);
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+  font-weight: var(--weight-semibold);
+}
+
 .notice__reopen {
   color: var(--graphite);
   margin-top: var(--s-4);
