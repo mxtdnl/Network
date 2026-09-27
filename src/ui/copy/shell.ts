@@ -23,6 +23,7 @@ export const shellCopy = {
     matrix: 'Matrix',
     table: 'Table',
     compare: 'Compare',
+    survey: 'Survey',
   },
   rightTabs: {
     member: 'Member',
@@ -30,10 +31,11 @@ export const shellCopy = {
     coverage: 'Coverage',
   },
   empty: {
-    heading: 'Import data or load the demo',
-    body: 'Import a members file and a ties file in CSV or XLSX format, or explore Graticule with a fictional team of 40 people.',
+    heading: 'Run a survey, import data or load the demo',
+    body: 'Run a survey: each person answers through their own link and returns an encrypted response to you. Or import survey data you already hold, as a members file and a ties file in CSV or XLSX format, or explore Graticule with a fictional team of 40 people.',
     privacy: 'Files are processed in this browser and are not uploaded anywhere.',
-    importData: 'Import data',
+    runSurvey: 'Run a survey',
+    importData: 'Import survey data',
     loadDemo: 'Load demo',
   },
   centreEmpty: {

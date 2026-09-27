@@ -216,6 +216,7 @@ export function createProject(title: string, now: string): Project {
     layers: defaultLayers(),
     ties: [],
     saved_views: [],
+    surveys: [],
     settings: defaultSettings(),
   };
 }

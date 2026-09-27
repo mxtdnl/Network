@@ -14,7 +14,7 @@ export function projectFromImport(
   const project = createProject(title, now);
   project.attribute_definitions = members.attributes;
   project.members = members.members;
-  project.ties = ties?.ties ?? [];
+  project.ties = (ties?.ties ?? []).map((t) => ({ ...t, source: 'imported' as const }));
   return project;
 }
 
@@ -24,9 +24,9 @@ export function addImportedTies(project: Project, ties: TiesResult, now: string)
   const existing = new Set(
     project.ties.map((t) => tieKey(t.rater_id, t.ratee_id, t.variable, t.wave)),
   );
-  const added = ties.ties.filter(
-    (t) => !existing.has(tieKey(t.rater_id, t.ratee_id, t.variable, t.wave)),
-  );
+  const added = ties.ties
+    .filter((t) => !existing.has(tieKey(t.rater_id, t.ratee_id, t.variable, t.wave)))
+    .map((t) => ({ ...t, source: 'imported' as const }));
   return {
     ...project,
     meta: { ...project.meta, modified_at: now },

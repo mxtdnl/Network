@@ -15,11 +15,12 @@ import {
 } from './schema';
 
 /** Visual and semantic state of one matrix cell. */
-export type CellState = 'self' | 'not-rated' | 'declined' | 'zero' | 'value';
+export type CellState = 'self' | 'not-rated' | 'declined' | 'not-applicable' | 'zero' | 'value';
 
 export function cellState(rater: MemberId, ratee: MemberId, tie: Tie | undefined): CellState {
   if (rater === ratee) return 'self';
   if (tie === undefined) return 'not-rated';
+  if (tie.not_applicable) return 'not-applicable';
   if (tie.value === null) return 'declined';
   if (tie.value === 0) return 'zero';
   return 'value';
@@ -28,9 +29,12 @@ export function cellState(rater: MemberId, ratee: MemberId, tie: Tie | undefined
 export type ParsedInput =
   | { kind: 'value'; value: number | string }
   | { kind: 'clear' }
+  | { kind: 'not_applicable' }
   | { kind: 'error'; code: 'non_numeric' | 'out_of_range' | 'unknown_category' };
 
 const NUMBER = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/;
+/** "n/a" marks a rating that does not apply (CLAUDE.md D102); a category of that name wins. */
+export const NOT_APPLICABLE_TEXT = 'n/a';
 
 /** Short code shown in a categorical cell: the first letter of each label. */
 export function categoryCodes(layer: LayerDefinition): Map<string, string> {
@@ -62,8 +66,10 @@ export function parseRatingInput(layer: LayerDefinition, raw: string): ParsedInp
         return { kind: 'value', value: c };
       }
     }
+    if (lower === NOT_APPLICABLE_TEXT) return { kind: 'not_applicable' };
     return { kind: 'error', code: 'unknown_category' };
   }
+  if (text.toLowerCase() === NOT_APPLICABLE_TEXT) return { kind: 'not_applicable' };
   if (!NUMBER.test(text)) return { kind: 'error', code: 'non_numeric' };
   const n = Number(text);
   if (n < layer.min || n > layer.max) return { kind: 'error', code: 'out_of_range' };
@@ -72,7 +78,12 @@ export function parseRatingInput(layer: LayerDefinition, raw: string): ParsedInp
 
 export type RatingChange =
   | { rater: MemberId; ratee: MemberId; kind: 'set'; value: RatingValue }
-  | { rater: MemberId; ratee: MemberId; kind: 'clear' };
+  | { rater: MemberId; ratee: MemberId; kind: 'clear' }
+  | { rater: MemberId; ratee: MemberId; kind: 'not_applicable' };
+
+function changeValue(c: Exclude<RatingChange, { kind: 'clear' }>) {
+  return c.kind === 'set' ? { value: c.value } : { value: null, not_applicable: true as const };
+}
 
 /** Applies changes to one layer's wave-1 ratings. Self-pairs are ignored. */
 export function applyRatingChanges(
@@ -97,16 +108,23 @@ export function applyRatingChanges(
       continue;
     }
     pending.delete(key);
-    if (change.kind === 'set') ties.push({ ...t, value: change.value });
+    if (change.kind !== 'clear') {
+      // An edited rating is the analyst's entry now, whatever its origin.
+      const edited: Tie = { ...t, ...changeValue(change), source: 'entered' };
+      delete edited.survey;
+      if (change.kind === 'set') delete edited.not_applicable;
+      ties.push(edited);
+    }
   }
   for (const c of pending.values()) {
-    if (c.kind === 'set') {
+    if (c.kind !== 'clear') {
       ties.push({
         rater_id: c.rater,
         ratee_id: c.ratee,
         variable,
-        value: c.value,
+        ...changeValue(c),
         wave: DEFAULT_WAVE,
+        source: 'entered',
       });
     }
   }
@@ -180,6 +198,9 @@ export function planPaste(
       } else if (parsed.kind === 'clear') {
         plan.changes.push({ rater, ratee, kind: 'clear' });
         plan.cleared += 1;
+      } else if (parsed.kind === 'not_applicable') {
+        plan.changes.push({ rater, ratee, kind: 'not_applicable' });
+        plan.set += 1;
       } else {
         plan.changes.push({ rater, ratee, kind: 'set', value: parsed.value });
         plan.set += 1;

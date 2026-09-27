@@ -19,6 +19,29 @@ const dataBoundary = {
     { group: ['react', 'react-dom', 'react/*', 'zustand'], message: 'data/ is UI-free.' },
   ],
 };
+// Survey core: pure, like data/ (it may read data/ types and validation).
+const surveyBoundary = {
+  patterns: [
+    {
+      regex: '(^|/)(ui|engine|respond)(/|$)',
+      message: 'survey/ may not import from ui/, engine/ or respond/.',
+    },
+    { group: ['react', 'react-dom', 'react/*', 'zustand'], message: 'survey/ is UI-free.' },
+  ],
+};
+// The respondent route loads without the analyst workspace (spec §15.4): it
+// may use survey/, data/ types and shared components, never the analyst's
+// state, views, map or engine.
+const respondBoundary = {
+  patterns: [
+    { regex: '(^|/)engine(/|$)', message: 'The respondent route never loads the engine.' },
+    {
+      regex: '(^|/)ui/(state|views|map|copy)(/|$)',
+      message: 'The respondent route may not import analyst state, views, map or copy.',
+    },
+    { group: ['zustand'], message: 'The respondent route keeps its own state.' },
+  ],
+};
 // All styling goes through CSS files that use tokens (spec §12), which
 // tests/unit/design-tokens.test.ts checks; inline styles would bypass that.
 const noInlineStyle = {
@@ -81,6 +104,11 @@ export default tseslint.config(
   },
   { files: ['src/engine/**/*.ts'], rules: { 'no-restricted-imports': ['error', engineBoundary] } },
   { files: ['src/data/**/*.ts'], rules: { 'no-restricted-imports': ['error', dataBoundary] } },
+  { files: ['src/survey/**/*.ts'], rules: { 'no-restricted-imports': ['error', surveyBoundary] } },
+  {
+    files: ['src/respond/**/*.{ts,tsx}'],
+    rules: { 'no-restricted-imports': ['error', respondBoundary] },
+  },
   {
     files: ['src/ui/**/*.{ts,tsx}'],
     ignores: ['src/ui/engineClient.ts'],

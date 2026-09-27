@@ -1,0 +1,363 @@
+/* Survey tab: setup and collection dashboard (spec §15.1, §15.5). Analyst
+ * rules: desktop-first, the workspace's type and control sizes. */
+
+.survey {
+  height: 100%;
+  overflow-y: auto;
+  max-width: calc(var(--dialog-width-wide) + var(--s-6));
+}
+
+.survey__heading {
+  margin-bottom: var(--s-3);
+  font-size: var(--t-3-size);
+  line-height: var(--t-3-line);
+  font-weight: var(--weight-semibold);
+}
+
+.survey__text {
+  max-width: var(--measure);
+  margin-bottom: var(--s-4);
+}
+
+.survey__choose {
+  margin-bottom: var(--s-5);
+}
+
+.survey__another {
+  margin-top: var(--s-6);
+}
+
+/* Coverage panel: where the ratings came from (spec §4.2) */
+.coverage__subheading {
+  margin-block: var(--s-4) var(--s-2);
+  font-weight: var(--weight-semibold);
+}
+
+.coverage__source {
+  display: contents;
+}
+
+/* Setup */
+.survey-setup__group {
+  margin: 0 0 var(--s-6);
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.survey-setup__legend {
+  padding: 0;
+  margin-bottom: var(--s-2);
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+  font-weight: var(--weight-semibold);
+}
+
+.survey-setup__subgroup {
+  margin: 0 0 var(--s-4);
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.survey-setup__layer {
+  padding-block: var(--s-3);
+  border-bottom: var(--line-width) solid var(--field);
+}
+
+.survey-setup__layer-fields {
+  margin-top: var(--s-2);
+  padding-inline-start: var(--s-5);
+}
+
+.survey-setup__wide {
+  max-width: none;
+  width: 100%;
+}
+
+.survey-setup__points {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--attr-label-width), 1fr));
+  gap: var(--s-2) var(--s-3);
+}
+
+.survey-setup__point {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.survey-setup__point .text-input {
+  width: 100%;
+  min-width: 0;
+}
+
+.survey-setup__point-mark {
+  min-width: var(--s-5);
+  text-align: end;
+  color: var(--graphite);
+}
+
+.survey-setup__option-help {
+  margin: 0 0 var(--s-2);
+  padding-inline-start: var(--s-5);
+  max-width: var(--measure);
+}
+
+.survey-setup__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5);
+}
+
+.survey-setup__estimate {
+  font-size: var(--t-2-size);
+  line-height: var(--t-2-line);
+  font-weight: var(--weight-medium);
+  margin-bottom: var(--s-1);
+}
+
+.survey-setup__warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  max-width: var(--measure);
+  margin-block: var(--s-3);
+  font-weight: var(--weight-medium);
+}
+
+.survey-setup__warning .icon,
+.survey-dashboard__reminder .icon {
+  flex: none;
+  margin-top: calc((var(--t-0-line) - var(--icon-size)) / 2);
+}
+
+.survey-setup__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+}
+
+.survey-keys {
+  padding-top: var(--s-5);
+  border-top: var(--line-width) solid var(--field);
+}
+
+.survey-keys__text {
+  max-width: var(--measure);
+  margin-bottom: var(--s-3);
+}
+
+.survey-keys__step {
+  margin-top: var(--s-5);
+  margin-bottom: var(--s-2);
+  font-weight: var(--weight-semibold);
+}
+
+.survey-keys__ok {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-weight: var(--weight-medium);
+}
+
+.survey-keys__file:has(+ input:focus-visible),
+.survey-drop .button:has(+ input:focus-visible) {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.survey-keys__busy:empty {
+  display: none;
+}
+
+.survey-keys__busy {
+  margin-top: var(--s-2);
+  color: var(--graphite);
+}
+
+/* Dashboard */
+.survey-dashboard__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-2) var(--s-4);
+  margin-bottom: var(--s-4);
+}
+
+.survey-dashboard__head .survey__heading {
+  margin-bottom: 0;
+}
+
+.survey-dashboard__meta {
+  color: var(--graphite);
+}
+
+.survey-dashboard__head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-inline-start: auto;
+}
+
+.survey-dashboard__status dd {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+}
+
+.survey-dashboard__section {
+  margin-top: var(--s-6);
+}
+
+.survey-dashboard__subheading {
+  margin-bottom: var(--s-2);
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+  font-weight: var(--weight-semibold);
+}
+
+.survey-dashboard__text,
+.survey-dashboard__note {
+  max-width: var(--measure);
+  margin-bottom: var(--s-3);
+}
+
+.survey-dashboard__note {
+  margin-top: var(--s-5);
+  font-weight: var(--weight-medium);
+}
+
+.survey-dashboard__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-2) var(--s-4);
+}
+
+.survey-dashboard__unlocked {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  color: var(--graphite);
+}
+
+.survey-dashboard__unlock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s-3);
+}
+
+.survey-dashboard__unlock .field {
+  margin-bottom: 0;
+}
+
+.survey-dashboard__reminder {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  margin-block: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-control);
+  background: var(--field);
+}
+
+.survey-dashboard__reminder p {
+  flex: 1;
+  max-width: var(--measure);
+}
+
+.survey-dashboard__list {
+  margin: 0 0 var(--s-3);
+  padding-inline-start: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.survey-dashboard__package,
+.survey-dashboard__exports {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin-bottom: var(--s-3);
+}
+
+.survey-dashboard__package p {
+  max-width: var(--measure);
+}
+
+.survey-drop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin-block: var(--s-3) var(--s-4);
+  padding: var(--s-5);
+  border: var(--line-width) dashed var(--stone);
+  border-radius: var(--r-control);
+}
+
+.survey-drop--active {
+  border-color: var(--accent);
+  background: var(--field);
+}
+
+.survey-drop__files {
+  flex-basis: 100%;
+  margin: 0;
+  padding-inline-start: var(--s-5);
+  color: var(--graphite);
+}
+
+.survey-paste {
+  font-family: var(--font-condensed);
+}
+
+.survey-plan {
+  margin-top: var(--s-3);
+}
+
+.survey-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.survey-table th,
+.survey-table td {
+  padding: var(--s-1) var(--s-2);
+  text-align: start;
+  vertical-align: top;
+  border-bottom: var(--line-width) solid var(--field);
+}
+
+.survey-table thead th {
+  color: var(--graphite);
+  font-weight: var(--weight-medium);
+}
+
+.survey-table tbody th {
+  font-weight: var(--weight-regular);
+}
+
+/* Colleagues everyone is asked about: a scrolling checklist of the roster. */
+.survey-required__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin-block: var(--s-2);
+}
+
+.survey-required__list {
+  list-style: none;
+  max-height: calc(var(--control-height) * 8);
+  overflow-y: auto;
+  padding: var(--s-1) var(--s-2);
+  border: var(--line-width) solid var(--field);
+  border-radius: var(--r-control);
+  columns: 2 var(--matrix-label-width);
+}

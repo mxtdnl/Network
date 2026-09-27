@@ -65,9 +65,12 @@ function MetricInfo({ metric, flag }: { metric: SizeMetric; flag: string | null 
 interface TieRow {
   id: string;
   name: string;
-  given: number | null;
-  received: number | null;
+  /** A number, 'na' for "does not apply" (D102), or null for not rated. */
+  given: number | 'na' | null;
+  received: number | 'na' | null;
 }
+
+const sortable = (v: number | 'na' | null) => (typeof v === 'number' ? v : -Infinity);
 
 function tiesFor(
   project: Project,
@@ -86,20 +89,22 @@ function tiesFor(
     return r;
   };
   for (const t of project.ties) {
-    if (t.variable !== layer.key || t.wave !== DEFAULT_WAVE || typeof t.value !== 'number')
-      continue;
-    if (t.rater_id === memberId && known.has(t.ratee_id)) row(t.ratee_id).given = t.value;
-    else if (t.ratee_id === memberId && known.has(t.rater_id)) row(t.rater_id).received = t.value;
+    if (t.variable !== layer.key || t.wave !== DEFAULT_WAVE) continue;
+    const v = typeof t.value === 'number' ? t.value : t.not_applicable ? 'na' : null;
+    if (v === null) continue;
+    if (t.rater_id === memberId && known.has(t.ratee_id)) row(t.ratee_id).given = v;
+    else if (t.ratee_id === memberId && known.has(t.rater_id)) row(t.rater_id).received = v;
   }
   return [...rows.values()].sort(
     (a, b) =>
-      (b.given ?? -Infinity) - (a.given ?? -Infinity) ||
-      (b.received ?? -Infinity) - (a.received ?? -Infinity) ||
+      sortable(b.given) - sortable(a.given) ||
+      sortable(b.received) - sortable(a.received) ||
       a.name.localeCompare(b.name, 'en-GB'),
   );
 }
 
-const rating = (v: number | null) => (v === null ? P.notRated : formatValue(v));
+const rating = (v: number | 'na' | null) =>
+  v === null ? P.notRated : v === 'na' ? P.notApplicable : formatValue(v);
 
 function TiesByLayer({
   project,
@@ -338,32 +343,34 @@ export function MemberPanel() {
         </button>
       </div>
       <dl className="definition-list member__attributes">
-        {project.attribute_definitions.map((a) => {
-          const v = member.attributes[a.key] ?? null;
-          return (
-            <div key={a.key} className="definition-list__row">
-              <dt>{a.label}</dt>
-              <dd>
-                {v === null ? (
-                  mapCopy.legend.notRecorded
-                ) : a.type === 'member_ref' && project.members.some((m) => m.id === v) ? (
-                  <button
-                    type="button"
-                    className="link-button"
-                    aria-label={P.selectManager(names.of(v))}
-                    onClick={() => {
-                      selectMember(v);
-                    }}
-                  >
-                    {names.of(v)}
-                  </button>
-                ) : (
-                  v
-                )}
-              </dd>
-            </div>
-          );
-        })}
+        {project.attribute_definitions
+          .filter((a) => a.type !== 'email')
+          .map((a) => {
+            const v = member.attributes[a.key] ?? null;
+            return (
+              <div key={a.key} className="definition-list__row">
+                <dt>{a.label}</dt>
+                <dd>
+                  {v === null ? (
+                    mapCopy.legend.notRecorded
+                  ) : a.type === 'member_ref' && project.members.some((m) => m.id === v) ? (
+                    <button
+                      type="button"
+                      className="link-button"
+                      aria-label={P.selectManager(names.of(v))}
+                      onClick={() => {
+                        selectMember(v);
+                      }}
+                    >
+                      {names.of(v)}
+                    </button>
+                  ) : (
+                    v
+                  )}
+                </dd>
+              </div>
+            );
+          })}
       </dl>
       <div className="member__actions">
         <button

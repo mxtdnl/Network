@@ -56,7 +56,7 @@ export function buildAnalysisInput(
 
   const attributes: Record<string, AttributeColumn> = {};
   for (const a of project.attribute_definitions) {
-    if (a.type === 'member_ref') continue;
+    if (a.type === 'member_ref' || a.type === 'email') continue;
     attributes[a.key] = {
       categories: [...(a.categories ?? [])],
       values: project.members.map((m) => m.attributes[a.key] ?? null),

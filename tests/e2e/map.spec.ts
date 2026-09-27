@@ -170,7 +170,11 @@ test('load demo, map renders, filter, select a member, open the panel, traverse 
   await expect(member.getByRole('columnheader', { name: 'Rank' })).toBeVisible();
   await expect(member.getByRole('rowheader', { name: /Bridging/ })).toBeVisible();
   await expect(member.getByRole('heading', { name: 'Ties by layer' })).toBeVisible();
-  await expect(member.getByText('– means not rated, which is different from 0.')).toBeVisible();
+  await expect(
+    member.getByText(
+      '– means not rated, which is different from 0; n/a means the rater said the question does not apply.',
+    ),
+  ).toBeVisible();
   // Plain-English explanation from the method notes.
   await member.getByRole('button', { name: 'About Bridging' }).hover();
   await expect(page.getByRole('tooltip')).toContainText(

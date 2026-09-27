@@ -209,7 +209,9 @@ export const mapCopy = {
     given: 'Given',
     received: 'Received',
     notRated: '–',
-    notRatedNote: '– means not rated, which is different from 0.',
+    notApplicable: 'n/a',
+    notRatedNote:
+      '– means not rated, which is different from 0; n/a means the rater said the question does not apply.',
     noTies: 'No ratings either way on this layer.',
     manager: 'Manager',
     selectManager: (name: string) => `Show ${name}`,

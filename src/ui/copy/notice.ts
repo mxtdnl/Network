@@ -23,6 +23,27 @@ export const noticeCopy = {
       body: 'Processing named employee data is likely to engage data protection law. Seek appropriate advice before you collect or load any data.',
     },
   ],
+  survey: {
+    heading: 'If you run a survey',
+    points: [
+      {
+        heading: 'Tell participants before they respond.',
+        body: 'Each person must be told the purpose, the confidentiality terms and who will see the results before answering. Graticule will not issue a survey without an introduction and a confidentiality statement.',
+      },
+      {
+        heading: 'Responses are confidential, not anonymous.',
+        body: 'You will see who gave which ratings, because the method needs it. Say so to participants, and never describe the survey as anonymous.',
+      },
+      {
+        heading: 'Take particular care with negative ratings.',
+        body: 'Ratings of named colleagues on valence, energy or conflict are sensitive. Ask for them only with a clear purpose, and protect them accordingly.',
+      },
+      {
+        heading: 'Delete response files once imported.',
+        body: 'Response files and the emails that carried them are personal data. Delete them once their responses are in your project.',
+      },
+    ],
+  },
   reopen: 'You can read this notice again from the Help menu.',
   confirm: 'Continue',
 } as const;

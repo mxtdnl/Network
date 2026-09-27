@@ -14,7 +14,9 @@ The analysis engine is `src/engine/`. Formulas below use this notation:
 
 ### 1.1 Not rated is not zero
 
-A rating of 0 means "no connection" or "never". A missing rating means the person did not answer. The two are never treated alike: a missing rating does not create a tie, is not counted as a 0 in averages, and is counted as missing in data coverage. Inside the engine a missing rating is the value NaN; in project files it is `null` or an absent tie.
+A rating of 0 means "no connection" or "never" (on a signed layer, "neutral"). A missing rating means the person did not answer. The two are never treated alike: a missing rating does not create a tie, is not counted as a 0 in averages, and is counted as missing in data coverage. Inside the engine a missing rating is the value NaN; in project files it is `null` or an absent tie.
+
+A third state, **does not apply**, records that the rater said the question has no answer for that colleague, such as the quality of a relationship they do not have. It is neither 0 nor missing. Metrics treat it like a missing rating (no tie), but coverage leaves it out of the ratings that were possible, because there was nothing to give. In project files it is `null` with `not_applicable: true`; in ties files and matrix entry it is written `n/a`.
 
 ### 1.2 Rescaling
 
@@ -331,7 +333,7 @@ With only the four core layers enabled, Formal structure is formal collaboration
 
 **Meaning.** The share of possible ratings that were given, per rater and overall.
 
-**Formula.** coverage_i = (ratings given by i) / ((n − 1) × enabled layers), over wave 1, including categorical layers; overall coverage is the same ratio over all raters. A rating of 0 counts as given; declined and not entered are counted separately. Below the threshold (default 80 %) a warning states that whole-network metrics may be unreliable.
+**Formula.** coverage_i = (ratings given by i) / ((n − 1) × enabled layers − ratings i marked "does not apply"), over wave 1, including categorical layers; overall coverage is the same ratio over all raters. A rating of 0 counts as given; declined and not entered are counted separately. Below the threshold (default 80 %) a warning states that whole-network metrics may be unreliable.
 
 **Caveats.** Computed from the project on the main thread, because the engine's NaN cannot tell "declined" from "not entered"; the analysis result carries the same figures.
 
@@ -399,3 +401,34 @@ Quantiles use linear interpolation over the members whose value is defined (NumP
 **Caveats.** The thresholds are conventions chosen for this tool, not published standards; they are stated wherever a rule is shown so a reader can judge them. Every rule inherits the caveats of the metric it reads (sections 3 to 6): betweenness assumes shortest-path flow, the E-I index counts ties and favours larger groups, received strength depends on who answered. The rules describe positions in the network, which have many causes (role, tenure, location, workload, the survey itself); an observation is a reason to ask, not an answer. Below the coverage threshold the panel repeats the coverage warning.
 
 **Demo.** On the demo the rules find the structures it was built with (scripts/generate-demo.ts): the Operations broker, Finance as a silo, the pocket of reciprocated negative valence, formal-only ties between Product and Sales and informal-only ties between People and Product. Possible overload does not apply, because the demo has no advice or workflow dependency ratings. `tests/unit/insights.test.ts` checks each threshold at its boundary and the demo findings.
+
+## 9. Survey collection (respondent mode)
+
+Graticule can run the survey itself (spec §15). Each participant opens a personal link, answers in the browser and returns an encrypted response, which the analyst imports. This section states what that arrangement protects and what it does not, and the conventions behind the completion-time estimate.
+
+### What the encryption protects
+
+- **Reading a response.** Each response is encrypted on the respondent's device to the survey's public key: a fresh ECDH P-256 key pair per response, HKDF-SHA-256 and AES-256-GCM (`src/survey/crypto.ts`). Only the survey's private key can decrypt it. That key is stored in the project file only in encrypted form, under a key derived from the analyst's passphrase (PBKDF2-HMAC-SHA-256, 600,000 iterations). Whoever carries or stores a response file (email providers, file-sharing services, the respondent's own mailbox) cannot read it.
+- **Altering a response.** AES-GCM authenticates the whole response, and the unencrypted header (survey, version, key fingerprint) is bound to it. Any change makes the import reject the file as changed or damaged.
+- **Mixing up surveys.** A response encrypted for another survey or key, or answering a version the survey does not have, is rejected with its reason.
+- **Duplicates.** Every respondent has a random 128-bit token inside the encrypted response. Two responses with one token are duplicates: the one submitted latest (by the respondent's device clock) is kept and the event is logged. The same file imported twice changes nothing.
+
+### What it does not protect
+
+- **Who answered.** There is no server, so nothing proves identity. A respondent who forwards their link lets someone else answer as them. The token detects duplicates; it does not show who used it. The name check at the start of the survey ("This link was made for …") is a prompt, not authentication.
+- **The link itself.** The survey travels in the link's fragment, which browsers do not send to the web server, but email and chat security services can rewrite, scan and log whole links (CLAUDE.md, "Research"). Anyone who can see a link can therefore read the roster and questions and answer as its recipient. Links hold nothing the organisation does not already hold, apart from the token.
+- **Answers before submission.** While a respondent works, their answers are saved in the browser on their device, unencrypted, so they can resume. Anyone using that device and browser can see them until they are submitted or cleared. They are cleared automatically once the encrypted response has been copied or downloaded, and on request.
+- **The analyst's side.** Once decrypted and imported, ratings are ordinary project data: the project file, exports and the analyst's device need the same care as any personal data. A lost key and passphrase cannot be recovered; the responses encrypted to it are then unreadable by anyone.
+- **Timing.** The submission time comes from the respondent's device and can be wrong; it decides only which of two duplicates is kept.
+
+Responses are confidential and carry the respondent's name: the analyst sees who gave which ratings, because a whole-network design needs it (section 1, spec §3). The respondent screens say so and never describe the survey as anonymous.
+
+### Colleagues not selected
+
+With "select colleagues, then rate them", a colleague the respondent did not select is recorded as the lowest point of each unsigned layer (0: "Never" or "No meaningful working connection"), and as "does not apply" on signed and categorical layers, because 0 on a signed layer means neutral, a quality nobody reported (CLAUDE.md D88, D102). The analyst can change this per layer, and respondents are told what is recorded before they select anyone. Because "does not apply" is left out of coverage, a complete response counts as complete.
+
+The analyst can also name colleagues every respondent is asked about, whether or not they select them (D103), and every question must be answered for every colleague a respondent is asked about (D104). Where a question may have no answer for a colleague, the survey offers "Does not apply" beside the scale (by default on signed layers), so a respondent never has to choose between a false "neutral" and leaving the question blank. The respondent's own "does not apply" is recorded exactly as the one for colleagues not selected.
+
+### Completion-time estimate
+
+Estimated time = 60 s to read the introduction and agree + 5 s per rating + (with selection) 2 s per colleague considered, where ratings = colleagues × questions for a full roster, or, with selection, the larger of the expected number of selections (default 12) and the number of required colleagues, × questions. These are conventions, not measurements; the owner approved them as proposed (CLAUDE.md Q31). The warning limit defaults to 15 minutes.

@@ -49,6 +49,18 @@ export function CoveragePanel() {
         {coverageCopy.counts(coverage.rated, coverage.possible)}
       </p>
       <p className="coverage__explain">{coverageCopy.explain}</p>
+      <h3 className="coverage__subheading">{coverageCopy.sourcesHeading}</h3>
+      <dl className="definition-list definition-list--wide">
+        {(['self_report', 'imported', 'entered', 'none'] as const).map((k) => {
+          const n = project.ties.filter((t) => (t.source ?? 'none') === k).length;
+          return n === 0 ? null : (
+            <div key={k} className="coverage__source">
+              <dt>{coverageCopy.sources[k]}</dt>
+              <dd className="num">{n}</dd>
+            </div>
+          );
+        })}
+      </dl>
 
       <div className="field field--inline">
         <label htmlFor={thresholdId} className="field__label">
@@ -92,6 +104,9 @@ export function CoveragePanel() {
               {coverageCopy.columns.declined}
             </th>
             <th scope="col" className="numeric">
+              {coverageCopy.columns.notApplicable}
+            </th>
+            <th scope="col" className="numeric">
               {coverageCopy.columns.notEntered}
             </th>
           </tr>
@@ -114,6 +129,7 @@ export function CoveragePanel() {
                   {percent(r.rate)}
                 </td>
                 <td className="numeric">{r.declined}</td>
+                <td className="numeric">{r.notApplicable}</td>
                 <td className="numeric">{r.notEntered}</td>
               </tr>
             );
@@ -124,6 +140,7 @@ export function CoveragePanel() {
             <th scope="row">{coverageCopy.totals}</th>
             <td className="numeric">{percent(coverage.rate)}</td>
             <td className="numeric">{coverage.declined}</td>
+            <td className="numeric">{coverage.notApplicable}</td>
             <td className="numeric">{coverage.notEntered}</td>
           </tr>
         </tfoot>

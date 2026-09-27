@@ -1,25 +1,35 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+// Entry point. The respondent route (#/respond/…, spec §15.4) loads its own
+// bundle without the analyst workspace: a participant's phone downloads only
+// what the survey needs, and never reads the analyst's stored project. All of
+// the chosen bundle is loaded before anything is shown, so a loaded survey
+// needs no network (CLAUDE.md D90).
+
 import './styles/fonts.css';
-import './styles/tokens.css';
-import './styles/global.css';
-import './styles/shell.css';
-import './styles/data.css';
-import './styles/map.css';
-import './styles/explore.css';
-import './styles/present.css';
-import { startAnalysisSync } from './ui/state/analysisSync';
-import { restoreLocalProject } from './ui/state/persistenceSync';
-import { Workspace } from './ui/views/Workspace';
+
+const RESPOND = '#/respond/';
+const isRespond = () => window.location.hash.startsWith(RESPOND);
 
 const root = document.getElementById('root');
 if (!root) throw new Error('Root element #root is missing from index.html.');
 
-createRoot(root).render(
-  <StrictMode>
-    <Workspace />
-  </StrictMode>,
-);
+// Each route has its own function and import site. Written as one
+// conditional, the build merged both imports into a single preload call with
+// the workspace's stylesheet, so the survey loaded unstyled.
+async function startRespond(el: HTMLElement) {
+  const m = await import('./respond/start');
+  m.start(el);
+}
+async function startWorkspace(el: HTMLElement) {
+  const m = await import('./ui/start');
+  m.start(el);
+}
 
-startAnalysisSync();
-void restoreLocalProject();
+const respond = isRespond();
+if (respond) void startRespond(root);
+else void startWorkspace(root);
+
+// Moving between the analyst workspace and a survey link in one tab reloads,
+// so each starts clean.
+window.addEventListener('hashchange', () => {
+  if (isRespond() !== respond) window.location.reload();
+});

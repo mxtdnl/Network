@@ -22,12 +22,14 @@ import { InsightsPanel } from './InsightsPanel';
 import { PresentationView } from './PresentationView';
 import { SavedViewsPanel } from './SavedViewsPanel';
 import { weightsCopy } from '../copy/weights';
+import { SurveyTab } from './survey/SurveyTab';
 
 const centreItems: readonly TabItem<CentreView>[] = [
   { key: 'map', label: shellCopy.centreTabs.map, panel: <MapView /> },
   { key: 'matrix', label: shellCopy.centreTabs.matrix, panel: <MatrixTab /> },
   { key: 'table', label: shellCopy.centreTabs.table, panel: <TableView /> },
   { key: 'compare', label: shellCopy.centreTabs.compare, panel: <CompareView /> },
+  { key: 'survey', label: shellCopy.centreTabs.survey, panel: <SurveyTab /> },
 ];
 
 const rightItems: readonly TabItem<RightPanel>[] = [
