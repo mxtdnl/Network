@@ -92,6 +92,8 @@ export interface MapModel {
     otherGroups: number;
   };
   valenceShown: boolean;
+  /** The project has an enabled valence layer (it may be switched off on the map). */
+  valenceAvailable: boolean;
   anyValenceMissing: boolean;
   styleShown: boolean;
   stylesPresent: EdgeStyle[];
@@ -520,6 +522,7 @@ export function buildMapModel(
       otherGroups: fill.otherGroups,
     },
     valenceShown: valence !== null,
+    valenceAvailable: valenceLayer(project) !== undefined,
     anyValenceMissing,
     styleShown,
     stylesPresent: order.filter((s) => present.has(s)),

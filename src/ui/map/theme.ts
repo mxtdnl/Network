@@ -51,9 +51,16 @@ export const TOKEN_NAMES = {
   valence: ['--val-n3', '--val-n2', '--val-n1', '--val-0', '--val-p1', '--val-p2', '--val-p3'],
 } as const;
 
-export function readMapTheme(element: Element = document.documentElement): MapTheme {
-  const style = getComputedStyle(element);
-  const text = (name: string) => style.getPropertyValue(name).trim();
+/** Reads a token's value by custom-property name; the page's stylesheet, or tokens.css in tests. */
+export type TokenSource = (name: string) => string;
+
+export function readMapTheme(source: Element | TokenSource = document.documentElement): MapTheme {
+  const style = typeof source === 'function' ? null : getComputedStyle(source);
+  const text = (name: string) =>
+    (typeof source === 'function'
+      ? source(name)
+      : (style as CSSStyleDeclaration).getPropertyValue(name)
+    ).trim();
   const number = (name: string) => {
     const v = Number.parseFloat(text(name));
     if (!Number.isFinite(v)) throw new Error(`Design token ${name} is missing or not a number.`);

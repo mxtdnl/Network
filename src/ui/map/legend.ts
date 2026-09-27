@@ -132,7 +132,7 @@ export function legendSections(
   sections.push({
     kind: 'colour',
     title: L.colour,
-    variable: model.valenceShown ? L.valence : L.colourOff,
+    variable: model.valenceShown ? L.valence : model.valenceAvailable ? L.colourOff : L.colourNone,
     steps: model.valenceShown
       ? [-3, -2, -1, 0, 1, 2, 3].map((step) => ({
           step,

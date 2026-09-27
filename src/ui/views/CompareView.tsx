@@ -371,6 +371,7 @@ function classModel(data: MapData, classes: Uint8Array, cls: number, style: Edge
     edges,
     neighbours,
     valenceShown: false,
+    valenceAvailable: false,
     styleShown: true,
     stylesPresent: [style],
   };

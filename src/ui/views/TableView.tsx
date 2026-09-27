@@ -10,7 +10,7 @@ import { drawableLayers, useMapData, type MapData } from '../map/useMapModel';
 import { useMemberNames } from '../state/names';
 import { useAppStore, type SizeMetric } from '../state/store';
 import { cancelBootstrap, runBootstrap } from '../state/tools';
-import { downloadText, toCsv } from './csv';
+import { exportMetricsTable } from '../state/exportActions';
 import { EmptyState } from './EmptyState';
 
 const T = tableCopy;
@@ -144,31 +144,20 @@ function MetricsTable({ data }: { data: MapData }) {
     ]),
   ];
 
+  // The export follows the export settings (spec §11): names through the names
+  // layer, and values from an analysis without signed and conflict layers when
+  // the project leaves them out of exports (export/tables.ts).
   const exportCsv = () => {
-    const header = columns.map((c) =>
-      c.key === 'rank' && interval ? T.rankRangeLong(metricCopy[interval.metric].label) : c.label,
-    );
-    const lines = rows.map((r) =>
-      columns.map((c) => {
-        switch (c.key) {
-          case 'name':
-            return r.name;
-          case 'group':
-            return r.group;
-          case 'community':
-            return r.community === null ? '' : String(r.community);
-          case 'rank':
-            return Number.isFinite(r.rankLow) ? `${String(r.rankLow)}–${String(r.rankHigh)}` : '';
-          default: {
-            const v = r.values[c.key] ?? NaN;
-            return Number.isFinite(v) ? String(v) : '';
-          }
-        }
-      }),
-    );
-    const file = `graticule-metrics-${settings.layer}-${result.view}.csv`;
-    downloadText(file, toCsv([header, ...lines]), 'text/csv');
-    setStatus({ text: T.exported(file), tone: 'info' });
+    void exportMetricsTable({
+      order: rows.map((r) => r.id),
+      metrics: metrics.filter((m): m is BootstrapMetric & SizeMetric => m in metricCopy),
+      fillKey: fillAttr?.key ?? null,
+      rank: interval
+        ? { metric: interval.metric, low: interval.rankLow, high: interval.rankHigh }
+        : null,
+    }).then((file) => {
+      if (file) setStatus({ text: T.exported(file), tone: 'info' });
+    });
   };
 
   const bootMetrics = metrics.filter(

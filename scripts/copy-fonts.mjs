@@ -1,5 +1,8 @@
 // Copies the self-hosted Fira Sans and Fira Sans Condensed WOFF2 files from the
-// @fontsource packages into src/assets/fonts, with the OFL 1.1 licence.
+// @fontsource packages into src/assets/fonts, with the OFL 1.1 licence. The
+// WOFF (version 1) files are copied too: the PDF report converts them to
+// TrueType in the browser and embeds subsets (CLAUDE.md D106), because WOFF2
+// needs a Brotli decoder and PDF readers cannot read WOFF of either version.
 // Run with `npm run fonts` after upgrading either package; commit the result.
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -18,8 +21,10 @@ const subsets = ['latin', 'latin-ext'];
 for (const { pkg, file, weights } of families) {
   for (const subset of subsets) {
     for (const weight of weights) {
-      const name = `${file}-${subset}-${String(weight)}-normal.woff2`;
-      copyFileSync(join(root, 'node_modules', pkg, 'files', name), join(out, name));
+      for (const ext of ['woff2', 'woff']) {
+        const name = `${file}-${subset}-${String(weight)}-normal.${ext}`;
+        copyFileSync(join(root, 'node_modules', pkg, 'files', name), join(out, name));
+      }
     }
   }
 }

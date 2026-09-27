@@ -1,0 +1,1034 @@
+﻿Ties from,Measure,Attribute,Group,Other group,Value
+,Direction of ties,,,,Directed
+,Data coverage,,,,0.951602564102564
+,Data coverage warning threshold,,,,0.8
+Composite of all layers,Composite formula,,,,C = 0.25·r(Connection strength) + 0.25·r⁺(Valence) + 0.25·r(Informal collaboration) + 0.25·r(Formal collaboration); C ≤ 1
+Composite of all layers,Members,,,,40
+Composite of all layers,Ties,,,,873
+Composite of all layers,Density,,,,0.5596153846153846
+Composite of all layers,Ties returned (tie reciprocity),,,,0.7468499427262314
+Composite of all layers,Pairs with ties both ways (dyad reciprocity),,,,0.5959780621572212
+Composite of all layers,Pairs tied both ways,,,,326
+Composite of all layers,Pairs tied one way,,,,221
+Composite of all layers,Average clustering,,,,0.18574165963001305
+Composite of all layers,Separate parts (weakly connected components),,,,1
+Composite of all layers,Members in the largest part (weak),,,,40
+Composite of all layers,Groups that can all reach each other (strongly connected components),,,,1
+Composite of all layers,Members in the largest such group (strong),,,,40
+Composite of all layers,Centralisation of connections in,,,,0.21499013806706113
+Composite of all layers,Centralisation of connections out,,,,0.2675871137409599
+Composite of all layers,Centralisation of bridging,,,,0.009098968523560843
+Composite of all layers,Communities (Louvain),,,,4
+Composite of all layers,Modularity,,,,0.4086965721013854
+Composite of all layers,E-I index,Team or function,,,0.36082474226804123
+Composite of all layers,"Members without a value, left out of the E-I index",Team or function,,,0
+Composite of all layers,Group size,Team or function,Finance,,8
+Composite of all layers,Ties inside the group,Team or function,Finance,,56
+Composite of all layers,Ties leaving the group,Team or function,Finance,,106
+Composite of all layers,E-I index,Team or function,Finance,,0.30864197530864196
+Composite of all layers,Group size,Team or function,Operations,,8
+Composite of all layers,Ties inside the group,Team or function,Operations,,55
+Composite of all layers,Ties leaving the group,Team or function,Operations,,239
+Composite of all layers,E-I index,Team or function,Operations,,0.6258503401360545
+Composite of all layers,Group size,Team or function,Product,,8
+Composite of all layers,Ties inside the group,Team or function,Product,,56
+Composite of all layers,Ties leaving the group,Team or function,Product,,312
+Composite of all layers,E-I index,Team or function,Product,,0.6956521739130435
+Composite of all layers,Group size,Team or function,Sales,,8
+Composite of all layers,Ties inside the group,Team or function,Sales,,56
+Composite of all layers,Ties leaving the group,Team or function,Sales,,292
+Composite of all layers,E-I index,Team or function,Sales,,0.6781609195402298
+Composite of all layers,Group size,Team or function,People,,8
+Composite of all layers,Ties inside the group,Team or function,People,,56
+Composite of all layers,Ties leaving the group,Team or function,People,,239
+Composite of all layers,E-I index,Team or function,People,,0.6203389830508474
+Composite of all layers,Tie density between groups,Team or function,Finance,Finance,1
+Composite of all layers,Tie density between groups,Team or function,Finance,Operations,0.1875
+Composite of all layers,Tie density between groups,Team or function,Finance,Product,0.265625
+Composite of all layers,Tie density between groups,Team or function,Finance,Sales,0.171875
+Composite of all layers,Tie density between groups,Team or function,Finance,People,0.171875
+Composite of all layers,Tie density between groups,Team or function,Operations,Finance,0.234375
+Composite of all layers,Tie density between groups,Team or function,Operations,Operations,0.9821428571428571
+Composite of all layers,Tie density between groups,Team or function,Operations,Product,0.5625
+Composite of all layers,Tie density between groups,Team or function,Operations,Sales,0.546875
+Composite of all layers,Tie density between groups,Team or function,Operations,People,0.484375
+Composite of all layers,Tie density between groups,Team or function,Product,Finance,0.3125
+Composite of all layers,Tie density between groups,Team or function,Product,Operations,0.578125
+Composite of all layers,Tie density between groups,Team or function,Product,Product,1
+Composite of all layers,Tie density between groups,Team or function,Product,Sales,1
+Composite of all layers,Tie density between groups,Team or function,Product,People,0.609375
+Composite of all layers,Tie density between groups,Team or function,Sales,Finance,0.15625
+Composite of all layers,Tie density between groups,Team or function,Sales,Operations,0.578125
+Composite of all layers,Tie density between groups,Team or function,Sales,Product,0.953125
+Composite of all layers,Tie density between groups,Team or function,Sales,Sales,1
+Composite of all layers,Tie density between groups,Team or function,Sales,People,0.515625
+Composite of all layers,Tie density between groups,Team or function,People,Finance,0.15625
+Composite of all layers,Tie density between groups,Team or function,People,Operations,0.5625
+Composite of all layers,Tie density between groups,Team or function,People,Product,0.59375
+Composite of all layers,Tie density between groups,Team or function,People,Sales,0.640625
+Composite of all layers,Tie density between groups,Team or function,People,People,1
+Composite of all layers,E-I index,Level,,,0.3241695303550974
+Composite of all layers,"Members without a value, left out of the E-I index",Level,,,0
+Composite of all layers,Group size,Level,L1,,3
+Composite of all layers,Ties inside the group,Level,L1,,0
+Composite of all layers,Ties leaving the group,Level,L1,,103
+Composite of all layers,E-I index,Level,L1,,1
+Composite of all layers,Group size,Level,L2,,18
+Composite of all layers,Ties inside the group,Level,L2,,192
+Composite of all layers,Ties leaving the group,Level,L2,,437
+Composite of all layers,E-I index,Level,L2,,0.38950715421303655
+Composite of all layers,Group size,Level,L3,,14
+Composite of all layers,Ties inside the group,Level,L3,,95
+Composite of all layers,Ties leaving the group,Level,L3,,397
+Composite of all layers,E-I index,Level,L3,,0.6138211382113821
+Composite of all layers,Group size,Level,L4,,4
+Composite of all layers,Ties inside the group,Level,L4,,8
+Composite of all layers,Ties leaving the group,Level,L4,,167
+Composite of all layers,E-I index,Level,L4,,0.9085714285714286
+Composite of all layers,Group size,Level,L5,,1
+Composite of all layers,Ties inside the group,Level,L5,,0
+Composite of all layers,Ties leaving the group,Level,L5,,52
+Composite of all layers,E-I index,Level,L5,,1
+Composite of all layers,Tie density between groups,Level,L1,L1,0
+Composite of all layers,Tie density between groups,Level,L1,L2,0.5
+Composite of all layers,Tie density between groups,Level,L1,L3,0.5
+Composite of all layers,Tie density between groups,Level,L1,L4,0.25
+Composite of all layers,Tie density between groups,Level,L1,L5,0.6666666666666666
+Composite of all layers,Tie density between groups,Level,L2,L1,0.4074074074074074
+Composite of all layers,Tie density between groups,Level,L2,L2,0.6274509803921569
+Composite of all layers,Tie density between groups,Level,L2,L3,0.5833333333333334
+Composite of all layers,Tie density between groups,Level,L2,L4,0.625
+Composite of all layers,Tie density between groups,Level,L2,L5,0.5555555555555556
+Composite of all layers,Tie density between groups,Level,L3,L1,0.4523809523809524
+Composite of all layers,Tie density between groups,Level,L3,L2,0.5198412698412699
+Composite of all layers,Tie density between groups,Level,L3,L3,0.521978021978022
+Composite of all layers,Tie density between groups,Level,L3,L4,0.5535714285714286
+Composite of all layers,Tie density between groups,Level,L3,L5,0.5714285714285714
+Composite of all layers,Tie density between groups,Level,L4,L1,0.5833333333333334
+Composite of all layers,Tie density between groups,Level,L4,L2,0.6111111111111112
+Composite of all layers,Tie density between groups,Level,L4,L3,0.5178571428571429
+Composite of all layers,Tie density between groups,Level,L4,L4,0.6666666666666666
+Composite of all layers,Tie density between groups,Level,L4,L5,1
+Composite of all layers,Tie density between groups,Level,L5,L1,0.6666666666666666
+Composite of all layers,Tie density between groups,Level,L5,L2,0.6111111111111112
+Composite of all layers,Tie density between groups,Level,L5,L3,0.7857142857142857
+Composite of all layers,Tie density between groups,Level,L5,L4,1
+Composite of all layers,Tie density between groups,Level,L5,L5,
+Composite of all layers,E-I index,Location,,,0.3722794959908362
+Composite of all layers,"Members without a value, left out of the E-I index",Location,,,0
+Composite of all layers,Group size,Location,Bristol,,13
+Composite of all layers,Ties inside the group,Location,Bristol,,101
+Composite of all layers,Ties leaving the group,Location,Bristol,,404
+Composite of all layers,E-I index,Location,Bristol,,0.6
+Composite of all layers,Group size,Location,Glasgow,,13
+Composite of all layers,Ties inside the group,Location,Glasgow,,75
+Composite of all layers,Ties leaving the group,Location,Glasgow,,393
+Composite of all layers,E-I index,Location,Glasgow,,0.6794871794871795
+Composite of all layers,Group size,Location,Leeds,,14
+Composite of all layers,Ties inside the group,Location,Leeds,,98
+Composite of all layers,Ties leaving the group,Location,Leeds,,401
+Composite of all layers,E-I index,Location,Leeds,,0.6072144288577155
+Composite of all layers,Tie density between groups,Location,Bristol,Bristol,0.6474358974358975
+Composite of all layers,Tie density between groups,Location,Bristol,Glasgow,0.5739644970414202
+Composite of all layers,Tie density between groups,Location,Bristol,Leeds,0.5769230769230769
+Composite of all layers,Tie density between groups,Location,Glasgow,Bristol,0.5976331360946746
+Composite of all layers,Tie density between groups,Location,Glasgow,Glasgow,0.4807692307692308
+Composite of all layers,Tie density between groups,Location,Glasgow,Leeds,0.5
+Composite of all layers,Tie density between groups,Location,Leeds,Bristol,0.554945054945055
+Composite of all layers,Tie density between groups,Location,Leeds,Glasgow,0.5714285714285714
+Composite of all layers,Tie density between groups,Location,Leeds,Leeds,0.5384615384615384
+Composite of all layers,E-I index,Tenure band,,,0.46849942726231386
+Composite of all layers,"Members without a value, left out of the E-I index",Tenure band,,,0
+Composite of all layers,Group size,Tenure band,Under 1 year,,7
+Composite of all layers,Ties inside the group,Tenure band,Under 1 year,,23
+Composite of all layers,Ties leaving the group,Tenure band,Under 1 year,,254
+Composite of all layers,E-I index,Tenure band,Under 1 year,,0.8339350180505415
+Composite of all layers,Group size,Tenure band,1 to 3 years,,11
+Composite of all layers,Ties inside the group,Tenure band,1 to 3 years,,65
+Composite of all layers,Ties leaving the group,Tenure band,1 to 3 years,,377
+Composite of all layers,E-I index,Tenure band,1 to 3 years,,0.7058823529411765
+Composite of all layers,Group size,Tenure band,3 to 5 years,,6
+Composite of all layers,Ties inside the group,Tenure band,3 to 5 years,,12
+Composite of all layers,Ties leaving the group,Tenure band,3 to 5 years,,220
+Composite of all layers,E-I index,Tenure band,3 to 5 years,,0.896551724137931
+Composite of all layers,Group size,Tenure band,Over 5 years,,16
+Composite of all layers,Ties inside the group,Tenure band,Over 5 years,,132
+Composite of all layers,Ties leaving the group,Tenure band,Over 5 years,,431
+Composite of all layers,E-I index,Tenure band,Over 5 years,,0.5310834813499112
+Composite of all layers,Tie density between groups,Tenure band,Under 1 year,Under 1 year,0.5476190476190477
+Composite of all layers,Tie density between groups,Tenure band,Under 1 year,1 to 3 years,0.5194805194805194
+Composite of all layers,Tie density between groups,Tenure band,Under 1 year,3 to 5 years,0.5
+Composite of all layers,Tie density between groups,Tenure band,Under 1 year,Over 5 years,0.5714285714285714
+Composite of all layers,Tie density between groups,Tenure band,1 to 3 years,Under 1 year,0.5714285714285714
+Composite of all layers,Tie density between groups,Tenure band,1 to 3 years,1 to 3 years,0.5909090909090909
+Composite of all layers,Tie density between groups,Tenure band,1 to 3 years,3 to 5 years,0.6363636363636364
+Composite of all layers,Tie density between groups,Tenure band,1 to 3 years,Over 5 years,0.5852272727272727
+Composite of all layers,Tie density between groups,Tenure band,3 to 5 years,Under 1 year,0.5476190476190477
+Composite of all layers,Tie density between groups,Tenure band,3 to 5 years,1 to 3 years,0.6060606060606061
+Composite of all layers,Tie density between groups,Tenure band,3 to 5 years,3 to 5 years,0.4
+Composite of all layers,Tie density between groups,Tenure band,3 to 5 years,Over 5 years,0.5
+Composite of all layers,Tie density between groups,Tenure band,Over 5 years,Under 1 year,0.5535714285714286
+Composite of all layers,Tie density between groups,Tenure band,Over 5 years,1 to 3 years,0.6136363636363636
+Composite of all layers,Tie density between groups,Tenure band,Over 5 years,3 to 5 years,0.4791666666666667
+Composite of all layers,Tie density between groups,Tenure band,Over 5 years,Over 5 years,0.55
+Connection strength,Members,,,,40
+Connection strength,Ties,,,,546
+Connection strength,Density,,,,0.35
+Connection strength,Ties returned (tie reciprocity),,,,0.6959706959706959
+Connection strength,Pairs with ties both ways (dyad reciprocity),,,,0.5337078651685393
+Connection strength,Pairs tied both ways,,,,190
+Connection strength,Pairs tied one way,,,,166
+Connection strength,Average clustering,,,,0.2848998020346554
+Connection strength,Separate parts (weakly connected components),,,,1
+Connection strength,Members in the largest part (weak),,,,40
+Connection strength,Groups that can all reach each other (strongly connected components),,,,1
+Connection strength,Members in the largest such group (strong),,,,40
+Connection strength,Centralisation of connections in,,,,0.14069690992767916
+Connection strength,Centralisation of connections out,,,,0.16699539776462854
+Connection strength,Centralisation of bridging,,,,0.3273345962279835
+Connection strength,Communities (Louvain),,,,5
+Connection strength,Modularity,,,,0.45993943501889817
+Connection strength,E-I index,Team or function,,,0.018315018315018316
+Connection strength,"Members without a value, left out of the E-I index",Team or function,,,0
+Connection strength,Group size,Team or function,Finance,,8
+Connection strength,Ties inside the group,Team or function,Finance,,52
+Connection strength,Ties leaving the group,Team or function,Finance,,4
+Connection strength,E-I index,Team or function,Finance,,-0.8571428571428571
+Connection strength,Group size,Team or function,Operations,,8
+Connection strength,Ties inside the group,Team or function,Operations,,54
+Connection strength,Ties leaving the group,Team or function,Operations,,140
+Connection strength,E-I index,Team or function,Operations,,0.44329896907216493
+Connection strength,Group size,Team or function,Product,,8
+Connection strength,Ties inside the group,Team or function,Product,,54
+Connection strength,Ties leaving the group,Team or function,Product,,146
+Connection strength,E-I index,Team or function,Product,,0.46
+Connection strength,Group size,Team or function,Sales,,8
+Connection strength,Ties inside the group,Team or function,Sales,,53
+Connection strength,Ties leaving the group,Team or function,Sales,,127
+Connection strength,E-I index,Team or function,Sales,,0.4111111111111111
+Connection strength,Group size,Team or function,People,,8
+Connection strength,Ties inside the group,Team or function,People,,55
+Connection strength,Ties leaving the group,Team or function,People,,139
+Connection strength,E-I index,Team or function,People,,0.4329896907216495
+Connection strength,Tie density between groups,Team or function,Finance,Finance,0.9285714285714286
+Connection strength,Tie density between groups,Team or function,Finance,Operations,0.03125
+Connection strength,Tie density between groups,Team or function,Finance,Product,0
+Connection strength,Tie density between groups,Team or function,Finance,Sales,0
+Connection strength,Tie density between groups,Team or function,Finance,People,0
+Connection strength,Tie density between groups,Team or function,Operations,Finance,0.03125
+Connection strength,Tie density between groups,Team or function,Operations,Operations,0.9642857142857143
+Connection strength,Tie density between groups,Team or function,Operations,Product,0.390625
+Connection strength,Tie density between groups,Team or function,Operations,Sales,0.359375
+Connection strength,Tie density between groups,Team or function,Operations,People,0.21875
+Connection strength,Tie density between groups,Team or function,Product,Finance,0
+Connection strength,Tie density between groups,Team or function,Product,Operations,0.453125
+Connection strength,Tie density between groups,Team or function,Product,Product,0.9642857142857143
+Connection strength,Tie density between groups,Team or function,Product,Sales,0.3125
+Connection strength,Tie density between groups,Team or function,Product,People,0.453125
+Connection strength,Tie density between groups,Team or function,Sales,Finance,0
+Connection strength,Tie density between groups,Team or function,Sales,Operations,0.328125
+Connection strength,Tie density between groups,Team or function,Sales,Product,0.265625
+Connection strength,Tie density between groups,Team or function,Sales,Sales,0.9464285714285714
+Connection strength,Tie density between groups,Team or function,Sales,People,0.28125
+Connection strength,Tie density between groups,Team or function,People,Finance,0
+Connection strength,Tie density between groups,Team or function,People,Operations,0.375
+Connection strength,Tie density between groups,Team or function,People,Product,0.40625
+Connection strength,Tie density between groups,Team or function,People,Sales,0.4375
+Connection strength,Tie density between groups,Team or function,People,People,0.9821428571428571
+Connection strength,E-I index,Level,,,0.3076923076923077
+Connection strength,"Members without a value, left out of the E-I index",Level,,,0
+Connection strength,Group size,Level,L1,,3
+Connection strength,Ties inside the group,Level,L1,,0
+Connection strength,Ties leaving the group,Level,L1,,72
+Connection strength,E-I index,Level,L1,,1
+Connection strength,Group size,Level,L2,,18
+Connection strength,Ties inside the group,Level,L2,,120
+Connection strength,Ties leaving the group,Level,L2,,261
+Connection strength,E-I index,Level,L2,,0.3700787401574803
+Connection strength,Group size,Level,L3,,14
+Connection strength,Ties inside the group,Level,L3,,63
+Connection strength,Ties leaving the group,Level,L3,,248
+Connection strength,E-I index,Level,L3,,0.594855305466238
+Connection strength,Group size,Level,L4,,4
+Connection strength,Ties inside the group,Level,L4,,6
+Connection strength,Ties leaving the group,Level,L4,,96
+Connection strength,E-I index,Level,L4,,0.8823529411764706
+Connection strength,Group size,Level,L5,,1
+Connection strength,Ties inside the group,Level,L5,,0
+Connection strength,Ties leaving the group,Level,L5,,37
+Connection strength,E-I index,Level,L5,,1
+Connection strength,Tie density between groups,Level,L1,L1,0
+Connection strength,Tie density between groups,Level,L1,L2,0.25925925925925924
+Connection strength,Tie density between groups,Level,L1,L3,0.3333333333333333
+Connection strength,Tie density between groups,Level,L1,L4,0.25
+Connection strength,Tie density between groups,Level,L1,L5,0.6666666666666666
+Connection strength,Tie density between groups,Level,L2,L1,0.2962962962962963
+Connection strength,Tie density between groups,Level,L2,L2,0.39215686274509803
+Connection strength,Tie density between groups,Level,L2,L3,0.35714285714285715
+Connection strength,Tie density between groups,Level,L2,L4,0.3333333333333333
+Connection strength,Tie density between groups,Level,L2,L5,0.3888888888888889
+Connection strength,Tie density between groups,Level,L3,L1,0.40476190476190477
+Connection strength,Tie density between groups,Level,L3,L2,0.3134920634920635
+Connection strength,Tie density between groups,Level,L3,L3,0.34615384615384615
+Connection strength,Tie density between groups,Level,L3,L4,0.2857142857142857
+Connection strength,Tie density between groups,Level,L3,L5,0.5
+Connection strength,Tie density between groups,Level,L4,L1,0.4166666666666667
+Connection strength,Tie density between groups,Level,L4,L2,0.3472222222222222
+Connection strength,Tie density between groups,Level,L4,L3,0.30357142857142855
+Connection strength,Tie density between groups,Level,L4,L4,0.5
+Connection strength,Tie density between groups,Level,L4,L5,0.75
+Connection strength,Tie density between groups,Level,L5,L1,0.3333333333333333
+Connection strength,Tie density between groups,Level,L5,L2,0.3333333333333333
+Connection strength,Tie density between groups,Level,L5,L3,0.5714285714285714
+Connection strength,Tie density between groups,Level,L5,L4,0.75
+Connection strength,Tie density between groups,Level,L5,L5,
+Connection strength,E-I index,Location,,,0.34798534798534797
+Connection strength,"Members without a value, left out of the E-I index",Location,,,0
+Connection strength,Group size,Location,Bristol,,13
+Connection strength,Ties inside the group,Location,Bristol,,60
+Connection strength,Ties leaving the group,Location,Bristol,,241
+Connection strength,E-I index,Location,Bristol,,0.6013289036544851
+Connection strength,Group size,Location,Glasgow,,13
+Connection strength,Ties inside the group,Location,Glasgow,,50
+Connection strength,Ties leaving the group,Location,Glasgow,,250
+Connection strength,E-I index,Location,Glasgow,,0.6666666666666666
+Connection strength,Group size,Location,Leeds,,14
+Connection strength,Ties inside the group,Location,Leeds,,68
+Connection strength,Ties leaving the group,Location,Leeds,,245
+Connection strength,E-I index,Location,Leeds,,0.5654952076677316
+Connection strength,Tie density between groups,Location,Bristol,Bristol,0.38461538461538464
+Connection strength,Tie density between groups,Location,Bristol,Glasgow,0.3609467455621302
+Connection strength,Tie density between groups,Location,Bristol,Leeds,0.3131868131868132
+Connection strength,Tie density between groups,Location,Glasgow,Bristol,0.3668639053254438
+Connection strength,Tie density between groups,Location,Glasgow,Glasgow,0.32051282051282054
+Connection strength,Tie density between groups,Location,Glasgow,Leeds,0.31868131868131866
+Connection strength,Tie density between groups,Location,Leeds,Bristol,0.33516483516483514
+Connection strength,Tie density between groups,Location,Leeds,Glasgow,0.3791208791208791
+Connection strength,Tie density between groups,Location,Leeds,Leeds,0.37362637362637363
+Connection strength,E-I index,Tenure band,,,0.47619047619047616
+Connection strength,"Members without a value, left out of the E-I index",Tenure band,,,0
+Connection strength,Group size,Tenure band,Under 1 year,,7
+Connection strength,Ties inside the group,Tenure band,Under 1 year,,17
+Connection strength,Ties leaving the group,Tenure band,Under 1 year,,155
+Connection strength,E-I index,Tenure band,Under 1 year,,0.8023255813953488
+Connection strength,Group size,Tenure band,1 to 3 years,,11
+Connection strength,Ties inside the group,Tenure band,1 to 3 years,,38
+Connection strength,Ties leaving the group,Tenure band,1 to 3 years,,241
+Connection strength,E-I index,Tenure band,1 to 3 years,,0.7275985663082437
+Connection strength,Group size,Tenure band,3 to 5 years,,6
+Connection strength,Ties inside the group,Tenure band,3 to 5 years,,7
+Connection strength,Ties leaving the group,Tenure band,3 to 5 years,,126
+Connection strength,E-I index,Tenure band,3 to 5 years,,0.8947368421052632
+Connection strength,Group size,Tenure band,Over 5 years,,16
+Connection strength,Ties inside the group,Tenure band,Over 5 years,,81
+Connection strength,Ties leaving the group,Tenure band,Over 5 years,,284
+Connection strength,E-I index,Tenure band,Over 5 years,,0.5561643835616439
+Connection strength,Tie density between groups,Tenure band,Under 1 year,Under 1 year,0.40476190476190477
+Connection strength,Tie density between groups,Tenure band,Under 1 year,1 to 3 years,0.35064935064935066
+Connection strength,Tie density between groups,Tenure band,Under 1 year,3 to 5 years,0.23809523809523808
+Connection strength,Tie density between groups,Tenure band,Under 1 year,Over 5 years,0.32142857142857145
+Connection strength,Tie density between groups,Tenure band,1 to 3 years,Under 1 year,0.33766233766233766
+Connection strength,Tie density between groups,Tenure band,1 to 3 years,1 to 3 years,0.34545454545454546
+Connection strength,Tie density between groups,Tenure band,1 to 3 years,3 to 5 years,0.3181818181818182
+Connection strength,Tie density between groups,Tenure band,1 to 3 years,Over 5 years,0.39204545454545453
+Connection strength,Tie density between groups,Tenure band,3 to 5 years,Under 1 year,0.30952380952380953
+Connection strength,Tie density between groups,Tenure band,3 to 5 years,1 to 3 years,0.3333333333333333
+Connection strength,Tie density between groups,Tenure band,3 to 5 years,3 to 5 years,0.23333333333333334
+Connection strength,Tie density between groups,Tenure band,3 to 5 years,Over 5 years,0.3333333333333333
+Connection strength,Tie density between groups,Tenure band,Over 5 years,Under 1 year,0.38392857142857145
+Connection strength,Tie density between groups,Tenure band,Over 5 years,1 to 3 years,0.4318181818181818
+Connection strength,Tie density between groups,Tenure band,Over 5 years,3 to 5 years,0.2916666666666667
+Connection strength,Tie density between groups,Tenure band,Over 5 years,Over 5 years,0.3375
+"Valence, positive ratings",Members,,,,40
+"Valence, positive ratings",Ties,,,,597
+"Valence, positive ratings",Density,,,,0.38269230769230766
+"Valence, positive ratings",Ties returned (tie reciprocity),,,,0.5963149078726968
+"Valence, positive ratings",Pairs with ties both ways (dyad reciprocity),,,,0.42482100238663484
+"Valence, positive ratings",Pairs tied both ways,,,,178
+"Valence, positive ratings",Pairs tied one way,,,,241
+"Valence, positive ratings",Average clustering,,,,0.2334611776817455
+"Valence, positive ratings",Separate parts (weakly connected components),,,,1
+"Valence, positive ratings",Members in the largest part (weak),,,,40
+"Valence, positive ratings",Groups that can all reach each other (strongly connected components),,,,1
+"Valence, positive ratings",Members in the largest such group (strong),,,,40
+"Valence, positive ratings",Centralisation of connections in,,,,0.1334648257725181
+"Valence, positive ratings",Centralisation of connections out,,,,0.2123602892833662
+"Valence, positive ratings",Centralisation of bridging,,,,0.01212450267780902
+"Valence, positive ratings",Communities (Louvain),,,,5
+"Valence, positive ratings",Modularity,,,,0.3782139577594125
+"Valence, positive ratings",E-I index,Team or function,,,0.1390284757118928
+"Valence, positive ratings","Members without a value, left out of the E-I index",Team or function,,,0
+"Valence, positive ratings",Group size,Team or function,Finance,,8
+"Valence, positive ratings",Ties inside the group,Team or function,Finance,,55
+"Valence, positive ratings",Ties leaving the group,Team or function,Finance,,103
+"Valence, positive ratings",E-I index,Team or function,Finance,,0.3037974683544304
+"Valence, positive ratings",Group size,Team or function,Operations,,8
+"Valence, positive ratings",Ties inside the group,Team or function,Operations,,50
+"Valence, positive ratings",Ties leaving the group,Team or function,Operations,,133
+"Valence, positive ratings",E-I index,Team or function,Operations,,0.453551912568306
+"Valence, positive ratings",Group size,Team or function,Product,,8
+"Valence, positive ratings",Ties inside the group,Team or function,Product,,54
+"Valence, positive ratings",Ties leaving the group,Team or function,Product,,157
+"Valence, positive ratings",E-I index,Team or function,Product,,0.4881516587677725
+"Valence, positive ratings",Group size,Team or function,Sales,,8
+"Valence, positive ratings",Ties inside the group,Team or function,Sales,,43
+"Valence, positive ratings",Ties leaving the group,Team or function,Sales,,141
+"Valence, positive ratings",E-I index,Team or function,Sales,,0.532608695652174
+"Valence, positive ratings",Group size,Team or function,People,,8
+"Valence, positive ratings",Ties inside the group,Team or function,People,,55
+"Valence, positive ratings",Ties leaving the group,Team or function,People,,146
+"Valence, positive ratings",E-I index,Team or function,People,,0.4527363184079602
+"Valence, positive ratings",Tie density between groups,Team or function,Finance,Finance,0.9821428571428571
+"Valence, positive ratings",Tie density between groups,Team or function,Finance,Operations,0.171875
+"Valence, positive ratings",Tie density between groups,Team or function,Finance,Product,0.265625
+"Valence, positive ratings",Tie density between groups,Team or function,Finance,Sales,0.171875
+"Valence, positive ratings",Tie density between groups,Team or function,Finance,People,0.171875
+"Valence, positive ratings",Tie density between groups,Team or function,Operations,Finance,0.203125
+"Valence, positive ratings",Tie density between groups,Team or function,Operations,Operations,0.8928571428571429
+"Valence, positive ratings",Tie density between groups,Team or function,Operations,Product,0.1875
+"Valence, positive ratings",Tie density between groups,Team or function,Operations,Sales,0.328125
+"Valence, positive ratings",Tie density between groups,Team or function,Operations,People,0.28125
+"Valence, positive ratings",Tie density between groups,Team or function,Product,Finance,0.3125
+"Valence, positive ratings",Tie density between groups,Team or function,Product,Operations,0.328125
+"Valence, positive ratings",Tie density between groups,Team or function,Product,Product,0.9642857142857143
+"Valence, positive ratings",Tie density between groups,Team or function,Product,Sales,0.3125
+"Valence, positive ratings",Tie density between groups,Team or function,Product,People,0.34375
+"Valence, positive ratings",Tie density between groups,Team or function,Sales,Finance,0.15625
+"Valence, positive ratings",Tie density between groups,Team or function,Sales,Operations,0.265625
+"Valence, positive ratings",Tie density between groups,Team or function,Sales,Product,0.328125
+"Valence, positive ratings",Tie density between groups,Team or function,Sales,Sales,0.7678571428571429
+"Valence, positive ratings",Tie density between groups,Team or function,Sales,People,0.25
+"Valence, positive ratings",Tie density between groups,Team or function,People,Finance,0.15625
+"Valence, positive ratings",Tie density between groups,Team or function,People,Operations,0.3125
+"Valence, positive ratings",Tie density between groups,Team or function,People,Product,0.375
+"Valence, positive ratings",Tie density between groups,Team or function,People,Sales,0.390625
+"Valence, positive ratings",Tie density between groups,Team or function,People,People,0.9821428571428571
+"Valence, positive ratings",E-I index,Level,,,0.33668341708542715
+"Valence, positive ratings","Members without a value, left out of the E-I index",Level,,,0
+"Valence, positive ratings",Group size,Level,L1,,3
+"Valence, positive ratings",Ties inside the group,Level,L1,,0
+"Valence, positive ratings",Ties leaving the group,Level,L1,,78
+"Valence, positive ratings",E-I index,Level,L1,,1
+"Valence, positive ratings",Group size,Level,L2,,18
+"Valence, positive ratings",Ties inside the group,Level,L2,,119
+"Valence, positive ratings",Ties leaving the group,Level,L2,,298
+"Valence, positive ratings",E-I index,Level,L2,,0.4292565947242206
+"Valence, positive ratings",Group size,Level,L3,,14
+"Valence, positive ratings",Ties inside the group,Level,L3,,71
+"Valence, positive ratings",Ties leaving the group,Level,L3,,268
+"Valence, positive ratings",E-I index,Level,L3,,0.5811209439528023
+"Valence, positive ratings",Group size,Level,L4,,4
+"Valence, positive ratings",Ties inside the group,Level,L4,,8
+"Valence, positive ratings",Ties leaving the group,Level,L4,,120
+"Valence, positive ratings",E-I index,Level,L4,,0.875
+"Valence, positive ratings",Group size,Level,L5,,1
+"Valence, positive ratings",Ties inside the group,Level,L5,,0
+"Valence, positive ratings",Ties leaving the group,Level,L5,,34
+"Valence, positive ratings",E-I index,Level,L5,,1
+"Valence, positive ratings",Tie density between groups,Level,L1,L1,0
+"Valence, positive ratings",Tie density between groups,Level,L1,L2,0.4074074074074074
+"Valence, positive ratings",Tie density between groups,Level,L1,L3,0.38095238095238093
+"Valence, positive ratings",Tie density between groups,Level,L1,L4,0.16666666666666666
+"Valence, positive ratings",Tie density between groups,Level,L1,L5,0.3333333333333333
+"Valence, positive ratings",Tie density between groups,Level,L2,L1,0.3333333333333333
+"Valence, positive ratings",Tie density between groups,Level,L2,L2,0.3888888888888889
+"Valence, positive ratings",Tie density between groups,Level,L2,L3,0.376984126984127
+"Valence, positive ratings",Tie density between groups,Level,L2,L4,0.4583333333333333
+"Valence, positive ratings",Tie density between groups,Level,L2,L5,0.2222222222222222
+"Valence, positive ratings",Tie density between groups,Level,L3,L1,0.30952380952380953
+"Valence, positive ratings",Tie density between groups,Level,L3,L2,0.34523809523809523
+"Valence, positive ratings",Tie density between groups,Level,L3,L3,0.3901098901098901
+"Valence, positive ratings",Tie density between groups,Level,L3,L4,0.39285714285714285
+"Valence, positive ratings",Tie density between groups,Level,L3,L5,0.35714285714285715
+"Valence, positive ratings",Tie density between groups,Level,L4,L1,0.3333333333333333
+"Valence, positive ratings",Tie density between groups,Level,L4,L2,0.4444444444444444
+"Valence, positive ratings",Tie density between groups,Level,L4,L3,0.375
+"Valence, positive ratings",Tie density between groups,Level,L4,L4,0.6666666666666666
+"Valence, positive ratings",Tie density between groups,Level,L4,L5,0.75
+"Valence, positive ratings",Tie density between groups,Level,L5,L1,0.6666666666666666
+"Valence, positive ratings",Tie density between groups,Level,L5,L2,0.3888888888888889
+"Valence, positive ratings",Tie density between groups,Level,L5,L3,0.6428571428571429
+"Valence, positive ratings",Tie density between groups,Level,L5,L4,0.75
+"Valence, positive ratings",Tie density between groups,Level,L5,L5,
+"Valence, positive ratings",E-I index,Location,,,0.35678391959798994
+"Valence, positive ratings","Members without a value, left out of the E-I index",Location,,,0
+"Valence, positive ratings",Group size,Location,Bristol,,13
+"Valence, positive ratings",Ties inside the group,Location,Bristol,,57
+"Valence, positive ratings",Ties leaving the group,Location,Bristol,,248
+"Valence, positive ratings",E-I index,Location,Bristol,,0.6262295081967213
+"Valence, positive ratings",Group size,Location,Glasgow,,13
+"Valence, positive ratings",Ties inside the group,Location,Glasgow,,57
+"Valence, positive ratings",Ties leaving the group,Location,Glasgow,,270
+"Valence, positive ratings",E-I index,Location,Glasgow,,0.6513761467889908
+"Valence, positive ratings",Group size,Location,Leeds,,14
+"Valence, positive ratings",Ties inside the group,Location,Leeds,,78
+"Valence, positive ratings",Ties leaving the group,Location,Leeds,,292
+"Valence, positive ratings",E-I index,Location,Leeds,,0.5783783783783784
+"Valence, positive ratings",Tie density between groups,Location,Bristol,Bristol,0.36538461538461536
+"Valence, positive ratings",Tie density between groups,Location,Bristol,Glasgow,0.2958579881656805
+"Valence, positive ratings",Tie density between groups,Location,Bristol,Leeds,0.37362637362637363
+"Valence, positive ratings",Tie density between groups,Location,Glasgow,Bristol,0.3727810650887574
+"Valence, positive ratings",Tie density between groups,Location,Glasgow,Glasgow,0.36538461538461536
+"Valence, positive ratings",Tie density between groups,Location,Glasgow,Leeds,0.3956043956043956
+"Valence, positive ratings",Tie density between groups,Location,Leeds,Bristol,0.36813186813186816
+"Valence, positive ratings",Tie density between groups,Location,Leeds,Glasgow,0.46703296703296704
+"Valence, positive ratings",Tie density between groups,Location,Leeds,Leeds,0.42857142857142855
+"Valence, positive ratings",E-I index,Tenure band,,,0.45058626465661644
+"Valence, positive ratings","Members without a value, left out of the E-I index",Tenure band,,,0
+"Valence, positive ratings",Group size,Tenure band,Under 1 year,,7
+"Valence, positive ratings",Ties inside the group,Tenure band,Under 1 year,,11
+"Valence, positive ratings",Ties leaving the group,Tenure band,Under 1 year,,173
+"Valence, positive ratings",E-I index,Tenure band,Under 1 year,,0.8804347826086957
+"Valence, positive ratings",Group size,Tenure band,1 to 3 years,,11
+"Valence, positive ratings",Ties inside the group,Tenure band,1 to 3 years,,48
+"Valence, positive ratings",Ties leaving the group,Tenure band,1 to 3 years,,250
+"Valence, positive ratings",E-I index,Tenure band,1 to 3 years,,0.6778523489932886
+"Valence, positive ratings",Group size,Tenure band,3 to 5 years,,6
+"Valence, positive ratings",Ties inside the group,Tenure band,3 to 5 years,,10
+"Valence, positive ratings",Ties leaving the group,Tenure band,3 to 5 years,,149
+"Valence, positive ratings",E-I index,Tenure band,3 to 5 years,,0.8742138364779874
+"Valence, positive ratings",Group size,Tenure band,Over 5 years,,16
+"Valence, positive ratings",Ties inside the group,Tenure band,Over 5 years,,95
+"Valence, positive ratings",Ties leaving the group,Tenure band,Over 5 years,,294
+"Valence, positive ratings",E-I index,Tenure band,Over 5 years,,0.5115681233933161
+"Valence, positive ratings",Tie density between groups,Tenure band,Under 1 year,Under 1 year,0.2619047619047619
+"Valence, positive ratings",Tie density between groups,Tenure band,Under 1 year,1 to 3 years,0.33766233766233766
+"Valence, positive ratings",Tie density between groups,Tenure band,Under 1 year,3 to 5 years,0.35714285714285715
+"Valence, positive ratings",Tie density between groups,Tenure band,Under 1 year,Over 5 years,0.4017857142857143
+"Valence, positive ratings",Tie density between groups,Tenure band,1 to 3 years,Under 1 year,0.33766233766233766
+"Valence, positive ratings",Tie density between groups,Tenure band,1 to 3 years,1 to 3 years,0.43636363636363634
+"Valence, positive ratings",Tie density between groups,Tenure band,1 to 3 years,3 to 5 years,0.4090909090909091
+"Valence, positive ratings",Tie density between groups,Tenure band,1 to 3 years,Over 5 years,0.3806818181818182
+"Valence, positive ratings",Tie density between groups,Tenure band,3 to 5 years,Under 1 year,0.35714285714285715
+"Valence, positive ratings",Tie density between groups,Tenure band,3 to 5 years,1 to 3 years,0.45454545454545453
+"Valence, positive ratings",Tie density between groups,Tenure band,3 to 5 years,3 to 5 years,0.3333333333333333
+"Valence, positive ratings",Tie density between groups,Tenure band,3 to 5 years,Over 5 years,0.3333333333333333
+"Valence, positive ratings",Tie density between groups,Tenure band,Over 5 years,Under 1 year,0.4107142857142857
+"Valence, positive ratings",Tie density between groups,Tenure band,Over 5 years,1 to 3 years,0.42045454545454547
+"Valence, positive ratings",Tie density between groups,Tenure band,Over 5 years,3 to 5 years,0.3125
+"Valence, positive ratings",Tie density between groups,Tenure band,Over 5 years,Over 5 years,0.3958333333333333
+"Valence, negative ratings",Members,,,,40
+"Valence, negative ratings",Ties,,,,11
+"Valence, negative ratings",Density,,,,0.007051282051282051
+"Valence, negative ratings",Ties returned (tie reciprocity),,,,0.9090909090909091
+"Valence, negative ratings",Pairs with ties both ways (dyad reciprocity),,,,0.8333333333333334
+"Valence, negative ratings",Pairs tied both ways,,,,5
+"Valence, negative ratings",Pairs tied one way,,,,1
+"Valence, negative ratings",Average clustering,,,,0.07720863112979945
+"Valence, negative ratings",Separate parts (weakly connected components),,,,37
+"Valence, negative ratings",Members in the largest part (weak),,,,4
+"Valence, negative ratings",Groups that can all reach each other (strongly connected components),,,,37
+"Valence, negative ratings",Members in the largest such group (strong),,,,4
+"Valence, negative ratings",Centralisation of connections in,,,,0.07166337935568705
+"Valence, negative ratings",Centralisation of connections out,,,,0.07166337935568705
+"Valence, negative ratings",Communities (Louvain),,,,37
+"Valence, negative ratings",Modularity,,,,0
+"Valence, negative ratings",E-I index,Team or function,,,0.09090909090909091
+"Valence, negative ratings","Members without a value, left out of the E-I index",Team or function,,,0
+"Valence, negative ratings",Group size,Team or function,Finance,,8
+"Valence, negative ratings",Ties inside the group,Team or function,Finance,,0
+"Valence, negative ratings",Ties leaving the group,Team or function,Finance,,0
+"Valence, negative ratings",E-I index,Team or function,Finance,,
+"Valence, negative ratings",Group size,Team or function,Operations,,8
+"Valence, negative ratings",Ties inside the group,Team or function,Operations,,0
+"Valence, negative ratings",Ties leaving the group,Team or function,Operations,,0
+"Valence, negative ratings",E-I index,Team or function,Operations,,
+"Valence, negative ratings",Group size,Team or function,Product,,8
+"Valence, negative ratings",Ties inside the group,Team or function,Product,,0
+"Valence, negative ratings",Ties leaving the group,Team or function,Product,,6
+"Valence, negative ratings",E-I index,Team or function,Product,,1
+"Valence, negative ratings",Group size,Team or function,Sales,,8
+"Valence, negative ratings",Ties inside the group,Team or function,Sales,,5
+"Valence, negative ratings",Ties leaving the group,Team or function,Sales,,6
+"Valence, negative ratings",E-I index,Team or function,Sales,,0.09090909090909091
+"Valence, negative ratings",Group size,Team or function,People,,8
+"Valence, negative ratings",Ties inside the group,Team or function,People,,0
+"Valence, negative ratings",Ties leaving the group,Team or function,People,,0
+"Valence, negative ratings",E-I index,Team or function,People,,
+"Valence, negative ratings",Tie density between groups,Team or function,Finance,Finance,0
+"Valence, negative ratings",Tie density between groups,Team or function,Finance,Operations,0
+"Valence, negative ratings",Tie density between groups,Team or function,Finance,Product,0
+"Valence, negative ratings",Tie density between groups,Team or function,Finance,Sales,0
+"Valence, negative ratings",Tie density between groups,Team or function,Finance,People,0
+"Valence, negative ratings",Tie density between groups,Team or function,Operations,Finance,0
+"Valence, negative ratings",Tie density between groups,Team or function,Operations,Operations,0
+"Valence, negative ratings",Tie density between groups,Team or function,Operations,Product,0
+"Valence, negative ratings",Tie density between groups,Team or function,Operations,Sales,0
+"Valence, negative ratings",Tie density between groups,Team or function,Operations,People,0
+"Valence, negative ratings",Tie density between groups,Team or function,Product,Finance,0
+"Valence, negative ratings",Tie density between groups,Team or function,Product,Operations,0
+"Valence, negative ratings",Tie density between groups,Team or function,Product,Product,0
+"Valence, negative ratings",Tie density between groups,Team or function,Product,Sales,0.046875
+"Valence, negative ratings",Tie density between groups,Team or function,Product,People,0
+"Valence, negative ratings",Tie density between groups,Team or function,Sales,Finance,0
+"Valence, negative ratings",Tie density between groups,Team or function,Sales,Operations,0
+"Valence, negative ratings",Tie density between groups,Team or function,Sales,Product,0.046875
+"Valence, negative ratings",Tie density between groups,Team or function,Sales,Sales,0.08928571428571429
+"Valence, negative ratings",Tie density between groups,Team or function,Sales,People,0
+"Valence, negative ratings",Tie density between groups,Team or function,People,Finance,0
+"Valence, negative ratings",Tie density between groups,Team or function,People,Operations,0
+"Valence, negative ratings",Tie density between groups,Team or function,People,Product,0
+"Valence, negative ratings",Tie density between groups,Team or function,People,Sales,0
+"Valence, negative ratings",Tie density between groups,Team or function,People,People,0
+"Valence, negative ratings",E-I index,Level,,,-1
+"Valence, negative ratings","Members without a value, left out of the E-I index",Level,,,0
+"Valence, negative ratings",Group size,Level,L1,,3
+"Valence, negative ratings",Ties inside the group,Level,L1,,0
+"Valence, negative ratings",Ties leaving the group,Level,L1,,0
+"Valence, negative ratings",E-I index,Level,L1,,
+"Valence, negative ratings",Group size,Level,L2,,18
+"Valence, negative ratings",Ties inside the group,Level,L2,,11
+"Valence, negative ratings",Ties leaving the group,Level,L2,,0
+"Valence, negative ratings",E-I index,Level,L2,,-1
+"Valence, negative ratings",Group size,Level,L3,,14
+"Valence, negative ratings",Ties inside the group,Level,L3,,0
+"Valence, negative ratings",Ties leaving the group,Level,L3,,0
+"Valence, negative ratings",E-I index,Level,L3,,
+"Valence, negative ratings",Group size,Level,L4,,4
+"Valence, negative ratings",Ties inside the group,Level,L4,,0
+"Valence, negative ratings",Ties leaving the group,Level,L4,,0
+"Valence, negative ratings",E-I index,Level,L4,,
+"Valence, negative ratings",Group size,Level,L5,,1
+"Valence, negative ratings",Ties inside the group,Level,L5,,0
+"Valence, negative ratings",Ties leaving the group,Level,L5,,0
+"Valence, negative ratings",E-I index,Level,L5,,
+"Valence, negative ratings",Tie density between groups,Level,L1,L1,0
+"Valence, negative ratings",Tie density between groups,Level,L1,L2,0
+"Valence, negative ratings",Tie density between groups,Level,L1,L3,0
+"Valence, negative ratings",Tie density between groups,Level,L1,L4,0
+"Valence, negative ratings",Tie density between groups,Level,L1,L5,0
+"Valence, negative ratings",Tie density between groups,Level,L2,L1,0
+"Valence, negative ratings",Tie density between groups,Level,L2,L2,0.03594771241830065
+"Valence, negative ratings",Tie density between groups,Level,L2,L3,0
+"Valence, negative ratings",Tie density between groups,Level,L2,L4,0
+"Valence, negative ratings",Tie density between groups,Level,L2,L5,0
+"Valence, negative ratings",Tie density between groups,Level,L3,L1,0
+"Valence, negative ratings",Tie density between groups,Level,L3,L2,0
+"Valence, negative ratings",Tie density between groups,Level,L3,L3,0
+"Valence, negative ratings",Tie density between groups,Level,L3,L4,0
+"Valence, negative ratings",Tie density between groups,Level,L3,L5,0
+"Valence, negative ratings",Tie density between groups,Level,L4,L1,0
+"Valence, negative ratings",Tie density between groups,Level,L4,L2,0
+"Valence, negative ratings",Tie density between groups,Level,L4,L3,0
+"Valence, negative ratings",Tie density between groups,Level,L4,L4,0
+"Valence, negative ratings",Tie density between groups,Level,L4,L5,0
+"Valence, negative ratings",Tie density between groups,Level,L5,L1,0
+"Valence, negative ratings",Tie density between groups,Level,L5,L2,0
+"Valence, negative ratings",Tie density between groups,Level,L5,L3,0
+"Valence, negative ratings",Tie density between groups,Level,L5,L4,0
+"Valence, negative ratings",Tie density between groups,Level,L5,L5,
+"Valence, negative ratings",E-I index,Location,,,0.45454545454545453
+"Valence, negative ratings","Members without a value, left out of the E-I index",Location,,,0
+"Valence, negative ratings",Group size,Location,Bristol,,13
+"Valence, negative ratings",Ties inside the group,Location,Bristol,,2
+"Valence, negative ratings",Ties leaving the group,Location,Bristol,,8
+"Valence, negative ratings",E-I index,Location,Bristol,,0.6
+"Valence, negative ratings",Group size,Location,Glasgow,,13
+"Valence, negative ratings",Ties inside the group,Location,Glasgow,,1
+"Valence, negative ratings",Ties leaving the group,Location,Glasgow,,8
+"Valence, negative ratings",E-I index,Location,Glasgow,,0.7777777777777778
+"Valence, negative ratings",Group size,Location,Leeds,,14
+"Valence, negative ratings",Ties inside the group,Location,Leeds,,0
+"Valence, negative ratings",Ties leaving the group,Location,Leeds,,0
+"Valence, negative ratings",E-I index,Location,Leeds,,
+"Valence, negative ratings",Tie density between groups,Location,Bristol,Bristol,0.01282051282051282
+"Valence, negative ratings",Tie density between groups,Location,Bristol,Glasgow,0.023668639053254437
+"Valence, negative ratings",Tie density between groups,Location,Bristol,Leeds,0
+"Valence, negative ratings",Tie density between groups,Location,Glasgow,Bristol,0.023668639053254437
+"Valence, negative ratings",Tie density between groups,Location,Glasgow,Glasgow,0.00641025641025641
+"Valence, negative ratings",Tie density between groups,Location,Glasgow,Leeds,0
+"Valence, negative ratings",Tie density between groups,Location,Leeds,Bristol,0
+"Valence, negative ratings",Tie density between groups,Location,Leeds,Glasgow,0
+"Valence, negative ratings",Tie density between groups,Location,Leeds,Leeds,0
+"Valence, negative ratings",E-I index,Tenure band,,,0.6363636363636364
+"Valence, negative ratings","Members without a value, left out of the E-I index",Tenure band,,,0
+"Valence, negative ratings",Group size,Tenure band,Under 1 year,,7
+"Valence, negative ratings",Ties inside the group,Tenure band,Under 1 year,,0
+"Valence, negative ratings",Ties leaving the group,Tenure band,Under 1 year,,0
+"Valence, negative ratings",E-I index,Tenure band,Under 1 year,,
+"Valence, negative ratings",Group size,Tenure band,1 to 3 years,,11
+"Valence, negative ratings",Ties inside the group,Tenure band,1 to 3 years,,0
+"Valence, negative ratings",Ties leaving the group,Tenure band,1 to 3 years,,5
+"Valence, negative ratings",E-I index,Tenure band,1 to 3 years,,1
+"Valence, negative ratings",Group size,Tenure band,3 to 5 years,,6
+"Valence, negative ratings",Ties inside the group,Tenure band,3 to 5 years,,0
+"Valence, negative ratings",Ties leaving the group,Tenure band,3 to 5 years,,6
+"Valence, negative ratings",E-I index,Tenure band,3 to 5 years,,1
+"Valence, negative ratings",Group size,Tenure band,Over 5 years,,16
+"Valence, negative ratings",Ties inside the group,Tenure band,Over 5 years,,2
+"Valence, negative ratings",Ties leaving the group,Tenure band,Over 5 years,,7
+"Valence, negative ratings",E-I index,Tenure band,Over 5 years,,0.5555555555555556
+"Valence, negative ratings",Tie density between groups,Tenure band,Under 1 year,Under 1 year,0
+"Valence, negative ratings",Tie density between groups,Tenure band,Under 1 year,1 to 3 years,0
+"Valence, negative ratings",Tie density between groups,Tenure band,Under 1 year,3 to 5 years,0
+"Valence, negative ratings",Tie density between groups,Tenure band,Under 1 year,Over 5 years,0
+"Valence, negative ratings",Tie density between groups,Tenure band,1 to 3 years,Under 1 year,0
+"Valence, negative ratings",Tie density between groups,Tenure band,1 to 3 years,1 to 3 years,0
+"Valence, negative ratings",Tie density between groups,Tenure band,1 to 3 years,3 to 5 years,0.015151515151515152
+"Valence, negative ratings",Tie density between groups,Tenure band,1 to 3 years,Over 5 years,0.005681818181818182
+"Valence, negative ratings",Tie density between groups,Tenure band,3 to 5 years,Under 1 year,0
+"Valence, negative ratings",Tie density between groups,Tenure band,3 to 5 years,1 to 3 years,0.015151515151515152
+"Valence, negative ratings",Tie density between groups,Tenure band,3 to 5 years,3 to 5 years,0
+"Valence, negative ratings",Tie density between groups,Tenure band,3 to 5 years,Over 5 years,0.020833333333333332
+"Valence, negative ratings",Tie density between groups,Tenure band,Over 5 years,Under 1 year,0
+"Valence, negative ratings",Tie density between groups,Tenure band,Over 5 years,1 to 3 years,0.011363636363636364
+"Valence, negative ratings",Tie density between groups,Tenure band,Over 5 years,3 to 5 years,0.020833333333333332
+"Valence, negative ratings",Tie density between groups,Tenure band,Over 5 years,Over 5 years,0.008333333333333333
+Informal collaboration,Members,,,,40
+Informal collaboration,Ties,,,,543
+Informal collaboration,Density,,,,0.34807692307692306
+Informal collaboration,Ties returned (tie reciprocity),,,,0.7292817679558011
+Informal collaboration,Pairs with ties both ways (dyad reciprocity),,,,0.5739130434782609
+Informal collaboration,Pairs tied both ways,,,,198
+Informal collaboration,Pairs tied one way,,,,147
+Informal collaboration,Average clustering,,,,0.2990664279501166
+Informal collaboration,Separate parts (weakly connected components),,,,1
+Informal collaboration,Members in the largest part (weak),,,,40
+Informal collaboration,Groups that can all reach each other (strongly connected components),,,,1
+Informal collaboration,Members in the largest such group (strong),,,,40
+Informal collaboration,Centralisation of connections in,,,,0.14266929651545035
+Informal collaboration,Centralisation of connections out,,,,0.1952662721893491
+Informal collaboration,Centralisation of bridging,,,,0.32317305326752016
+Informal collaboration,Communities (Louvain),,,,4
+Informal collaboration,Modularity,,,,0.4141578202889835
+Informal collaboration,E-I index,Team or function,,,0.001841620626151013
+Informal collaboration,"Members without a value, left out of the E-I index",Team or function,,,0
+Informal collaboration,Group size,Team or function,Finance,,8
+Informal collaboration,Ties inside the group,Team or function,Finance,,54
+Informal collaboration,Ties leaving the group,Team or function,Finance,,3
+Informal collaboration,E-I index,Team or function,Finance,,-0.8947368421052632
+Informal collaboration,Group size,Team or function,Operations,,8
+Informal collaboration,Ties inside the group,Team or function,Operations,,54
+Informal collaboration,Ties leaving the group,Team or function,Operations,,132
+Informal collaboration,E-I index,Team or function,Operations,,0.41935483870967744
+Informal collaboration,Group size,Team or function,Product,,8
+Informal collaboration,Ties inside the group,Team or function,Product,,56
+Informal collaboration,Ties leaving the group,Team or function,Product,,139
+Informal collaboration,E-I index,Team or function,Product,,0.4256410256410256
+Informal collaboration,Group size,Team or function,Sales,,8
+Informal collaboration,Ties inside the group,Team or function,Sales,,52
+Informal collaboration,Ties leaving the group,Team or function,Sales,,124
+Informal collaboration,E-I index,Team or function,Sales,,0.4090909090909091
+Informal collaboration,Group size,Team or function,People,,8
+Informal collaboration,Ties inside the group,Team or function,People,,55
+Informal collaboration,Ties leaving the group,Team or function,People,,146
+Informal collaboration,E-I index,Team or function,People,,0.4527363184079602
+Informal collaboration,Tie density between groups,Team or function,Finance,Finance,0.9642857142857143
+Informal collaboration,Tie density between groups,Team or function,Finance,Operations,0.015625
+Informal collaboration,Tie density between groups,Team or function,Finance,Product,0
+Informal collaboration,Tie density between groups,Team or function,Finance,Sales,0
+Informal collaboration,Tie density between groups,Team or function,Finance,People,0
+Informal collaboration,Tie density between groups,Team or function,Operations,Finance,0.03125
+Informal collaboration,Tie density between groups,Team or function,Operations,Operations,0.9642857142857143
+Informal collaboration,Tie density between groups,Team or function,Operations,Product,0.34375
+Informal collaboration,Tie density between groups,Team or function,Operations,Sales,0.3125
+Informal collaboration,Tie density between groups,Team or function,Operations,People,0.28125
+Informal collaboration,Tie density between groups,Team or function,Product,Finance,0
+Informal collaboration,Tie density between groups,Team or function,Product,Operations,0.375
+Informal collaboration,Tie density between groups,Team or function,Product,Product,1
+Informal collaboration,Tie density between groups,Team or function,Product,Sales,0.25
+Informal collaboration,Tie density between groups,Team or function,Product,People,0.46875
+Informal collaboration,Tie density between groups,Team or function,Sales,Finance,0
+Informal collaboration,Tie density between groups,Team or function,Sales,Operations,0.359375
+Informal collaboration,Tie density between groups,Team or function,Sales,Product,0.28125
+Informal collaboration,Tie density between groups,Team or function,Sales,Sales,0.9285714285714286
+Informal collaboration,Tie density between groups,Team or function,Sales,People,0.296875
+Informal collaboration,Tie density between groups,Team or function,People,Finance,0
+Informal collaboration,Tie density between groups,Team or function,People,Operations,0.34375
+Informal collaboration,Tie density between groups,Team or function,People,Product,0.453125
+Informal collaboration,Tie density between groups,Team or function,People,Sales,0.4375
+Informal collaboration,Tie density between groups,Team or function,People,People,0.9821428571428571
+Informal collaboration,E-I index,Level,,,0.3001841620626151
+Informal collaboration,"Members without a value, left out of the E-I index",Level,,,0
+Informal collaboration,Group size,Level,L1,,3
+Informal collaboration,Ties inside the group,Level,L1,,0
+Informal collaboration,Ties leaving the group,Level,L1,,68
+Informal collaboration,E-I index,Level,L1,,1
+Informal collaboration,Group size,Level,L2,,18
+Informal collaboration,Ties inside the group,Level,L2,,119
+Informal collaboration,Ties leaving the group,Level,L2,,259
+Informal collaboration,E-I index,Level,L2,,0.37037037037037035
+Informal collaboration,Group size,Level,L3,,14
+Informal collaboration,Ties inside the group,Level,L3,,65
+Informal collaboration,Ties leaving the group,Level,L3,,241
+Informal collaboration,E-I index,Level,L3,,0.5751633986928104
+Informal collaboration,Group size,Level,L4,,4
+Informal collaboration,Ties inside the group,Level,L4,,6
+Informal collaboration,Ties leaving the group,Level,L4,,100
+Informal collaboration,E-I index,Level,L4,,0.8867924528301887
+Informal collaboration,Group size,Level,L5,,1
+Informal collaboration,Ties inside the group,Level,L5,,0
+Informal collaboration,Ties leaving the group,Level,L5,,38
+Informal collaboration,E-I index,Level,L5,,1
+Informal collaboration,Tie density between groups,Level,L1,L1,0
+Informal collaboration,Tie density between groups,Level,L1,L2,0.24074074074074073
+Informal collaboration,Tie density between groups,Level,L1,L3,0.35714285714285715
+Informal collaboration,Tie density between groups,Level,L1,L4,0.16666666666666666
+Informal collaboration,Tie density between groups,Level,L1,L5,0.3333333333333333
+Informal collaboration,Tie density between groups,Level,L2,L1,0.25925925925925924
+Informal collaboration,Tie density between groups,Level,L2,L2,0.3888888888888889
+Informal collaboration,Tie density between groups,Level,L2,L3,0.3531746031746032
+Informal collaboration,Tie density between groups,Level,L2,L4,0.3888888888888889
+Informal collaboration,Tie density between groups,Level,L2,L5,0.3333333333333333
+Informal collaboration,Tie density between groups,Level,L3,L1,0.40476190476190477
+Informal collaboration,Tie density between groups,Level,L3,L2,0.2896825396825397
+Informal collaboration,Tie density between groups,Level,L3,L3,0.35714285714285715
+Informal collaboration,Tie density between groups,Level,L3,L4,0.3392857142857143
+Informal collaboration,Tie density between groups,Level,L3,L5,0.5
+Informal collaboration,Tie density between groups,Level,L4,L1,0.4166666666666667
+Informal collaboration,Tie density between groups,Level,L4,L2,0.375
+Informal collaboration,Tie density between groups,Level,L4,L3,0.23214285714285715
+Informal collaboration,Tie density between groups,Level,L4,L4,0.5
+Informal collaboration,Tie density between groups,Level,L4,L5,0.75
+Informal collaboration,Tie density between groups,Level,L5,L1,0.3333333333333333
+Informal collaboration,Tie density between groups,Level,L5,L2,0.5
+Informal collaboration,Tie density between groups,Level,L5,L3,0.5714285714285714
+Informal collaboration,Tie density between groups,Level,L5,L4,0.75
+Informal collaboration,Tie density between groups,Level,L5,L5,
+Informal collaboration,E-I index,Location,,,0.35911602209944754
+Informal collaboration,"Members without a value, left out of the E-I index",Location,,,0
+Informal collaboration,Group size,Location,Bristol,,13
+Informal collaboration,Ties inside the group,Location,Bristol,,55
+Informal collaboration,Ties leaving the group,Location,Bristol,,247
+Informal collaboration,E-I index,Location,Bristol,,0.6357615894039735
+Informal collaboration,Group size,Location,Glasgow,,13
+Informal collaboration,Ties inside the group,Location,Glasgow,,51
+Informal collaboration,Ties leaving the group,Location,Glasgow,,248
+Informal collaboration,E-I index,Location,Glasgow,,0.6588628762541806
+Informal collaboration,Group size,Location,Leeds,,14
+Informal collaboration,Ties inside the group,Location,Leeds,,68
+Informal collaboration,Ties leaving the group,Location,Leeds,,243
+Informal collaboration,E-I index,Location,Leeds,,0.5627009646302251
+Informal collaboration,Tie density between groups,Location,Bristol,Bristol,0.3525641025641026
+Informal collaboration,Tie density between groups,Location,Bristol,Glasgow,0.3727810650887574
+Informal collaboration,Tie density between groups,Location,Bristol,Leeds,0.34065934065934067
+Informal collaboration,Tie density between groups,Location,Glasgow,Bristol,0.3727810650887574
+Informal collaboration,Tie density between groups,Location,Glasgow,Glasgow,0.3269230769230769
+Informal collaboration,Tie density between groups,Location,Glasgow,Leeds,0.33516483516483514
+Informal collaboration,Tie density between groups,Location,Leeds,Bristol,0.3241758241758242
+Informal collaboration,Tie density between groups,Location,Leeds,Glasgow,0.33516483516483514
+Informal collaboration,Tie density between groups,Location,Leeds,Leeds,0.37362637362637363
+Informal collaboration,E-I index,Tenure band,,,0.4548802946593002
+Informal collaboration,"Members without a value, left out of the E-I index",Tenure band,,,0
+Informal collaboration,Group size,Tenure band,Under 1 year,,7
+Informal collaboration,Ties inside the group,Tenure band,Under 1 year,,18
+Informal collaboration,Ties leaving the group,Tenure band,Under 1 year,,155
+Informal collaboration,E-I index,Tenure band,Under 1 year,,0.791907514450867
+Informal collaboration,Group size,Tenure band,1 to 3 years,,11
+Informal collaboration,Ties inside the group,Tenure band,1 to 3 years,,39
+Informal collaboration,Ties leaving the group,Tenure band,1 to 3 years,,234
+Informal collaboration,E-I index,Tenure band,1 to 3 years,,0.7142857142857143
+Informal collaboration,Group size,Tenure band,3 to 5 years,,6
+Informal collaboration,Ties inside the group,Tenure band,3 to 5 years,,6
+Informal collaboration,Ties leaving the group,Tenure band,3 to 5 years,,128
+Informal collaboration,E-I index,Tenure band,3 to 5 years,,0.9104477611940298
+Informal collaboration,Group size,Tenure band,Over 5 years,,16
+Informal collaboration,Ties inside the group,Tenure band,Over 5 years,,85
+Informal collaboration,Ties leaving the group,Tenure band,Over 5 years,,273
+Informal collaboration,E-I index,Tenure band,Over 5 years,,0.5251396648044693
+Informal collaboration,Tie density between groups,Tenure band,Under 1 year,Under 1 year,0.42857142857142855
+Informal collaboration,Tie density between groups,Tenure band,Under 1 year,1 to 3 years,0.35064935064935066
+Informal collaboration,Tie density between groups,Tenure band,Under 1 year,3 to 5 years,0.2619047619047619
+Informal collaboration,Tie density between groups,Tenure band,Under 1 year,Over 5 years,0.33035714285714285
+Informal collaboration,Tie density between groups,Tenure band,1 to 3 years,Under 1 year,0.3116883116883117
+Informal collaboration,Tie density between groups,Tenure band,1 to 3 years,1 to 3 years,0.35454545454545455
+Informal collaboration,Tie density between groups,Tenure band,1 to 3 years,3 to 5 years,0.2878787878787879
+Informal collaboration,Tie density between groups,Tenure band,1 to 3 years,Over 5 years,0.35795454545454547
+Informal collaboration,Tie density between groups,Tenure band,3 to 5 years,Under 1 year,0.30952380952380953
+Informal collaboration,Tie density between groups,Tenure band,3 to 5 years,1 to 3 years,0.42424242424242425
+Informal collaboration,Tie density between groups,Tenure band,3 to 5 years,3 to 5 years,0.2
+Informal collaboration,Tie density between groups,Tenure band,3 to 5 years,Over 5 years,0.28125
+Informal collaboration,Tie density between groups,Tenure band,Over 5 years,Under 1 year,0.38392857142857145
+Informal collaboration,Tie density between groups,Tenure band,Over 5 years,1 to 3 years,0.4147727272727273
+Informal collaboration,Tie density between groups,Tenure band,Over 5 years,3 to 5 years,0.3125
+Informal collaboration,Tie density between groups,Tenure band,Over 5 years,Over 5 years,0.3541666666666667
+Formal collaboration,Members,,,,40
+Formal collaboration,Ties,,,,535
+Formal collaboration,Density,,,,0.34294871794871795
+Formal collaboration,Ties returned (tie reciprocity),,,,0.788785046728972
+Formal collaboration,Pairs with ties both ways (dyad reciprocity),,,,0.6512345679012346
+Formal collaboration,Pairs tied both ways,,,,211
+Formal collaboration,Pairs tied one way,,,,113
+Formal collaboration,Average clustering,,,,0.4097279451245644
+Formal collaboration,Separate parts (weakly connected components),,,,1
+Formal collaboration,Members in the largest part (weak),,,,40
+Formal collaboration,Groups that can all reach each other (strongly connected components),,,,1
+Formal collaboration,Members in the largest such group (strong),,,,40
+Formal collaboration,Centralisation of connections in,,,,0.22682445759368836
+Formal collaboration,Centralisation of connections out,,,,0.20052596975673898
+Formal collaboration,Centralisation of bridging,,,,0.20155698216765672
+Formal collaboration,Communities (Louvain),,,,4
+Formal collaboration,Modularity,,,,0.4971298488435645
+Formal collaboration,E-I index,Team or function,,,0.001869158878504673
+Formal collaboration,"Members without a value, left out of the E-I index",Team or function,,,0
+Formal collaboration,Group size,Team or function,Finance,,8
+Formal collaboration,Ties inside the group,Team or function,Finance,,55
+Formal collaboration,Ties leaving the group,Team or function,Finance,,6
+Formal collaboration,E-I index,Team or function,Finance,,-0.8032786885245902
+Formal collaboration,Group size,Team or function,Operations,,8
+Formal collaboration,Ties inside the group,Team or function,Operations,,49
+Formal collaboration,Ties leaving the group,Team or function,Operations,,94
+Formal collaboration,E-I index,Team or function,Operations,,0.3146853146853147
+Formal collaboration,Group size,Team or function,Product,,8
+Formal collaboration,Ties inside the group,Team or function,Product,,56
+Formal collaboration,Ties leaving the group,Team or function,Product,,177
+Formal collaboration,E-I index,Team or function,Product,,0.51931330472103
+Formal collaboration,Group size,Team or function,Sales,,8
+Formal collaboration,Ties inside the group,Team or function,Sales,,51
+Formal collaboration,Ties leaving the group,Team or function,Sales,,179
+Formal collaboration,E-I index,Team or function,Sales,,0.5565217391304348
+Formal collaboration,Group size,Team or function,People,,8
+Formal collaboration,Ties inside the group,Team or function,People,,56
+Formal collaboration,Ties leaving the group,Team or function,People,,80
+Formal collaboration,E-I index,Team or function,People,,0.17647058823529413
+Formal collaboration,Tie density between groups,Team or function,Finance,Finance,0.9821428571428571
+Formal collaboration,Tie density between groups,Team or function,Finance,Operations,0.046875
+Formal collaboration,Tie density between groups,Team or function,Finance,Product,0
+Formal collaboration,Tie density between groups,Team or function,Finance,Sales,0
+Formal collaboration,Tie density between groups,Team or function,Finance,People,0
+Formal collaboration,Tie density between groups,Team or function,Operations,Finance,0.046875
+Formal collaboration,Tie density between groups,Team or function,Operations,Operations,0.875
+Formal collaboration,Tie density between groups,Team or function,Operations,Product,0.203125
+Formal collaboration,Tie density between groups,Team or function,Operations,Sales,0.234375
+Formal collaboration,Tie density between groups,Team or function,Operations,People,0.203125
+Formal collaboration,Tie density between groups,Team or function,Product,Finance,0
+Formal collaboration,Tie density between groups,Team or function,Product,Operations,0.265625
+Formal collaboration,Tie density between groups,Team or function,Product,Product,1
+Formal collaboration,Tie density between groups,Team or function,Product,Sales,1
+Formal collaboration,Tie density between groups,Team or function,Product,People,0.1875
+Formal collaboration,Tie density between groups,Team or function,Sales,Finance,0
+Formal collaboration,Tie density between groups,Team or function,Sales,Operations,0.21875
+Formal collaboration,Tie density between groups,Team or function,Sales,Product,0.921875
+Formal collaboration,Tie density between groups,Team or function,Sales,Sales,0.9107142857142857
+Formal collaboration,Tie density between groups,Team or function,Sales,People,0.15625
+Formal collaboration,Tie density between groups,Team or function,People,Finance,0
+Formal collaboration,Tie density between groups,Team or function,People,Operations,0.25
+Formal collaboration,Tie density between groups,Team or function,People,Product,0.1875
+Formal collaboration,Tie density between groups,Team or function,People,Sales,0.265625
+Formal collaboration,Tie density between groups,Team or function,People,People,1
+Formal collaboration,E-I index,Level,,,0.2560747663551402
+Formal collaboration,"Members without a value, left out of the E-I index",Level,,,0
+Formal collaboration,Group size,Level,L1,,3
+Formal collaboration,Ties inside the group,Level,L1,,0
+Formal collaboration,Ties leaving the group,Level,L1,,55
+Formal collaboration,E-I index,Level,L1,,1
+Formal collaboration,Group size,Level,L2,,18
+Formal collaboration,Ties inside the group,Level,L2,,131
+Formal collaboration,Ties leaving the group,Level,L2,,251
+Formal collaboration,E-I index,Level,L2,,0.31413612565445026
+Formal collaboration,Group size,Level,L3,,14
+Formal collaboration,Ties inside the group,Level,L3,,62
+Formal collaboration,Ties leaving the group,Level,L3,,226
+Formal collaboration,E-I index,Level,L3,,0.5694444444444444
+Formal collaboration,Group size,Level,L4,,4
+Formal collaboration,Ties inside the group,Level,L4,,6
+Formal collaboration,Ties leaving the group,Level,L4,,112
+Formal collaboration,E-I index,Level,L4,,0.8983050847457628
+Formal collaboration,Group size,Level,L5,,1
+Formal collaboration,Ties inside the group,Level,L5,,0
+Formal collaboration,Ties leaving the group,Level,L5,,28
+Formal collaboration,E-I index,Level,L5,,1
+Formal collaboration,Tie density between groups,Level,L1,L1,0
+Formal collaboration,Tie density between groups,Level,L1,L2,0.18518518518518517
+Formal collaboration,Tie density between groups,Level,L1,L3,0.30952380952380953
+Formal collaboration,Tie density between groups,Level,L1,L4,0.16666666666666666
+Formal collaboration,Tie density between groups,Level,L1,L5,0.3333333333333333
+Formal collaboration,Tie density between groups,Level,L2,L1,0.2222222222222222
+Formal collaboration,Tie density between groups,Level,L2,L2,0.42810457516339867
+Formal collaboration,Tie density between groups,Level,L2,L3,0.31746031746031744
+Formal collaboration,Tie density between groups,Level,L2,L4,0.4722222222222222
+Formal collaboration,Tie density between groups,Level,L2,L5,0.2777777777777778
+Formal collaboration,Tie density between groups,Level,L3,L1,0.2857142857142857
+Formal collaboration,Tie density between groups,Level,L3,L2,0.30158730158730157
+Formal collaboration,Tie density between groups,Level,L3,L3,0.34065934065934067
+Formal collaboration,Tie density between groups,Level,L3,L4,0.35714285714285715
+Formal collaboration,Tie density between groups,Level,L3,L5,0.42857142857142855
+Formal collaboration,Tie density between groups,Level,L4,L1,0.3333333333333333
+Formal collaboration,Tie density between groups,Level,L4,L2,0.4027777777777778
+Formal collaboration,Tie density between groups,Level,L4,L3,0.2857142857142857
+Formal collaboration,Tie density between groups,Level,L4,L4,0.5
+Formal collaboration,Tie density between groups,Level,L4,L5,1
+Formal collaboration,Tie density between groups,Level,L5,L1,0.3333333333333333
+Formal collaboration,Tie density between groups,Level,L5,L2,0.2777777777777778
+Formal collaboration,Tie density between groups,Level,L5,L3,0.21428571428571427
+Formal collaboration,Tie density between groups,Level,L5,L4,0.75
+Formal collaboration,Tie density between groups,Level,L5,L5,
+Formal collaboration,E-I index,Location,,,0.34205607476635513
+Formal collaboration,"Members without a value, left out of the E-I index",Location,,,0
+Formal collaboration,Group size,Location,Bristol,,13
+Formal collaboration,Ties inside the group,Location,Bristol,,71
+Formal collaboration,Ties leaving the group,Location,Bristol,,241
+Formal collaboration,E-I index,Location,Bristol,,0.5448717948717948
+Formal collaboration,Group size,Location,Glasgow,,13
+Formal collaboration,Ties inside the group,Location,Glasgow,,48
+Formal collaboration,Ties leaving the group,Location,Glasgow,,235
+Formal collaboration,E-I index,Location,Glasgow,,0.6607773851590106
+Formal collaboration,Group size,Location,Leeds,,14
+Formal collaboration,Ties inside the group,Location,Leeds,,57
+Formal collaboration,Ties leaving the group,Location,Leeds,,242
+Formal collaboration,E-I index,Location,Leeds,,0.6187290969899666
+Formal collaboration,Tie density between groups,Location,Bristol,Bristol,0.4551282051282051
+Formal collaboration,Tie density between groups,Location,Bristol,Glasgow,0.33136094674556216
+Formal collaboration,Tie density between groups,Location,Bristol,Leeds,0.3516483516483517
+Formal collaboration,Tie density between groups,Location,Glasgow,Bristol,0.3609467455621302
+Formal collaboration,Tie density between groups,Location,Glasgow,Glasgow,0.3076923076923077
+Formal collaboration,Tie density between groups,Location,Glasgow,Leeds,0.3241758241758242
+Formal collaboration,Tie density between groups,Location,Leeds,Bristol,0.32967032967032966
+Formal collaboration,Tie density between groups,Location,Leeds,Glasgow,0.3241758241758242
+Formal collaboration,Tie density between groups,Location,Leeds,Leeds,0.3131868131868132
+Formal collaboration,E-I index,Tenure band,,,0.5065420560747663
+Formal collaboration,"Members without a value, left out of the E-I index",Tenure band,,,0
+Formal collaboration,Group size,Tenure band,Under 1 year,,7
+Formal collaboration,Ties inside the group,Tenure band,Under 1 year,,16
+Formal collaboration,Ties leaving the group,Tenure band,Under 1 year,,164
+Formal collaboration,E-I index,Tenure band,Under 1 year,,0.8222222222222222
+Formal collaboration,Group size,Tenure band,1 to 3 years,,11
+Formal collaboration,Ties inside the group,Tenure band,1 to 3 years,,42
+Formal collaboration,Ties leaving the group,Tenure band,1 to 3 years,,229
+Formal collaboration,E-I index,Tenure band,1 to 3 years,,0.6900369003690037
+Formal collaboration,Group size,Tenure band,3 to 5 years,,6
+Formal collaboration,Ties inside the group,Tenure band,3 to 5 years,,8
+Formal collaboration,Ties leaving the group,Tenure band,3 to 5 years,,143
+Formal collaboration,E-I index,Tenure band,3 to 5 years,,0.8940397350993378
+Formal collaboration,Group size,Tenure band,Over 5 years,,16
+Formal collaboration,Ties inside the group,Tenure band,Over 5 years,,66
+Formal collaboration,Ties leaving the group,Tenure band,Over 5 years,,270
+Formal collaboration,E-I index,Tenure band,Over 5 years,,0.6071428571428571
+Formal collaboration,Tie density between groups,Tenure band,Under 1 year,Under 1 year,0.38095238095238093
+Formal collaboration,Tie density between groups,Tenure band,Under 1 year,1 to 3 years,0.37662337662337664
+Formal collaboration,Tie density between groups,Tenure band,Under 1 year,3 to 5 years,0.3333333333333333
+Formal collaboration,Tie density between groups,Tenure band,Under 1 year,Over 5 years,0.3482142857142857
+Formal collaboration,Tie density between groups,Tenure band,1 to 3 years,Under 1 year,0.33766233766233766
+Formal collaboration,Tie density between groups,Tenure band,1 to 3 years,1 to 3 years,0.38181818181818183
+Formal collaboration,Tie density between groups,Tenure band,1 to 3 years,3 to 5 years,0.3333333333333333
+Formal collaboration,Tie density between groups,Tenure band,1 to 3 years,Over 5 years,0.3181818181818182
+Formal collaboration,Tie density between groups,Tenure band,3 to 5 years,Under 1 year,0.35714285714285715
+Formal collaboration,Tie density between groups,Tenure band,3 to 5 years,1 to 3 years,0.4090909090909091
+Formal collaboration,Tie density between groups,Tenure band,3 to 5 years,3 to 5 years,0.26666666666666666
+Formal collaboration,Tie density between groups,Tenure band,3 to 5 years,Over 5 years,0.3229166666666667
+Formal collaboration,Tie density between groups,Tenure band,Over 5 years,Under 1 year,0.36607142857142855
+Formal collaboration,Tie density between groups,Tenure band,Over 5 years,1 to 3 years,0.39204545454545453
+Formal collaboration,Tie density between groups,Tenure band,Over 5 years,3 to 5 years,0.3541666666666667
+Formal collaboration,Tie density between groups,Tenure band,Over 5 years,Over 5 years,0.275
+Valence,Trios with signs + + +,,,,1573
+Valence,Trios with signs + + −,,,,75
+Valence,Trios with signs + − −,,,,0
+Valence,Trios with signs − − −,,,,4
+Valence,Balanced trios,,,,1573
+Valence,Unbalanced trios,,,,79
+Valence,Balance ratio,,,,0.9521791767554479
+Connection strength,"Ties shared with Valence, positive ratings (Jaccard)",,,,0.521970705725699
+Connection strength,"Ties shared with Valence, negative ratings (Jaccard)",,,,0.014571948998178506
+Connection strength,Ties shared with Informal collaboration (Jaccard),,,,0.7368421052631579
+Connection strength,Ties shared with Formal collaboration (Jaccard),,,,0.6378787878787879
+"Valence, positive ratings","Ties shared with Valence, negative ratings (Jaccard)",,,,0
+"Valence, positive ratings",Ties shared with Informal collaboration (Jaccard),,,,0.5261044176706827
+"Valence, positive ratings",Ties shared with Formal collaboration (Jaccard),,,,0.5276653171390013
+"Valence, negative ratings",Ties shared with Informal collaboration (Jaccard),,,,0.014652014652014652
+"Valence, negative ratings",Ties shared with Formal collaboration (Jaccard),,,,0.020560747663551402
+Informal collaboration,Ties shared with Formal collaboration (Jaccard),,,,0.6358118361153262
+Formal and informal collaboration,Pairs with formal ties only,,,,101
+Formal and informal collaboration,Pairs with informal ties only,,,,108
+Formal and informal collaboration,Pairs with formal and informal ties,,,,419
+Formal and informal collaboration,Pairs with neither,,,,819
+Formal and informal collaboration,Pairs not classified (a rating is missing),,,,113

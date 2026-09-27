@@ -8,6 +8,7 @@ import '../styles/map.css';
 import '../styles/explore.css';
 import '../styles/present.css';
 import '../styles/survey.css';
+import '../styles/export.css';
 import { startAnalysisSync } from './state/analysisSync';
 import { restoreLocalProject } from './state/persistenceSync';
 import { Workspace } from './views/Workspace';

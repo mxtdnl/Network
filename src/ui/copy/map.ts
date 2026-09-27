@@ -146,6 +146,7 @@ export const mapCopy = {
     valence: 'Valence, −3 to +3',
     valenceNotRated: 'Valence not rated',
     colourOff: 'Not used: valence is hidden',
+    colourNone: 'Not used',
     style: 'Edge style',
     styleVariable: 'Formal and informal collaboration',
     formal: 'Formal only',

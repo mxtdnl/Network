@@ -146,6 +146,36 @@
   --presentation-legend-width: 360px; /* legend column in presentation mode, as --col-right */
   --presentation-idle: 2000ms; /* presentation hides the cursor and controls after this long at rest (design-system §5.3) */
 
+  /* Phase 7: map export (CLAUDE.md D107). The exported map uses the map tokens above;
+     the legend sits in a column beside it and the caption runs under both. */
+  --export-padding: var(--s-5); /* margin around the exported picture */
+  --export-gap: var(--s-5); /* between the map, the legend column and the caption */
+  --export-legend-width: 240px; /* legend column beside the exported map */
+  --export-caption-size: var(--t-1-size); /* caption under the exported map */
+  --export-caption-line: var(--t-1-line);
+  --export-default-width: 1200px; /* map size when the map tab has not been drawn */
+  --export-default-height: 800px;
+  --export-print-width: 277mm; /* print PNG: A4 landscape less 10mm margins, at --export-print-dpi */
+  --export-print-dpi: 300;
+
+  /* Phase 7: print (the PDF report, CLAUDE.md D108). Type steps are the scale above;
+     CSS px become PDF points at 0.75 pt per px (96 px to the inch). */
+  --print-page-width: 210mm; /* A4 portrait; the map page turns it to landscape */
+  --print-page-height: 297mm;
+  --print-margin: 20mm;
+  --print-title-size: var(--t-6-size); /* cover title */
+  --print-title-line: var(--t-6-line);
+  --print-heading-size: var(--t-4-size); /* section headings */
+  --print-heading-line: var(--t-4-line);
+  --print-subheading-size: var(--t-2-size);
+  --print-subheading-line: var(--t-2-line);
+  --print-body-size: var(--t-0-size);
+  --print-body-line: var(--t-0-line);
+  --print-small-size: var(--t--1-size); /* tables, notes, running footer */
+  --print-small-line: var(--t--1-line);
+  --print-measure: 150mm; /* longest line of running text; the page's full width is 170mm */
+  --print-column-gap: var(--s-4); /* between table columns */
+
   /* Respondent mode (spec §15.4, CLAUDE.md D93). Mobile-first; wide layout from --respond-wide. */
   --respond-wide: 720px; /* read by script for matchMedia: the compact rating table starts here */
   --respond-target: 48px; /* touch targets: meets Apple 44pt and Material 48dp (spec §12) */

@@ -265,6 +265,28 @@ export class ForceLayout {
     this.pending = positions;
   }
 
+  /**
+   * Starts a fresh layout from given positions and pins, so a later `update`
+   * with other weights moves members only as far as the new weights move them
+   * (the map export uses it when the signed-layer exclusion changes the ties).
+   */
+  seed(points: readonly SavedPoint[]): void {
+    this.simulation?.stop();
+    this.nodes.length = 0;
+    points.forEach((p, index) => {
+      this.nodes.push({
+        index,
+        radius: 0,
+        x: p.x,
+        y: p.y,
+        vx: 0,
+        vy: 0,
+        fx: p.pinned ? p.x : null,
+        fy: p.pinned ? p.y : null,
+      });
+    });
+  }
+
   /** True once after saved positions were applied, so the view can be fitted to them. */
   takeRestored(): boolean {
     const r = this.restored;
@@ -509,6 +531,11 @@ export class ForceLayout {
         pinned,
       };
     });
+  }
+
+  /** The key of the layout last built (a map export compares it with its own request). */
+  get currentKey(): string {
+    return this.key;
   }
 
   get pinned(): number {

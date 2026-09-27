@@ -14,6 +14,7 @@ import { formatValue, mapCopy } from '../copy/map';
 import { metricCopy } from '../copy/metrics';
 import { MapController } from '../map/controller';
 import { registerMapFocus } from '../map/focus';
+import { registerMapViewport } from '../map/viewport';
 import { layerName } from '../map/legend';
 import { nextMember, type MapModel } from '../map/model';
 import { sharedLayout, useMapData, type MapData } from '../map/useMapModel';
@@ -173,6 +174,7 @@ export function MapCanvas({ data, presentation }: MapCanvasProps) {
     );
     controller.setTool(useAppStore.getState().map.tool);
     controllerRef.current = controller;
+    if (analyst) registerMapViewport(() => controller.viewport());
     const observer = new ResizeObserver(() => {
       const rect = container.getBoundingClientRect();
       // Fit to view keeps members clear of the legend.
@@ -190,10 +192,11 @@ export function MapCanvas({ data, presentation }: MapCanvasProps) {
     if (noteRef.current) observer.observe(noteRef.current);
     return () => {
       observer.disconnect();
+      if (analyst) registerMapViewport(null);
       controller.dispose();
       controllerRef.current = null;
     };
-  }, [theme]);
+  }, [theme, analyst]);
 
   useEffect(() => {
     controllerRef.current?.setModel(model, layout);
