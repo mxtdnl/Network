@@ -126,6 +126,10 @@ export function runBootstrap(metric: BootstrapMetric): void {
     (fraction) => {
       const b = useAppStore.getState().tools.bootstrap;
       if (bootstrapOp !== op || b?.status !== 'running') return;
+      // The worker reports after every resample; the page shows whole percents, so it
+      // re-renders only when that figure changes, or thousands of resamples would
+      // keep the main thread too busy to answer Cancel.
+      if (Math.floor(fraction * 100) === Math.floor(b.progress * 100)) return;
       useAppStore.getState().setTools({ bootstrap: { ...b, progress: fraction } });
     },
   );
