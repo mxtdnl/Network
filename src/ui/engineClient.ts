@@ -24,6 +24,7 @@ import type {
 import type { Project } from '../data/schema';
 
 export type {
+  AnalysisInput,
   AnalysisResult,
   BootstrapOptions,
   BootstrapResult,

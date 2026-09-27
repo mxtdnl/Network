@@ -12,6 +12,8 @@ import { useCoverage } from './CoveragePanel';
 import { savedViewsCopy } from '../copy/savedViews';
 import { setNamesHidden } from '../state/names';
 import { startPresentation } from '../state/presentation';
+import { exportCopy } from '../copy/export';
+import { ExportDialog } from './ExportDialog';
 
 type Pending = 'open' | 'demo' | null;
 
@@ -26,6 +28,7 @@ export function TopBar() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [pending, setPending] = useState<Pending>(null);
   const [confirmClear, setConfirmClear] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const hasData = project !== null && project.members.length > 0;
   function chooseProjectFile() {
@@ -77,6 +80,16 @@ export function TopBar() {
           }}
         >
           {shellCopy.present}
+        </button>
+        <button
+          type="button"
+          className="button button--text"
+          disabled={!hasData}
+          onClick={() => {
+            setExporting(true);
+          }}
+        >
+          {exportCopy.menu}
         </button>
         <MenuButton
           label={projectCopy.menu}
@@ -140,6 +153,12 @@ export function TopBar() {
           setPending(null);
           if (action === 'open') chooseProjectFile();
           else if (action === 'demo') void loadDemo();
+        }}
+      />
+      <ExportDialog
+        open={exporting}
+        onClose={() => {
+          setExporting(false);
         }}
       />
       <ConfirmDialog

@@ -13,6 +13,8 @@ data/private/
 *.[xX][lL][sS][xX]
 !/public/templates/**/*.csv
 !/public/templates/**/*.xlsx
+# Exception: anonymised sample exports of the fictional demo (Phase 7).
+!/docs/samples/*.csv
 
 # --- Tooling ---
 node_modules/

@@ -1,0 +1,1561 @@
+﻿From,To,"Team or function, first member","Team or function, other member",Classification
+FIN-L4-01,FIN-L3-01,Finance,Finance,Formal and informal
+FIN-L4-01,FIN-L2-01,Finance,Finance,Formal and informal
+FIN-L4-01,FIN-L2-02,Finance,Finance,Formal and informal
+FIN-L4-01,FIN-L3-02,Finance,Finance,Formal and informal
+FIN-L4-01,FIN-L1-01,Finance,Finance,Formal and informal
+FIN-L4-01,FIN-L3-03,Finance,Finance,Formal and informal
+FIN-L4-01,FIN-L2-03,Finance,Finance,Formal and informal
+FIN-L4-01,OPE-L5-01,Finance,Operations,Formal only
+FIN-L4-01,OPE-L3-01,Finance,Operations,Neither
+FIN-L4-01,OPE-L1-01,Finance,Operations,Neither
+FIN-L4-01,OPE-L3-02,Finance,Operations,Neither
+FIN-L4-01,OPE-L2-01,Finance,Operations,Neither
+FIN-L4-01,OPE-L3-03,Finance,Operations,Neither
+FIN-L4-01,OPE-L3-04,Finance,Operations,Neither
+FIN-L4-01,OPE-L3-05,Finance,Operations,Neither
+FIN-L4-01,PRO-L4-01,Finance,Product,Neither
+FIN-L4-01,PRO-L3-01,Finance,Product,Neither
+FIN-L4-01,PRO-L2-01,Finance,Product,Neither
+FIN-L4-01,PRO-L3-02,Finance,Product,Neither
+FIN-L4-01,PRO-L2-02,Finance,Product,Neither
+FIN-L4-01,PRO-L2-03,Finance,Product,Neither
+FIN-L4-01,PRO-L3-03,Finance,Product,Neither
+FIN-L4-01,PRO-L2-04,Finance,Product,Neither
+FIN-L4-01,SAL-L4-01,Finance,Sales,Neither
+FIN-L4-01,SAL-L2-01,Finance,Sales,Neither
+FIN-L4-01,SAL-L2-02,Finance,Sales,Neither
+FIN-L4-01,SAL-L2-03,Finance,Sales,Neither
+FIN-L4-01,SAL-L2-04,Finance,Sales,Neither
+FIN-L4-01,SAL-L2-05,Finance,Sales,Neither
+FIN-L4-01,SAL-L2-06,Finance,Sales,Neither
+FIN-L4-01,SAL-L3-01,Finance,Sales,Neither
+FIN-L4-01,PEO-L4-01,Finance,People,Neither
+FIN-L4-01,PEO-L2-01,Finance,People,Neither
+FIN-L4-01,PEO-L3-01,Finance,People,Not classified (a rating is missing)
+FIN-L4-01,PEO-L2-02,Finance,People,Neither
+FIN-L4-01,PEO-L2-03,Finance,People,Neither
+FIN-L4-01,PEO-L3-02,Finance,People,Neither
+FIN-L4-01,PEO-L1-01,Finance,People,Neither
+FIN-L4-01,PEO-L2-04,Finance,People,Neither
+FIN-L3-01,FIN-L4-01,Finance,Finance,Formal and informal
+FIN-L3-01,FIN-L2-01,Finance,Finance,Formal and informal
+FIN-L3-01,FIN-L2-02,Finance,Finance,Formal and informal
+FIN-L3-01,FIN-L3-02,Finance,Finance,Formal and informal
+FIN-L3-01,FIN-L1-01,Finance,Finance,Formal and informal
+FIN-L3-01,FIN-L3-03,Finance,Finance,Formal and informal
+FIN-L3-01,FIN-L2-03,Finance,Finance,Formal and informal
+FIN-L3-01,OPE-L5-01,Finance,Operations,Neither
+FIN-L3-01,OPE-L3-01,Finance,Operations,Neither
+FIN-L3-01,OPE-L1-01,Finance,Operations,Neither
+FIN-L3-01,OPE-L3-02,Finance,Operations,Neither
+FIN-L3-01,OPE-L2-01,Finance,Operations,Neither
+FIN-L3-01,OPE-L3-03,Finance,Operations,Neither
+FIN-L3-01,OPE-L3-04,Finance,Operations,Neither
+FIN-L3-01,OPE-L3-05,Finance,Operations,Neither
+FIN-L3-01,PRO-L4-01,Finance,Product,Neither
+FIN-L3-01,PRO-L3-01,Finance,Product,Neither
+FIN-L3-01,PRO-L2-01,Finance,Product,Neither
+FIN-L3-01,PRO-L3-02,Finance,Product,Neither
+FIN-L3-01,PRO-L2-02,Finance,Product,Neither
+FIN-L3-01,PRO-L2-03,Finance,Product,Neither
+FIN-L3-01,PRO-L3-03,Finance,Product,Neither
+FIN-L3-01,PRO-L2-04,Finance,Product,Neither
+FIN-L3-01,SAL-L4-01,Finance,Sales,Neither
+FIN-L3-01,SAL-L2-01,Finance,Sales,Neither
+FIN-L3-01,SAL-L2-02,Finance,Sales,Neither
+FIN-L3-01,SAL-L2-03,Finance,Sales,Neither
+FIN-L3-01,SAL-L2-04,Finance,Sales,Neither
+FIN-L3-01,SAL-L2-05,Finance,Sales,Neither
+FIN-L3-01,SAL-L2-06,Finance,Sales,Not classified (a rating is missing)
+FIN-L3-01,SAL-L3-01,Finance,Sales,Neither
+FIN-L3-01,PEO-L4-01,Finance,People,Neither
+FIN-L3-01,PEO-L2-01,Finance,People,Neither
+FIN-L3-01,PEO-L3-01,Finance,People,Neither
+FIN-L3-01,PEO-L2-02,Finance,People,Neither
+FIN-L3-01,PEO-L2-03,Finance,People,Neither
+FIN-L3-01,PEO-L3-02,Finance,People,Not classified (a rating is missing)
+FIN-L3-01,PEO-L1-01,Finance,People,Neither
+FIN-L3-01,PEO-L2-04,Finance,People,Neither
+FIN-L2-01,FIN-L4-01,Finance,Finance,Formal and informal
+FIN-L2-01,FIN-L3-01,Finance,Finance,Formal and informal
+FIN-L2-01,FIN-L2-02,Finance,Finance,Formal and informal
+FIN-L2-01,FIN-L3-02,Finance,Finance,Not classified (a rating is missing)
+FIN-L2-01,FIN-L1-01,Finance,Finance,Formal and informal
+FIN-L2-01,FIN-L3-03,Finance,Finance,Formal and informal
+FIN-L2-01,FIN-L2-03,Finance,Finance,Formal and informal
+FIN-L2-01,OPE-L5-01,Finance,Operations,Neither
+FIN-L2-01,OPE-L3-01,Finance,Operations,Neither
+FIN-L2-01,OPE-L1-01,Finance,Operations,Neither
+FIN-L2-01,OPE-L3-02,Finance,Operations,Formal and informal
+FIN-L2-01,OPE-L2-01,Finance,Operations,Neither
+FIN-L2-01,OPE-L3-03,Finance,Operations,Not classified (a rating is missing)
+FIN-L2-01,OPE-L3-04,Finance,Operations,Neither
+FIN-L2-01,OPE-L3-05,Finance,Operations,Neither
+FIN-L2-01,PRO-L4-01,Finance,Product,Neither
+FIN-L2-01,PRO-L3-01,Finance,Product,Neither
+FIN-L2-01,PRO-L2-01,Finance,Product,Neither
+FIN-L2-01,PRO-L3-02,Finance,Product,Neither
+FIN-L2-01,PRO-L2-02,Finance,Product,Neither
+FIN-L2-01,PRO-L2-03,Finance,Product,Neither
+FIN-L2-01,PRO-L3-03,Finance,Product,Neither
+FIN-L2-01,PRO-L2-04,Finance,Product,Neither
+FIN-L2-01,SAL-L4-01,Finance,Sales,Neither
+FIN-L2-01,SAL-L2-01,Finance,Sales,Neither
+FIN-L2-01,SAL-L2-02,Finance,Sales,Neither
+FIN-L2-01,SAL-L2-03,Finance,Sales,Neither
+FIN-L2-01,SAL-L2-04,Finance,Sales,Neither
+FIN-L2-01,SAL-L2-05,Finance,Sales,Neither
+FIN-L2-01,SAL-L2-06,Finance,Sales,Neither
+FIN-L2-01,SAL-L3-01,Finance,Sales,Neither
+FIN-L2-01,PEO-L4-01,Finance,People,Neither
+FIN-L2-01,PEO-L2-01,Finance,People,Neither
+FIN-L2-01,PEO-L3-01,Finance,People,Neither
+FIN-L2-01,PEO-L2-02,Finance,People,Neither
+FIN-L2-01,PEO-L2-03,Finance,People,Neither
+FIN-L2-01,PEO-L3-02,Finance,People,Neither
+FIN-L2-01,PEO-L1-01,Finance,People,Neither
+FIN-L2-01,PEO-L2-04,Finance,People,Neither
+FIN-L2-02,FIN-L4-01,Finance,Finance,Formal and informal
+FIN-L2-02,FIN-L3-01,Finance,Finance,Formal and informal
+FIN-L2-02,FIN-L2-01,Finance,Finance,Formal and informal
+FIN-L2-02,FIN-L3-02,Finance,Finance,Formal and informal
+FIN-L2-02,FIN-L1-01,Finance,Finance,Formal and informal
+FIN-L2-02,FIN-L3-03,Finance,Finance,Formal and informal
+FIN-L2-02,FIN-L2-03,Finance,Finance,Formal and informal
+FIN-L2-02,OPE-L5-01,Finance,Operations,Neither
+FIN-L2-02,OPE-L3-01,Finance,Operations,Neither
+FIN-L2-02,OPE-L1-01,Finance,Operations,Neither
+FIN-L2-02,OPE-L3-02,Finance,Operations,Neither
+FIN-L2-02,OPE-L2-01,Finance,Operations,Neither
+FIN-L2-02,OPE-L3-03,Finance,Operations,Neither
+FIN-L2-02,OPE-L3-04,Finance,Operations,Neither
+FIN-L2-02,OPE-L3-05,Finance,Operations,Neither
+FIN-L2-02,PRO-L4-01,Finance,Product,Neither
+FIN-L2-02,PRO-L3-01,Finance,Product,Neither
+FIN-L2-02,PRO-L2-01,Finance,Product,Neither
+FIN-L2-02,PRO-L3-02,Finance,Product,Neither
+FIN-L2-02,PRO-L2-02,Finance,Product,Neither
+FIN-L2-02,PRO-L2-03,Finance,Product,Neither
+FIN-L2-02,PRO-L3-03,Finance,Product,Neither
+FIN-L2-02,PRO-L2-04,Finance,Product,Neither
+FIN-L2-02,SAL-L4-01,Finance,Sales,Neither
+FIN-L2-02,SAL-L2-01,Finance,Sales,Neither
+FIN-L2-02,SAL-L2-02,Finance,Sales,Neither
+FIN-L2-02,SAL-L2-03,Finance,Sales,Neither
+FIN-L2-02,SAL-L2-04,Finance,Sales,Neither
+FIN-L2-02,SAL-L2-05,Finance,Sales,Not classified (a rating is missing)
+FIN-L2-02,SAL-L2-06,Finance,Sales,Neither
+FIN-L2-02,SAL-L3-01,Finance,Sales,Neither
+FIN-L2-02,PEO-L4-01,Finance,People,Neither
+FIN-L2-02,PEO-L2-01,Finance,People,Neither
+FIN-L2-02,PEO-L3-01,Finance,People,Neither
+FIN-L2-02,PEO-L2-02,Finance,People,Neither
+FIN-L2-02,PEO-L2-03,Finance,People,Neither
+FIN-L2-02,PEO-L3-02,Finance,People,Neither
+FIN-L2-02,PEO-L1-01,Finance,People,Neither
+FIN-L2-02,PEO-L2-04,Finance,People,Neither
+FIN-L3-02,FIN-L4-01,Finance,Finance,Formal and informal
+FIN-L3-02,FIN-L3-01,Finance,Finance,Formal and informal
+FIN-L3-02,FIN-L2-01,Finance,Finance,Formal and informal
+FIN-L3-02,FIN-L2-02,Finance,Finance,Formal and informal
+FIN-L3-02,FIN-L1-01,Finance,Finance,Formal and informal
+FIN-L3-02,FIN-L3-03,Finance,Finance,Formal and informal
+FIN-L3-02,FIN-L2-03,Finance,Finance,Formal and informal
+FIN-L3-02,OPE-L5-01,Finance,Operations,Neither
+FIN-L3-02,OPE-L3-01,Finance,Operations,Neither
+FIN-L3-02,OPE-L1-01,Finance,Operations,Neither
+FIN-L3-02,OPE-L3-02,Finance,Operations,Neither
+FIN-L3-02,OPE-L2-01,Finance,Operations,Neither
+FIN-L3-02,OPE-L3-03,Finance,Operations,Neither
+FIN-L3-02,OPE-L3-04,Finance,Operations,Neither
+FIN-L3-02,OPE-L3-05,Finance,Operations,Neither
+FIN-L3-02,PRO-L4-01,Finance,Product,Neither
+FIN-L3-02,PRO-L3-01,Finance,Product,Neither
+FIN-L3-02,PRO-L2-01,Finance,Product,Neither
+FIN-L3-02,PRO-L3-02,Finance,Product,Neither
+FIN-L3-02,PRO-L2-02,Finance,Product,Neither
+FIN-L3-02,PRO-L2-03,Finance,Product,Neither
+FIN-L3-02,PRO-L3-03,Finance,Product,Neither
+FIN-L3-02,PRO-L2-04,Finance,Product,Neither
+FIN-L3-02,SAL-L4-01,Finance,Sales,Neither
+FIN-L3-02,SAL-L2-01,Finance,Sales,Neither
+FIN-L3-02,SAL-L2-02,Finance,Sales,Neither
+FIN-L3-02,SAL-L2-03,Finance,Sales,Neither
+FIN-L3-02,SAL-L2-04,Finance,Sales,Neither
+FIN-L3-02,SAL-L2-05,Finance,Sales,Neither
+FIN-L3-02,SAL-L2-06,Finance,Sales,Neither
+FIN-L3-02,SAL-L3-01,Finance,Sales,Neither
+FIN-L3-02,PEO-L4-01,Finance,People,Neither
+FIN-L3-02,PEO-L2-01,Finance,People,Neither
+FIN-L3-02,PEO-L3-01,Finance,People,Neither
+FIN-L3-02,PEO-L2-02,Finance,People,Neither
+FIN-L3-02,PEO-L2-03,Finance,People,Neither
+FIN-L3-02,PEO-L3-02,Finance,People,Neither
+FIN-L3-02,PEO-L1-01,Finance,People,Neither
+FIN-L3-02,PEO-L2-04,Finance,People,Neither
+FIN-L1-01,FIN-L4-01,Finance,Finance,Formal and informal
+FIN-L1-01,FIN-L3-01,Finance,Finance,Not classified (a rating is missing)
+FIN-L1-01,FIN-L2-01,Finance,Finance,Formal and informal
+FIN-L1-01,FIN-L2-02,Finance,Finance,Formal and informal
+FIN-L1-01,FIN-L3-02,Finance,Finance,Formal and informal
+FIN-L1-01,FIN-L3-03,Finance,Finance,Formal and informal
+FIN-L1-01,FIN-L2-03,Finance,Finance,Formal and informal
+FIN-L1-01,OPE-L5-01,Finance,Operations,Neither
+FIN-L1-01,OPE-L3-01,Finance,Operations,Neither
+FIN-L1-01,OPE-L1-01,Finance,Operations,Neither
+FIN-L1-01,OPE-L3-02,Finance,Operations,Not classified (a rating is missing)
+FIN-L1-01,OPE-L2-01,Finance,Operations,Neither
+FIN-L1-01,OPE-L3-03,Finance,Operations,Neither
+FIN-L1-01,OPE-L3-04,Finance,Operations,Neither
+FIN-L1-01,OPE-L3-05,Finance,Operations,Neither
+FIN-L1-01,PRO-L4-01,Finance,Product,Neither
+FIN-L1-01,PRO-L3-01,Finance,Product,Neither
+FIN-L1-01,PRO-L2-01,Finance,Product,Neither
+FIN-L1-01,PRO-L3-02,Finance,Product,Neither
+FIN-L1-01,PRO-L2-02,Finance,Product,Neither
+FIN-L1-01,PRO-L2-03,Finance,Product,Neither
+FIN-L1-01,PRO-L3-03,Finance,Product,Neither
+FIN-L1-01,PRO-L2-04,Finance,Product,Neither
+FIN-L1-01,SAL-L4-01,Finance,Sales,Neither
+FIN-L1-01,SAL-L2-01,Finance,Sales,Neither
+FIN-L1-01,SAL-L2-02,Finance,Sales,Neither
+FIN-L1-01,SAL-L2-03,Finance,Sales,Neither
+FIN-L1-01,SAL-L2-04,Finance,Sales,Neither
+FIN-L1-01,SAL-L2-05,Finance,Sales,Neither
+FIN-L1-01,SAL-L2-06,Finance,Sales,Neither
+FIN-L1-01,SAL-L3-01,Finance,Sales,Neither
+FIN-L1-01,PEO-L4-01,Finance,People,Neither
+FIN-L1-01,PEO-L2-01,Finance,People,Neither
+FIN-L1-01,PEO-L3-01,Finance,People,Neither
+FIN-L1-01,PEO-L2-02,Finance,People,Neither
+FIN-L1-01,PEO-L2-03,Finance,People,Neither
+FIN-L1-01,PEO-L3-02,Finance,People,Neither
+FIN-L1-01,PEO-L1-01,Finance,People,Neither
+FIN-L1-01,PEO-L2-04,Finance,People,Neither
+FIN-L3-03,FIN-L4-01,Finance,Finance,Formal and informal
+FIN-L3-03,FIN-L3-01,Finance,Finance,Formal and informal
+FIN-L3-03,FIN-L2-01,Finance,Finance,Formal and informal
+FIN-L3-03,FIN-L2-02,Finance,Finance,Formal and informal
+FIN-L3-03,FIN-L3-02,Finance,Finance,Formal and informal
+FIN-L3-03,FIN-L1-01,Finance,Finance,Formal and informal
+FIN-L3-03,FIN-L2-03,Finance,Finance,Formal and informal
+FIN-L3-03,OPE-L5-01,Finance,Operations,Neither
+FIN-L3-03,OPE-L3-01,Finance,Operations,Neither
+FIN-L3-03,OPE-L1-01,Finance,Operations,Neither
+FIN-L3-03,OPE-L3-02,Finance,Operations,Neither
+FIN-L3-03,OPE-L2-01,Finance,Operations,Neither
+FIN-L3-03,OPE-L3-03,Finance,Operations,Neither
+FIN-L3-03,OPE-L3-04,Finance,Operations,Neither
+FIN-L3-03,OPE-L3-05,Finance,Operations,Neither
+FIN-L3-03,PRO-L4-01,Finance,Product,Neither
+FIN-L3-03,PRO-L3-01,Finance,Product,Neither
+FIN-L3-03,PRO-L2-01,Finance,Product,Neither
+FIN-L3-03,PRO-L3-02,Finance,Product,Neither
+FIN-L3-03,PRO-L2-02,Finance,Product,Neither
+FIN-L3-03,PRO-L2-03,Finance,Product,Neither
+FIN-L3-03,PRO-L3-03,Finance,Product,Neither
+FIN-L3-03,PRO-L2-04,Finance,Product,Neither
+FIN-L3-03,SAL-L4-01,Finance,Sales,Neither
+FIN-L3-03,SAL-L2-01,Finance,Sales,Neither
+FIN-L3-03,SAL-L2-02,Finance,Sales,Neither
+FIN-L3-03,SAL-L2-03,Finance,Sales,Neither
+FIN-L3-03,SAL-L2-04,Finance,Sales,Neither
+FIN-L3-03,SAL-L2-05,Finance,Sales,Neither
+FIN-L3-03,SAL-L2-06,Finance,Sales,Neither
+FIN-L3-03,SAL-L3-01,Finance,Sales,Neither
+FIN-L3-03,PEO-L4-01,Finance,People,Neither
+FIN-L3-03,PEO-L2-01,Finance,People,Neither
+FIN-L3-03,PEO-L3-01,Finance,People,Neither
+FIN-L3-03,PEO-L2-02,Finance,People,Neither
+FIN-L3-03,PEO-L2-03,Finance,People,Neither
+FIN-L3-03,PEO-L3-02,Finance,People,Neither
+FIN-L3-03,PEO-L1-01,Finance,People,Neither
+FIN-L3-03,PEO-L2-04,Finance,People,Neither
+FIN-L2-03,FIN-L4-01,Finance,Finance,Formal and informal
+FIN-L2-03,FIN-L3-01,Finance,Finance,Formal and informal
+FIN-L2-03,FIN-L2-01,Finance,Finance,Formal and informal
+FIN-L2-03,FIN-L2-02,Finance,Finance,Formal and informal
+FIN-L2-03,FIN-L3-02,Finance,Finance,Formal and informal
+FIN-L2-03,FIN-L1-01,Finance,Finance,Formal and informal
+FIN-L2-03,FIN-L3-03,Finance,Finance,Not classified (a rating is missing)
+FIN-L2-03,OPE-L5-01,Finance,Operations,Neither
+FIN-L2-03,OPE-L3-01,Finance,Operations,Not classified (a rating is missing)
+FIN-L2-03,OPE-L1-01,Finance,Operations,Neither
+FIN-L2-03,OPE-L3-02,Finance,Operations,Neither
+FIN-L2-03,OPE-L2-01,Finance,Operations,Neither
+FIN-L2-03,OPE-L3-03,Finance,Operations,Neither
+FIN-L2-03,OPE-L3-04,Finance,Operations,Not classified (a rating is missing)
+FIN-L2-03,OPE-L3-05,Finance,Operations,Neither
+FIN-L2-03,PRO-L4-01,Finance,Product,Neither
+FIN-L2-03,PRO-L3-01,Finance,Product,Neither
+FIN-L2-03,PRO-L2-01,Finance,Product,Neither
+FIN-L2-03,PRO-L3-02,Finance,Product,Neither
+FIN-L2-03,PRO-L2-02,Finance,Product,Neither
+FIN-L2-03,PRO-L2-03,Finance,Product,Neither
+FIN-L2-03,PRO-L3-03,Finance,Product,Neither
+FIN-L2-03,PRO-L2-04,Finance,Product,Neither
+FIN-L2-03,SAL-L4-01,Finance,Sales,Neither
+FIN-L2-03,SAL-L2-01,Finance,Sales,Neither
+FIN-L2-03,SAL-L2-02,Finance,Sales,Neither
+FIN-L2-03,SAL-L2-03,Finance,Sales,Neither
+FIN-L2-03,SAL-L2-04,Finance,Sales,Neither
+FIN-L2-03,SAL-L2-05,Finance,Sales,Neither
+FIN-L2-03,SAL-L2-06,Finance,Sales,Neither
+FIN-L2-03,SAL-L3-01,Finance,Sales,Neither
+FIN-L2-03,PEO-L4-01,Finance,People,Neither
+FIN-L2-03,PEO-L2-01,Finance,People,Neither
+FIN-L2-03,PEO-L3-01,Finance,People,Neither
+FIN-L2-03,PEO-L2-02,Finance,People,Not classified (a rating is missing)
+FIN-L2-03,PEO-L2-03,Finance,People,Neither
+FIN-L2-03,PEO-L3-02,Finance,People,Neither
+FIN-L2-03,PEO-L1-01,Finance,People,Neither
+FIN-L2-03,PEO-L2-04,Finance,People,Neither
+OPE-L5-01,FIN-L4-01,Operations,Finance,Formal only
+OPE-L5-01,FIN-L3-01,Operations,Finance,Neither
+OPE-L5-01,FIN-L2-01,Operations,Finance,Neither
+OPE-L5-01,FIN-L2-02,Operations,Finance,Neither
+OPE-L5-01,FIN-L3-02,Operations,Finance,Neither
+OPE-L5-01,FIN-L1-01,Operations,Finance,Neither
+OPE-L5-01,FIN-L3-03,Operations,Finance,Neither
+OPE-L5-01,FIN-L2-03,Operations,Finance,Neither
+OPE-L5-01,OPE-L3-01,Operations,Operations,Formal and informal
+OPE-L5-01,OPE-L1-01,Operations,Operations,Formal and informal
+OPE-L5-01,OPE-L3-02,Operations,Operations,Not classified (a rating is missing)
+OPE-L5-01,OPE-L2-01,Operations,Operations,Formal and informal
+OPE-L5-01,OPE-L3-03,Operations,Operations,Formal and informal
+OPE-L5-01,OPE-L3-04,Operations,Operations,Formal and informal
+OPE-L5-01,OPE-L3-05,Operations,Operations,Not classified (a rating is missing)
+OPE-L5-01,PRO-L4-01,Operations,Product,Not classified (a rating is missing)
+OPE-L5-01,PRO-L3-01,Operations,Product,Neither
+OPE-L5-01,PRO-L2-01,Operations,Product,Formal and informal
+OPE-L5-01,PRO-L3-02,Operations,Product,Informal only
+OPE-L5-01,PRO-L2-02,Operations,Product,Formal and informal
+OPE-L5-01,PRO-L2-03,Operations,Product,Informal only
+OPE-L5-01,PRO-L3-03,Operations,Product,Neither
+OPE-L5-01,PRO-L2-04,Operations,Product,Informal only
+OPE-L5-01,SAL-L4-01,Operations,Sales,Formal and informal
+OPE-L5-01,SAL-L2-01,Operations,Sales,Neither
+OPE-L5-01,SAL-L2-02,Operations,Sales,Formal and informal
+OPE-L5-01,SAL-L2-03,Operations,Sales,Formal and informal
+OPE-L5-01,SAL-L2-04,Operations,Sales,Not classified (a rating is missing)
+OPE-L5-01,SAL-L2-05,Operations,Sales,Neither
+OPE-L5-01,SAL-L2-06,Operations,Sales,Neither
+OPE-L5-01,SAL-L3-01,Operations,Sales,Informal only
+OPE-L5-01,PEO-L4-01,Operations,People,Formal and informal
+OPE-L5-01,PEO-L2-01,Operations,People,Neither
+OPE-L5-01,PEO-L3-01,Operations,People,Neither
+OPE-L5-01,PEO-L2-02,Operations,People,Neither
+OPE-L5-01,PEO-L2-03,Operations,People,Informal only
+OPE-L5-01,PEO-L3-02,Operations,People,Informal only
+OPE-L5-01,PEO-L1-01,Operations,People,Neither
+OPE-L5-01,PEO-L2-04,Operations,People,Informal only
+OPE-L3-01,FIN-L4-01,Operations,Finance,Neither
+OPE-L3-01,FIN-L3-01,Operations,Finance,Neither
+OPE-L3-01,FIN-L2-01,Operations,Finance,Neither
+OPE-L3-01,FIN-L2-02,Operations,Finance,Neither
+OPE-L3-01,FIN-L3-02,Operations,Finance,Neither
+OPE-L3-01,FIN-L1-01,Operations,Finance,Neither
+OPE-L3-01,FIN-L3-03,Operations,Finance,Neither
+OPE-L3-01,FIN-L2-03,Operations,Finance,Neither
+OPE-L3-01,OPE-L5-01,Operations,Operations,Formal and informal
+OPE-L3-01,OPE-L1-01,Operations,Operations,Formal and informal
+OPE-L3-01,OPE-L3-02,Operations,Operations,Formal and informal
+OPE-L3-01,OPE-L2-01,Operations,Operations,Formal and informal
+OPE-L3-01,OPE-L3-03,Operations,Operations,Formal and informal
+OPE-L3-01,OPE-L3-04,Operations,Operations,Formal and informal
+OPE-L3-01,OPE-L3-05,Operations,Operations,Formal and informal
+OPE-L3-01,PRO-L4-01,Operations,Product,Formal only
+OPE-L3-01,PRO-L3-01,Operations,Product,Informal only
+OPE-L3-01,PRO-L2-01,Operations,Product,Neither
+OPE-L3-01,PRO-L3-02,Operations,Product,Neither
+OPE-L3-01,PRO-L2-02,Operations,Product,Informal only
+OPE-L3-01,PRO-L2-03,Operations,Product,Neither
+OPE-L3-01,PRO-L3-03,Operations,Product,Informal only
+OPE-L3-01,PRO-L2-04,Operations,Product,Informal only
+OPE-L3-01,SAL-L4-01,Operations,Sales,Formal and informal
+OPE-L3-01,SAL-L2-01,Operations,Sales,Neither
+OPE-L3-01,SAL-L2-02,Operations,Sales,Informal only
+OPE-L3-01,SAL-L2-03,Operations,Sales,Neither
+OPE-L3-01,SAL-L2-04,Operations,Sales,Informal only
+OPE-L3-01,SAL-L2-05,Operations,Sales,Formal and informal
+OPE-L3-01,SAL-L2-06,Operations,Sales,Formal only
+OPE-L3-01,SAL-L3-01,Operations,Sales,Formal and informal
+OPE-L3-01,PEO-L4-01,Operations,People,Neither
+OPE-L3-01,PEO-L2-01,Operations,People,Neither
+OPE-L3-01,PEO-L3-01,Operations,People,Neither
+OPE-L3-01,PEO-L2-02,Operations,People,Neither
+OPE-L3-01,PEO-L2-03,Operations,People,Neither
+OPE-L3-01,PEO-L3-02,Operations,People,Informal only
+OPE-L3-01,PEO-L1-01,Operations,People,Neither
+OPE-L3-01,PEO-L2-04,Operations,People,Formal and informal
+OPE-L1-01,FIN-L4-01,Operations,Finance,Neither
+OPE-L1-01,FIN-L3-01,Operations,Finance,Neither
+OPE-L1-01,FIN-L2-01,Operations,Finance,Neither
+OPE-L1-01,FIN-L2-02,Operations,Finance,Neither
+OPE-L1-01,FIN-L3-02,Operations,Finance,Neither
+OPE-L1-01,FIN-L1-01,Operations,Finance,Neither
+OPE-L1-01,FIN-L3-03,Operations,Finance,Neither
+OPE-L1-01,FIN-L2-03,Operations,Finance,Not classified (a rating is missing)
+OPE-L1-01,OPE-L5-01,Operations,Operations,Formal and informal
+OPE-L1-01,OPE-L3-01,Operations,Operations,Formal and informal
+OPE-L1-01,OPE-L3-02,Operations,Operations,Formal and informal
+OPE-L1-01,OPE-L2-01,Operations,Operations,Formal and informal
+OPE-L1-01,OPE-L3-03,Operations,Operations,Formal and informal
+OPE-L1-01,OPE-L3-04,Operations,Operations,Formal and informal
+OPE-L1-01,OPE-L3-05,Operations,Operations,Formal and informal
+OPE-L1-01,PRO-L4-01,Operations,Product,Neither
+OPE-L1-01,PRO-L3-01,Operations,Product,Formal only
+OPE-L1-01,PRO-L2-01,Operations,Product,Neither
+OPE-L1-01,PRO-L3-02,Operations,Product,Neither
+OPE-L1-01,PRO-L2-02,Operations,Product,Neither
+OPE-L1-01,PRO-L2-03,Operations,Product,Neither
+OPE-L1-01,PRO-L3-03,Operations,Product,Informal only
+OPE-L1-01,PRO-L2-04,Operations,Product,Neither
+OPE-L1-01,SAL-L4-01,Operations,Sales,Neither
+OPE-L1-01,SAL-L2-01,Operations,Sales,Neither
+OPE-L1-01,SAL-L2-02,Operations,Sales,Neither
+OPE-L1-01,SAL-L2-03,Operations,Sales,Neither
+OPE-L1-01,SAL-L2-04,Operations,Sales,Informal only
+OPE-L1-01,SAL-L2-05,Operations,Sales,Informal only
+OPE-L1-01,SAL-L2-06,Operations,Sales,Not classified (a rating is missing)
+OPE-L1-01,SAL-L3-01,Operations,Sales,Neither
+OPE-L1-01,PEO-L4-01,Operations,People,Neither
+OPE-L1-01,PEO-L2-01,Operations,People,Neither
+OPE-L1-01,PEO-L3-01,Operations,People,Neither
+OPE-L1-01,PEO-L2-02,Operations,People,Neither
+OPE-L1-01,PEO-L2-03,Operations,People,Neither
+OPE-L1-01,PEO-L3-02,Operations,People,Neither
+OPE-L1-01,PEO-L1-01,Operations,People,Neither
+OPE-L1-01,PEO-L2-04,Operations,People,Neither
+OPE-L3-02,FIN-L4-01,Operations,Finance,Neither
+OPE-L3-02,FIN-L3-01,Operations,Finance,Neither
+OPE-L3-02,FIN-L2-01,Operations,Finance,Formal and informal
+OPE-L3-02,FIN-L2-02,Operations,Finance,Neither
+OPE-L3-02,FIN-L3-02,Operations,Finance,Neither
+OPE-L3-02,FIN-L1-01,Operations,Finance,Formal and informal
+OPE-L3-02,FIN-L3-03,Operations,Finance,Neither
+OPE-L3-02,FIN-L2-03,Operations,Finance,Neither
+OPE-L3-02,OPE-L5-01,Operations,Operations,Formal and informal
+OPE-L3-02,OPE-L3-01,Operations,Operations,Formal and informal
+OPE-L3-02,OPE-L1-01,Operations,Operations,Formal and informal
+OPE-L3-02,OPE-L2-01,Operations,Operations,Formal and informal
+OPE-L3-02,OPE-L3-03,Operations,Operations,Formal and informal
+OPE-L3-02,OPE-L3-04,Operations,Operations,Formal and informal
+OPE-L3-02,OPE-L3-05,Operations,Operations,Formal and informal
+OPE-L3-02,PRO-L4-01,Operations,Product,Neither
+OPE-L3-02,PRO-L3-01,Operations,Product,Neither
+OPE-L3-02,PRO-L2-01,Operations,Product,Neither
+OPE-L3-02,PRO-L3-02,Operations,Product,Formal and informal
+OPE-L3-02,PRO-L2-02,Operations,Product,Formal only
+OPE-L3-02,PRO-L2-03,Operations,Product,Neither
+OPE-L3-02,PRO-L3-03,Operations,Product,Formal and informal
+OPE-L3-02,PRO-L2-04,Operations,Product,Formal and informal
+OPE-L3-02,SAL-L4-01,Operations,Sales,Neither
+OPE-L3-02,SAL-L2-01,Operations,Sales,Not classified (a rating is missing)
+OPE-L3-02,SAL-L2-02,Operations,Sales,Neither
+OPE-L3-02,SAL-L2-03,Operations,Sales,Formal and informal
+OPE-L3-02,SAL-L2-04,Operations,Sales,Formal and informal
+OPE-L3-02,SAL-L2-05,Operations,Sales,Neither
+OPE-L3-02,SAL-L2-06,Operations,Sales,Neither
+OPE-L3-02,SAL-L3-01,Operations,Sales,Neither
+OPE-L3-02,PEO-L4-01,Operations,People,Neither
+OPE-L3-02,PEO-L2-01,Operations,People,Neither
+OPE-L3-02,PEO-L3-01,Operations,People,Formal and informal
+OPE-L3-02,PEO-L2-02,Operations,People,Neither
+OPE-L3-02,PEO-L2-03,Operations,People,Neither
+OPE-L3-02,PEO-L3-02,Operations,People,Formal and informal
+OPE-L3-02,PEO-L1-01,Operations,People,Neither
+OPE-L3-02,PEO-L2-04,Operations,People,Neither
+OPE-L2-01,FIN-L4-01,Operations,Finance,Neither
+OPE-L2-01,FIN-L3-01,Operations,Finance,Neither
+OPE-L2-01,FIN-L2-01,Operations,Finance,Neither
+OPE-L2-01,FIN-L2-02,Operations,Finance,Neither
+OPE-L2-01,FIN-L3-02,Operations,Finance,Neither
+OPE-L2-01,FIN-L1-01,Operations,Finance,Neither
+OPE-L2-01,FIN-L3-03,Operations,Finance,Neither
+OPE-L2-01,FIN-L2-03,Operations,Finance,Neither
+OPE-L2-01,OPE-L5-01,Operations,Operations,Formal and informal
+OPE-L2-01,OPE-L3-01,Operations,Operations,Formal and informal
+OPE-L2-01,OPE-L1-01,Operations,Operations,Formal and informal
+OPE-L2-01,OPE-L3-02,Operations,Operations,Formal and informal
+OPE-L2-01,OPE-L3-03,Operations,Operations,Formal and informal
+OPE-L2-01,OPE-L3-04,Operations,Operations,Formal and informal
+OPE-L2-01,OPE-L3-05,Operations,Operations,Formal and informal
+OPE-L2-01,PRO-L4-01,Operations,Product,Neither
+OPE-L2-01,PRO-L3-01,Operations,Product,Neither
+OPE-L2-01,PRO-L2-01,Operations,Product,Formal and informal
+OPE-L2-01,PRO-L3-02,Operations,Product,Formal and informal
+OPE-L2-01,PRO-L2-02,Operations,Product,Neither
+OPE-L2-01,PRO-L2-03,Operations,Product,Neither
+OPE-L2-01,PRO-L3-03,Operations,Product,Formal and informal
+OPE-L2-01,PRO-L2-04,Operations,Product,Neither
+OPE-L2-01,SAL-L4-01,Operations,Sales,Neither
+OPE-L2-01,SAL-L2-01,Operations,Sales,Formal and informal
+OPE-L2-01,SAL-L2-02,Operations,Sales,Neither
+OPE-L2-01,SAL-L2-03,Operations,Sales,Informal only
+OPE-L2-01,SAL-L2-04,Operations,Sales,Neither
+OPE-L2-01,SAL-L2-05,Operations,Sales,Formal and informal
+OPE-L2-01,SAL-L2-06,Operations,Sales,Neither
+OPE-L2-01,SAL-L3-01,Operations,Sales,Neither
+OPE-L2-01,PEO-L4-01,Operations,People,Formal only
+OPE-L2-01,PEO-L2-01,Operations,People,Not classified (a rating is missing)
+OPE-L2-01,PEO-L3-01,Operations,People,Neither
+OPE-L2-01,PEO-L2-02,Operations,People,Neither
+OPE-L2-01,PEO-L2-03,Operations,People,Formal and informal
+OPE-L2-01,PEO-L3-02,Operations,People,Neither
+OPE-L2-01,PEO-L1-01,Operations,People,Neither
+OPE-L2-01,PEO-L2-04,Operations,People,Formal and informal
+OPE-L3-03,FIN-L4-01,Operations,Finance,Neither
+OPE-L3-03,FIN-L3-01,Operations,Finance,Neither
+OPE-L3-03,FIN-L2-01,Operations,Finance,Neither
+OPE-L3-03,FIN-L2-02,Operations,Finance,Neither
+OPE-L3-03,FIN-L3-02,Operations,Finance,Neither
+OPE-L3-03,FIN-L1-01,Operations,Finance,Neither
+OPE-L3-03,FIN-L3-03,Operations,Finance,Neither
+OPE-L3-03,FIN-L2-03,Operations,Finance,Neither
+OPE-L3-03,OPE-L5-01,Operations,Operations,Formal and informal
+OPE-L3-03,OPE-L3-01,Operations,Operations,Formal and informal
+OPE-L3-03,OPE-L1-01,Operations,Operations,Formal and informal
+OPE-L3-03,OPE-L3-02,Operations,Operations,Formal and informal
+OPE-L3-03,OPE-L2-01,Operations,Operations,Formal and informal
+OPE-L3-03,OPE-L3-04,Operations,Operations,Formal and informal
+OPE-L3-03,OPE-L3-05,Operations,Operations,Formal and informal
+OPE-L3-03,PRO-L4-01,Operations,Product,Neither
+OPE-L3-03,PRO-L3-01,Operations,Product,Not classified (a rating is missing)
+OPE-L3-03,PRO-L2-01,Operations,Product,Neither
+OPE-L3-03,PRO-L3-02,Operations,Product,Neither
+OPE-L3-03,PRO-L2-02,Operations,Product,Formal and informal
+OPE-L3-03,PRO-L2-03,Operations,Product,Informal only
+OPE-L3-03,PRO-L3-03,Operations,Product,Neither
+OPE-L3-03,PRO-L2-04,Operations,Product,Informal only
+OPE-L3-03,SAL-L4-01,Operations,Sales,Neither
+OPE-L3-03,SAL-L2-01,Operations,Sales,Informal only
+OPE-L3-03,SAL-L2-02,Operations,Sales,Neither
+OPE-L3-03,SAL-L2-03,Operations,Sales,Neither
+OPE-L3-03,SAL-L2-04,Operations,Sales,Neither
+OPE-L3-03,SAL-L2-05,Operations,Sales,Informal only
+OPE-L3-03,SAL-L2-06,Operations,Sales,Neither
+OPE-L3-03,SAL-L3-01,Operations,Sales,Formal only
+OPE-L3-03,PEO-L4-01,Operations,People,Not classified (a rating is missing)
+OPE-L3-03,PEO-L2-01,Operations,People,Neither
+OPE-L3-03,PEO-L3-01,Operations,People,Informal only
+OPE-L3-03,PEO-L2-02,Operations,People,Formal only
+OPE-L3-03,PEO-L2-03,Operations,People,Neither
+OPE-L3-03,PEO-L3-02,Operations,People,Neither
+OPE-L3-03,PEO-L1-01,Operations,People,Informal only
+OPE-L3-03,PEO-L2-04,Operations,People,Formal and informal
+OPE-L3-04,FIN-L4-01,Operations,Finance,Neither
+OPE-L3-04,FIN-L3-01,Operations,Finance,Not classified (a rating is missing)
+OPE-L3-04,FIN-L2-01,Operations,Finance,Not classified (a rating is missing)
+OPE-L3-04,FIN-L2-02,Operations,Finance,Not classified (a rating is missing)
+OPE-L3-04,FIN-L3-02,Operations,Finance,Not classified (a rating is missing)
+OPE-L3-04,FIN-L1-01,Operations,Finance,Neither
+OPE-L3-04,FIN-L3-03,Operations,Finance,Not classified (a rating is missing)
+OPE-L3-04,FIN-L2-03,Operations,Finance,Neither
+OPE-L3-04,OPE-L5-01,Operations,Operations,Not classified (a rating is missing)
+OPE-L3-04,OPE-L3-01,Operations,Operations,Formal and informal
+OPE-L3-04,OPE-L1-01,Operations,Operations,Not classified (a rating is missing)
+OPE-L3-04,OPE-L3-02,Operations,Operations,Not classified (a rating is missing)
+OPE-L3-04,OPE-L2-01,Operations,Operations,Not classified (a rating is missing)
+OPE-L3-04,OPE-L3-03,Operations,Operations,Formal and informal
+OPE-L3-04,OPE-L3-05,Operations,Operations,Not classified (a rating is missing)
+OPE-L3-04,PRO-L4-01,Operations,Product,Not classified (a rating is missing)
+OPE-L3-04,PRO-L3-01,Operations,Product,Not classified (a rating is missing)
+OPE-L3-04,PRO-L2-01,Operations,Product,Not classified (a rating is missing)
+OPE-L3-04,PRO-L3-02,Operations,Product,Not classified (a rating is missing)
+OPE-L3-04,PRO-L2-02,Operations,Product,Not classified (a rating is missing)
+OPE-L3-04,PRO-L2-03,Operations,Product,Not classified (a rating is missing)
+OPE-L3-04,PRO-L3-03,Operations,Product,Not classified (a rating is missing)
+OPE-L3-04,PRO-L2-04,Operations,Product,Not classified (a rating is missing)
+OPE-L3-04,SAL-L4-01,Operations,Sales,Not classified (a rating is missing)
+OPE-L3-04,SAL-L2-01,Operations,Sales,Not classified (a rating is missing)
+OPE-L3-04,SAL-L2-02,Operations,Sales,Not classified (a rating is missing)
+OPE-L3-04,SAL-L2-03,Operations,Sales,Neither
+OPE-L3-04,SAL-L2-04,Operations,Sales,Not classified (a rating is missing)
+OPE-L3-04,SAL-L2-05,Operations,Sales,Not classified (a rating is missing)
+OPE-L3-04,SAL-L2-06,Operations,Sales,Neither
+OPE-L3-04,SAL-L3-01,Operations,Sales,Neither
+OPE-L3-04,PEO-L4-01,Operations,People,Not classified (a rating is missing)
+OPE-L3-04,PEO-L2-01,Operations,People,Not classified (a rating is missing)
+OPE-L3-04,PEO-L3-01,Operations,People,Not classified (a rating is missing)
+OPE-L3-04,PEO-L2-02,Operations,People,Formal and informal
+OPE-L3-04,PEO-L2-03,Operations,People,Neither
+OPE-L3-04,PEO-L3-02,Operations,People,Not classified (a rating is missing)
+OPE-L3-04,PEO-L1-01,Operations,People,Not classified (a rating is missing)
+OPE-L3-04,PEO-L2-04,Operations,People,Not classified (a rating is missing)
+OPE-L3-05,FIN-L4-01,Operations,Finance,Neither
+OPE-L3-05,FIN-L3-01,Operations,Finance,Not classified (a rating is missing)
+OPE-L3-05,FIN-L2-01,Operations,Finance,Neither
+OPE-L3-05,FIN-L2-02,Operations,Finance,Neither
+OPE-L3-05,FIN-L3-02,Operations,Finance,Not classified (a rating is missing)
+OPE-L3-05,FIN-L1-01,Operations,Finance,Neither
+OPE-L3-05,FIN-L3-03,Operations,Finance,Neither
+OPE-L3-05,FIN-L2-03,Operations,Finance,Neither
+OPE-L3-05,OPE-L5-01,Operations,Operations,Formal and informal
+OPE-L3-05,OPE-L3-01,Operations,Operations,Formal and informal
+OPE-L3-05,OPE-L1-01,Operations,Operations,Formal and informal
+OPE-L3-05,OPE-L3-02,Operations,Operations,Formal and informal
+OPE-L3-05,OPE-L2-01,Operations,Operations,Formal and informal
+OPE-L3-05,OPE-L3-03,Operations,Operations,Formal and informal
+OPE-L3-05,OPE-L3-04,Operations,Operations,Formal and informal
+OPE-L3-05,PRO-L4-01,Operations,Product,Neither
+OPE-L3-05,PRO-L3-01,Operations,Product,Formal and informal
+OPE-L3-05,PRO-L2-01,Operations,Product,Neither
+OPE-L3-05,PRO-L3-02,Operations,Product,Neither
+OPE-L3-05,PRO-L2-02,Operations,Product,Neither
+OPE-L3-05,PRO-L2-03,Operations,Product,Neither
+OPE-L3-05,PRO-L3-03,Operations,Product,Neither
+OPE-L3-05,PRO-L2-04,Operations,Product,Neither
+OPE-L3-05,SAL-L4-01,Operations,Sales,Formal and informal
+OPE-L3-05,SAL-L2-01,Operations,Sales,Neither
+OPE-L3-05,SAL-L2-02,Operations,Sales,Neither
+OPE-L3-05,SAL-L2-03,Operations,Sales,Neither
+OPE-L3-05,SAL-L2-04,Operations,Sales,Formal and informal
+OPE-L3-05,SAL-L2-05,Operations,Sales,Neither
+OPE-L3-05,SAL-L2-06,Operations,Sales,Neither
+OPE-L3-05,SAL-L3-01,Operations,Sales,Neither
+OPE-L3-05,PEO-L4-01,Operations,People,Neither
+OPE-L3-05,PEO-L2-01,Operations,People,Formal and informal
+OPE-L3-05,PEO-L3-01,Operations,People,Neither
+OPE-L3-05,PEO-L2-02,Operations,People,Neither
+OPE-L3-05,PEO-L2-03,Operations,People,Neither
+OPE-L3-05,PEO-L3-02,Operations,People,Informal only
+OPE-L3-05,PEO-L1-01,Operations,People,Informal only
+OPE-L3-05,PEO-L2-04,Operations,People,Neither
+PRO-L4-01,FIN-L4-01,Product,Finance,Neither
+PRO-L4-01,FIN-L3-01,Product,Finance,Neither
+PRO-L4-01,FIN-L2-01,Product,Finance,Neither
+PRO-L4-01,FIN-L2-02,Product,Finance,Neither
+PRO-L4-01,FIN-L3-02,Product,Finance,Neither
+PRO-L4-01,FIN-L1-01,Product,Finance,Neither
+PRO-L4-01,FIN-L3-03,Product,Finance,Neither
+PRO-L4-01,FIN-L2-03,Product,Finance,Neither
+PRO-L4-01,OPE-L5-01,Product,Operations,Formal and informal
+PRO-L4-01,OPE-L3-01,Product,Operations,Not classified (a rating is missing)
+PRO-L4-01,OPE-L1-01,Product,Operations,Neither
+PRO-L4-01,OPE-L3-02,Product,Operations,Neither
+PRO-L4-01,OPE-L2-01,Product,Operations,Informal only
+PRO-L4-01,OPE-L3-03,Product,Operations,Neither
+PRO-L4-01,OPE-L3-04,Product,Operations,Formal and informal
+PRO-L4-01,OPE-L3-05,Product,Operations,Neither
+PRO-L4-01,PRO-L3-01,Product,Product,Formal and informal
+PRO-L4-01,PRO-L2-01,Product,Product,Formal and informal
+PRO-L4-01,PRO-L3-02,Product,Product,Formal and informal
+PRO-L4-01,PRO-L2-02,Product,Product,Formal and informal
+PRO-L4-01,PRO-L2-03,Product,Product,Formal and informal
+PRO-L4-01,PRO-L3-03,Product,Product,Formal and informal
+PRO-L4-01,PRO-L2-04,Product,Product,Formal and informal
+PRO-L4-01,SAL-L4-01,Product,Sales,Formal and informal
+PRO-L4-01,SAL-L2-01,Product,Sales,Formal and informal
+PRO-L4-01,SAL-L2-02,Product,Sales,Formal only
+PRO-L4-01,SAL-L2-03,Product,Sales,Formal and informal
+PRO-L4-01,SAL-L2-04,Product,Sales,Formal only
+PRO-L4-01,SAL-L2-05,Product,Sales,Formal only
+PRO-L4-01,SAL-L2-06,Product,Sales,Formal and informal
+PRO-L4-01,SAL-L3-01,Product,Sales,Formal only
+PRO-L4-01,PEO-L4-01,Product,People,Formal and informal
+PRO-L4-01,PEO-L2-01,Product,People,Neither
+PRO-L4-01,PEO-L3-01,Product,People,Formal and informal
+PRO-L4-01,PEO-L2-02,Product,People,Neither
+PRO-L4-01,PEO-L2-03,Product,People,Neither
+PRO-L4-01,PEO-L3-02,Product,People,Neither
+PRO-L4-01,PEO-L1-01,Product,People,Neither
+PRO-L4-01,PEO-L2-04,Product,People,Formal and informal
+PRO-L3-01,FIN-L4-01,Product,Finance,Neither
+PRO-L3-01,FIN-L3-01,Product,Finance,Neither
+PRO-L3-01,FIN-L2-01,Product,Finance,Neither
+PRO-L3-01,FIN-L2-02,Product,Finance,Neither
+PRO-L3-01,FIN-L3-02,Product,Finance,Neither
+PRO-L3-01,FIN-L1-01,Product,Finance,Neither
+PRO-L3-01,FIN-L3-03,Product,Finance,Neither
+PRO-L3-01,FIN-L2-03,Product,Finance,Neither
+PRO-L3-01,OPE-L5-01,Product,Operations,Neither
+PRO-L3-01,OPE-L3-01,Product,Operations,Neither
+PRO-L3-01,OPE-L1-01,Product,Operations,Neither
+PRO-L3-01,OPE-L3-02,Product,Operations,Neither
+PRO-L3-01,OPE-L2-01,Product,Operations,Neither
+PRO-L3-01,OPE-L3-03,Product,Operations,Neither
+PRO-L3-01,OPE-L3-04,Product,Operations,Not classified (a rating is missing)
+PRO-L3-01,OPE-L3-05,Product,Operations,Neither
+PRO-L3-01,PRO-L4-01,Product,Product,Formal and informal
+PRO-L3-01,PRO-L2-01,Product,Product,Formal and informal
+PRO-L3-01,PRO-L3-02,Product,Product,Formal and informal
+PRO-L3-01,PRO-L2-02,Product,Product,Formal and informal
+PRO-L3-01,PRO-L2-03,Product,Product,Formal and informal
+PRO-L3-01,PRO-L3-03,Product,Product,Formal and informal
+PRO-L3-01,PRO-L2-04,Product,Product,Formal and informal
+PRO-L3-01,SAL-L4-01,Product,Sales,Formal and informal
+PRO-L3-01,SAL-L2-01,Product,Sales,Formal only
+PRO-L3-01,SAL-L2-02,Product,Sales,Formal and informal
+PRO-L3-01,SAL-L2-03,Product,Sales,Formal only
+PRO-L3-01,SAL-L2-04,Product,Sales,Formal only
+PRO-L3-01,SAL-L2-05,Product,Sales,Formal only
+PRO-L3-01,SAL-L2-06,Product,Sales,Formal only
+PRO-L3-01,SAL-L3-01,Product,Sales,Formal only
+PRO-L3-01,PEO-L4-01,Product,People,Formal and informal
+PRO-L3-01,PEO-L2-01,Product,People,Informal only
+PRO-L3-01,PEO-L3-01,Product,People,Informal only
+PRO-L3-01,PEO-L2-02,Product,People,Informal only
+PRO-L3-01,PEO-L2-03,Product,People,Neither
+PRO-L3-01,PEO-L3-02,Product,People,Neither
+PRO-L3-01,PEO-L1-01,Product,People,Informal only
+PRO-L3-01,PEO-L2-04,Product,People,Neither
+PRO-L2-01,FIN-L4-01,Product,Finance,Neither
+PRO-L2-01,FIN-L3-01,Product,Finance,Neither
+PRO-L2-01,FIN-L2-01,Product,Finance,Neither
+PRO-L2-01,FIN-L2-02,Product,Finance,Neither
+PRO-L2-01,FIN-L3-02,Product,Finance,Neither
+PRO-L2-01,FIN-L1-01,Product,Finance,Neither
+PRO-L2-01,FIN-L3-03,Product,Finance,Neither
+PRO-L2-01,FIN-L2-03,Product,Finance,Neither
+PRO-L2-01,OPE-L5-01,Product,Operations,Neither
+PRO-L2-01,OPE-L3-01,Product,Operations,Informal only
+PRO-L2-01,OPE-L1-01,Product,Operations,Formal and informal
+PRO-L2-01,OPE-L3-02,Product,Operations,Neither
+PRO-L2-01,OPE-L2-01,Product,Operations,Neither
+PRO-L2-01,OPE-L3-03,Product,Operations,Neither
+PRO-L2-01,OPE-L3-04,Product,Operations,Not classified (a rating is missing)
+PRO-L2-01,OPE-L3-05,Product,Operations,Neither
+PRO-L2-01,PRO-L4-01,Product,Product,Formal and informal
+PRO-L2-01,PRO-L3-01,Product,Product,Formal and informal
+PRO-L2-01,PRO-L3-02,Product,Product,Formal and informal
+PRO-L2-01,PRO-L2-02,Product,Product,Formal and informal
+PRO-L2-01,PRO-L2-03,Product,Product,Formal and informal
+PRO-L2-01,PRO-L3-03,Product,Product,Formal and informal
+PRO-L2-01,PRO-L2-04,Product,Product,Formal and informal
+PRO-L2-01,SAL-L4-01,Product,Sales,Formal only
+PRO-L2-01,SAL-L2-01,Product,Sales,Formal only
+PRO-L2-01,SAL-L2-02,Product,Sales,Formal only
+PRO-L2-01,SAL-L2-03,Product,Sales,Formal only
+PRO-L2-01,SAL-L2-04,Product,Sales,Formal only
+PRO-L2-01,SAL-L2-05,Product,Sales,Formal and informal
+PRO-L2-01,SAL-L2-06,Product,Sales,Formal only
+PRO-L2-01,SAL-L3-01,Product,Sales,Formal only
+PRO-L2-01,PEO-L4-01,Product,People,Neither
+PRO-L2-01,PEO-L2-01,Product,People,Informal only
+PRO-L2-01,PEO-L3-01,Product,People,Formal only
+PRO-L2-01,PEO-L2-02,Product,People,Informal only
+PRO-L2-01,PEO-L2-03,Product,People,Neither
+PRO-L2-01,PEO-L3-02,Product,People,Informal only
+PRO-L2-01,PEO-L1-01,Product,People,Informal only
+PRO-L2-01,PEO-L2-04,Product,People,Neither
+PRO-L3-02,FIN-L4-01,Product,Finance,Neither
+PRO-L3-02,FIN-L3-01,Product,Finance,Neither
+PRO-L3-02,FIN-L2-01,Product,Finance,Neither
+PRO-L3-02,FIN-L2-02,Product,Finance,Neither
+PRO-L3-02,FIN-L3-02,Product,Finance,Neither
+PRO-L3-02,FIN-L1-01,Product,Finance,Neither
+PRO-L3-02,FIN-L3-03,Product,Finance,Neither
+PRO-L3-02,FIN-L2-03,Product,Finance,Neither
+PRO-L3-02,OPE-L5-01,Product,Operations,Formal and informal
+PRO-L3-02,OPE-L3-01,Product,Operations,Neither
+PRO-L3-02,OPE-L1-01,Product,Operations,Formal and informal
+PRO-L3-02,OPE-L3-02,Product,Operations,Formal and informal
+PRO-L3-02,OPE-L2-01,Product,Operations,Informal only
+PRO-L3-02,OPE-L3-03,Product,Operations,Neither
+PRO-L3-02,OPE-L3-04,Product,Operations,Formal and informal
+PRO-L3-02,OPE-L3-05,Product,Operations,Neither
+PRO-L3-02,PRO-L4-01,Product,Product,Formal and informal
+PRO-L3-02,PRO-L3-01,Product,Product,Formal and informal
+PRO-L3-02,PRO-L2-01,Product,Product,Formal and informal
+PRO-L3-02,PRO-L2-02,Product,Product,Formal and informal
+PRO-L3-02,PRO-L2-03,Product,Product,Formal and informal
+PRO-L3-02,PRO-L3-03,Product,Product,Formal and informal
+PRO-L3-02,PRO-L2-04,Product,Product,Formal and informal
+PRO-L3-02,SAL-L4-01,Product,Sales,Formal only
+PRO-L3-02,SAL-L2-01,Product,Sales,Formal only
+PRO-L3-02,SAL-L2-02,Product,Sales,Formal only
+PRO-L3-02,SAL-L2-03,Product,Sales,Formal only
+PRO-L3-02,SAL-L2-04,Product,Sales,Formal only
+PRO-L3-02,SAL-L2-05,Product,Sales,Formal and informal
+PRO-L3-02,SAL-L2-06,Product,Sales,Formal only
+PRO-L3-02,SAL-L3-01,Product,Sales,Formal only
+PRO-L3-02,PEO-L4-01,Product,People,Formal and informal
+PRO-L3-02,PEO-L2-01,Product,People,Formal and informal
+PRO-L3-02,PEO-L3-01,Product,People,Not classified (a rating is missing)
+PRO-L3-02,PEO-L2-02,Product,People,Neither
+PRO-L3-02,PEO-L2-03,Product,People,Neither
+PRO-L3-02,PEO-L3-02,Product,People,Informal only
+PRO-L3-02,PEO-L1-01,Product,People,Neither
+PRO-L3-02,PEO-L2-04,Product,People,Neither
+PRO-L2-02,FIN-L4-01,Product,Finance,Neither
+PRO-L2-02,FIN-L3-01,Product,Finance,Neither
+PRO-L2-02,FIN-L2-01,Product,Finance,Neither
+PRO-L2-02,FIN-L2-02,Product,Finance,Neither
+PRO-L2-02,FIN-L3-02,Product,Finance,Not classified (a rating is missing)
+PRO-L2-02,FIN-L1-01,Product,Finance,Neither
+PRO-L2-02,FIN-L3-03,Product,Finance,Neither
+PRO-L2-02,FIN-L2-03,Product,Finance,Neither
+PRO-L2-02,OPE-L5-01,Product,Operations,Neither
+PRO-L2-02,OPE-L3-01,Product,Operations,Informal only
+PRO-L2-02,OPE-L1-01,Product,Operations,Neither
+PRO-L2-02,OPE-L3-02,Product,Operations,Formal and informal
+PRO-L2-02,OPE-L2-01,Product,Operations,Neither
+PRO-L2-02,OPE-L3-03,Product,Operations,Formal and informal
+PRO-L2-02,OPE-L3-04,Product,Operations,Formal and informal
+PRO-L2-02,OPE-L3-05,Product,Operations,Neither
+PRO-L2-02,PRO-L4-01,Product,Product,Formal and informal
+PRO-L2-02,PRO-L3-01,Product,Product,Formal and informal
+PRO-L2-02,PRO-L2-01,Product,Product,Formal and informal
+PRO-L2-02,PRO-L3-02,Product,Product,Formal and informal
+PRO-L2-02,PRO-L2-03,Product,Product,Formal and informal
+PRO-L2-02,PRO-L3-03,Product,Product,Formal and informal
+PRO-L2-02,PRO-L2-04,Product,Product,Formal and informal
+PRO-L2-02,SAL-L4-01,Product,Sales,Formal only
+PRO-L2-02,SAL-L2-01,Product,Sales,Formal only
+PRO-L2-02,SAL-L2-02,Product,Sales,Formal only
+PRO-L2-02,SAL-L2-03,Product,Sales,Formal only
+PRO-L2-02,SAL-L2-04,Product,Sales,Formal and informal
+PRO-L2-02,SAL-L2-05,Product,Sales,Formal and informal
+PRO-L2-02,SAL-L2-06,Product,Sales,Formal only
+PRO-L2-02,SAL-L3-01,Product,Sales,Formal only
+PRO-L2-02,PEO-L4-01,Product,People,Formal and informal
+PRO-L2-02,PEO-L2-01,Product,People,Neither
+PRO-L2-02,PEO-L3-01,Product,People,Informal only
+PRO-L2-02,PEO-L2-02,Product,People,Informal only
+PRO-L2-02,PEO-L2-03,Product,People,Neither
+PRO-L2-02,PEO-L3-02,Product,People,Neither
+PRO-L2-02,PEO-L1-01,Product,People,Neither
+PRO-L2-02,PEO-L2-04,Product,People,Informal only
+PRO-L2-03,FIN-L4-01,Product,Finance,Neither
+PRO-L2-03,FIN-L3-01,Product,Finance,Neither
+PRO-L2-03,FIN-L2-01,Product,Finance,Neither
+PRO-L2-03,FIN-L2-02,Product,Finance,Neither
+PRO-L2-03,FIN-L3-02,Product,Finance,Neither
+PRO-L2-03,FIN-L1-01,Product,Finance,Neither
+PRO-L2-03,FIN-L3-03,Product,Finance,Neither
+PRO-L2-03,FIN-L2-03,Product,Finance,Neither
+PRO-L2-03,OPE-L5-01,Product,Operations,Formal and informal
+PRO-L2-03,OPE-L3-01,Product,Operations,Informal only
+PRO-L2-03,OPE-L1-01,Product,Operations,Neither
+PRO-L2-03,OPE-L3-02,Product,Operations,Neither
+PRO-L2-03,OPE-L2-01,Product,Operations,Neither
+PRO-L2-03,OPE-L3-03,Product,Operations,Informal only
+PRO-L2-03,OPE-L3-04,Product,Operations,Neither
+PRO-L2-03,OPE-L3-05,Product,Operations,Formal and informal
+PRO-L2-03,PRO-L4-01,Product,Product,Formal and informal
+PRO-L2-03,PRO-L3-01,Product,Product,Formal and informal
+PRO-L2-03,PRO-L2-01,Product,Product,Formal and informal
+PRO-L2-03,PRO-L3-02,Product,Product,Formal and informal
+PRO-L2-03,PRO-L2-02,Product,Product,Formal and informal
+PRO-L2-03,PRO-L3-03,Product,Product,Formal and informal
+PRO-L2-03,PRO-L2-04,Product,Product,Formal and informal
+PRO-L2-03,SAL-L4-01,Product,Sales,Formal only
+PRO-L2-03,SAL-L2-01,Product,Sales,Formal and informal
+PRO-L2-03,SAL-L2-02,Product,Sales,Formal only
+PRO-L2-03,SAL-L2-03,Product,Sales,Formal only
+PRO-L2-03,SAL-L2-04,Product,Sales,Not classified (a rating is missing)
+PRO-L2-03,SAL-L2-05,Product,Sales,Formal and informal
+PRO-L2-03,SAL-L2-06,Product,Sales,Formal only
+PRO-L2-03,SAL-L3-01,Product,Sales,Formal and informal
+PRO-L2-03,PEO-L4-01,Product,People,Not classified (a rating is missing)
+PRO-L2-03,PEO-L2-01,Product,People,Informal only
+PRO-L2-03,PEO-L3-01,Product,People,Neither
+PRO-L2-03,PEO-L2-02,Product,People,Informal only
+PRO-L2-03,PEO-L2-03,Product,People,Formal and informal
+PRO-L2-03,PEO-L3-02,Product,People,Formal and informal
+PRO-L2-03,PEO-L1-01,Product,People,Informal only
+PRO-L2-03,PEO-L2-04,Product,People,Informal only
+PRO-L3-03,FIN-L4-01,Product,Finance,Neither
+PRO-L3-03,FIN-L3-01,Product,Finance,Neither
+PRO-L3-03,FIN-L2-01,Product,Finance,Not classified (a rating is missing)
+PRO-L3-03,FIN-L2-02,Product,Finance,Neither
+PRO-L3-03,FIN-L3-02,Product,Finance,Neither
+PRO-L3-03,FIN-L1-01,Product,Finance,Neither
+PRO-L3-03,FIN-L3-03,Product,Finance,Neither
+PRO-L3-03,FIN-L2-03,Product,Finance,Neither
+PRO-L3-03,OPE-L5-01,Product,Operations,Neither
+PRO-L3-03,OPE-L3-01,Product,Operations,Formal and informal
+PRO-L3-03,OPE-L1-01,Product,Operations,Formal and informal
+PRO-L3-03,OPE-L3-02,Product,Operations,Formal and informal
+PRO-L3-03,OPE-L2-01,Product,Operations,Neither
+PRO-L3-03,OPE-L3-03,Product,Operations,Formal and informal
+PRO-L3-03,OPE-L3-04,Product,Operations,Neither
+PRO-L3-03,OPE-L3-05,Product,Operations,Neither
+PRO-L3-03,PRO-L4-01,Product,Product,Formal and informal
+PRO-L3-03,PRO-L3-01,Product,Product,Formal and informal
+PRO-L3-03,PRO-L2-01,Product,Product,Formal and informal
+PRO-L3-03,PRO-L3-02,Product,Product,Formal and informal
+PRO-L3-03,PRO-L2-02,Product,Product,Formal and informal
+PRO-L3-03,PRO-L2-03,Product,Product,Formal and informal
+PRO-L3-03,PRO-L2-04,Product,Product,Formal and informal
+PRO-L3-03,SAL-L4-01,Product,Sales,Formal only
+PRO-L3-03,SAL-L2-01,Product,Sales,Formal only
+PRO-L3-03,SAL-L2-02,Product,Sales,Formal only
+PRO-L3-03,SAL-L2-03,Product,Sales,Formal only
+PRO-L3-03,SAL-L2-04,Product,Sales,Formal only
+PRO-L3-03,SAL-L2-05,Product,Sales,Formal only
+PRO-L3-03,SAL-L2-06,Product,Sales,Not classified (a rating is missing)
+PRO-L3-03,SAL-L3-01,Product,Sales,Formal and informal
+PRO-L3-03,PEO-L4-01,Product,People,Formal and informal
+PRO-L3-03,PEO-L2-01,Product,People,Neither
+PRO-L3-03,PEO-L3-01,Product,People,Neither
+PRO-L3-03,PEO-L2-02,Product,People,Neither
+PRO-L3-03,PEO-L2-03,Product,People,Neither
+PRO-L3-03,PEO-L3-02,Product,People,Neither
+PRO-L3-03,PEO-L1-01,Product,People,Neither
+PRO-L3-03,PEO-L2-04,Product,People,Neither
+PRO-L2-04,FIN-L4-01,Product,Finance,Neither
+PRO-L2-04,FIN-L3-01,Product,Finance,Neither
+PRO-L2-04,FIN-L2-01,Product,Finance,Neither
+PRO-L2-04,FIN-L2-02,Product,Finance,Neither
+PRO-L2-04,FIN-L3-02,Product,Finance,Neither
+PRO-L2-04,FIN-L1-01,Product,Finance,Neither
+PRO-L2-04,FIN-L3-03,Product,Finance,Neither
+PRO-L2-04,FIN-L2-03,Product,Finance,Neither
+PRO-L2-04,OPE-L5-01,Product,Operations,Formal and informal
+PRO-L2-04,OPE-L3-01,Product,Operations,Neither
+PRO-L2-04,OPE-L1-01,Product,Operations,Neither
+PRO-L2-04,OPE-L3-02,Product,Operations,Neither
+PRO-L2-04,OPE-L2-01,Product,Operations,Neither
+PRO-L2-04,OPE-L3-03,Product,Operations,Informal only
+PRO-L2-04,OPE-L3-04,Product,Operations,Neither
+PRO-L2-04,OPE-L3-05,Product,Operations,Neither
+PRO-L2-04,PRO-L4-01,Product,Product,Formal and informal
+PRO-L2-04,PRO-L3-01,Product,Product,Formal and informal
+PRO-L2-04,PRO-L2-01,Product,Product,Formal and informal
+PRO-L2-04,PRO-L3-02,Product,Product,Formal and informal
+PRO-L2-04,PRO-L2-02,Product,Product,Formal and informal
+PRO-L2-04,PRO-L2-03,Product,Product,Formal and informal
+PRO-L2-04,PRO-L3-03,Product,Product,Formal and informal
+PRO-L2-04,SAL-L4-01,Product,Sales,Formal only
+PRO-L2-04,SAL-L2-01,Product,Sales,Formal only
+PRO-L2-04,SAL-L2-02,Product,Sales,Formal only
+PRO-L2-04,SAL-L2-03,Product,Sales,Formal only
+PRO-L2-04,SAL-L2-04,Product,Sales,Formal only
+PRO-L2-04,SAL-L2-05,Product,Sales,Formal and informal
+PRO-L2-04,SAL-L2-06,Product,Sales,Formal only
+PRO-L2-04,SAL-L3-01,Product,Sales,Formal and informal
+PRO-L2-04,PEO-L4-01,Product,People,Neither
+PRO-L2-04,PEO-L2-01,Product,People,Informal only
+PRO-L2-04,PEO-L3-01,Product,People,Formal and informal
+PRO-L2-04,PEO-L2-02,Product,People,Neither
+PRO-L2-04,PEO-L2-03,Product,People,Informal only
+PRO-L2-04,PEO-L3-02,Product,People,Neither
+PRO-L2-04,PEO-L1-01,Product,People,Neither
+PRO-L2-04,PEO-L2-04,Product,People,Neither
+SAL-L4-01,FIN-L4-01,Sales,Finance,Neither
+SAL-L4-01,FIN-L3-01,Sales,Finance,Neither
+SAL-L4-01,FIN-L2-01,Sales,Finance,Neither
+SAL-L4-01,FIN-L2-02,Sales,Finance,Neither
+SAL-L4-01,FIN-L3-02,Sales,Finance,Neither
+SAL-L4-01,FIN-L1-01,Sales,Finance,Neither
+SAL-L4-01,FIN-L3-03,Sales,Finance,Neither
+SAL-L4-01,FIN-L2-03,Sales,Finance,Neither
+SAL-L4-01,OPE-L5-01,Sales,Operations,Formal and informal
+SAL-L4-01,OPE-L3-01,Sales,Operations,Neither
+SAL-L4-01,OPE-L1-01,Sales,Operations,Formal and informal
+SAL-L4-01,OPE-L3-02,Sales,Operations,Informal only
+SAL-L4-01,OPE-L2-01,Sales,Operations,Informal only
+SAL-L4-01,OPE-L3-03,Sales,Operations,Neither
+SAL-L4-01,OPE-L3-04,Sales,Operations,Informal only
+SAL-L4-01,OPE-L3-05,Sales,Operations,Formal and informal
+SAL-L4-01,PRO-L4-01,Sales,Product,Formal and informal
+SAL-L4-01,PRO-L3-01,Sales,Product,Formal only
+SAL-L4-01,PRO-L2-01,Sales,Product,Formal only
+SAL-L4-01,PRO-L3-02,Sales,Product,Not classified (a rating is missing)
+SAL-L4-01,PRO-L2-02,Sales,Product,Formal only
+SAL-L4-01,PRO-L2-03,Sales,Product,Formal only
+SAL-L4-01,PRO-L3-03,Sales,Product,Formal only
+SAL-L4-01,PRO-L2-04,Sales,Product,Formal only
+SAL-L4-01,SAL-L2-01,Sales,Sales,Formal and informal
+SAL-L4-01,SAL-L2-02,Sales,Sales,Formal and informal
+SAL-L4-01,SAL-L2-03,Sales,Sales,Formal and informal
+SAL-L4-01,SAL-L2-04,Sales,Sales,Formal and informal
+SAL-L4-01,SAL-L2-05,Sales,Sales,Formal and informal
+SAL-L4-01,SAL-L2-06,Sales,Sales,Formal and informal
+SAL-L4-01,SAL-L3-01,Sales,Sales,Formal and informal
+SAL-L4-01,PEO-L4-01,Sales,People,Formal and informal
+SAL-L4-01,PEO-L2-01,Sales,People,Neither
+SAL-L4-01,PEO-L3-01,Sales,People,Neither
+SAL-L4-01,PEO-L2-02,Sales,People,Neither
+SAL-L4-01,PEO-L2-03,Sales,People,Neither
+SAL-L4-01,PEO-L3-02,Sales,People,Neither
+SAL-L4-01,PEO-L1-01,Sales,People,Informal only
+SAL-L4-01,PEO-L2-04,Sales,People,Neither
+SAL-L2-01,FIN-L4-01,Sales,Finance,Not classified (a rating is missing)
+SAL-L2-01,FIN-L3-01,Sales,Finance,Neither
+SAL-L2-01,FIN-L2-01,Sales,Finance,Neither
+SAL-L2-01,FIN-L2-02,Sales,Finance,Neither
+SAL-L2-01,FIN-L3-02,Sales,Finance,Neither
+SAL-L2-01,FIN-L1-01,Sales,Finance,Neither
+SAL-L2-01,FIN-L3-03,Sales,Finance,Neither
+SAL-L2-01,FIN-L2-03,Sales,Finance,Neither
+SAL-L2-01,OPE-L5-01,Sales,Operations,Neither
+SAL-L2-01,OPE-L3-01,Sales,Operations,Formal and informal
+SAL-L2-01,OPE-L1-01,Sales,Operations,Formal and informal
+SAL-L2-01,OPE-L3-02,Sales,Operations,Neither
+SAL-L2-01,OPE-L2-01,Sales,Operations,Informal only
+SAL-L2-01,OPE-L3-03,Sales,Operations,Informal only
+SAL-L2-01,OPE-L3-04,Sales,Operations,Neither
+SAL-L2-01,OPE-L3-05,Sales,Operations,Neither
+SAL-L2-01,PRO-L4-01,Sales,Product,Formal only
+SAL-L2-01,PRO-L3-01,Sales,Product,Formal and informal
+SAL-L2-01,PRO-L2-01,Sales,Product,Formal only
+SAL-L2-01,PRO-L3-02,Sales,Product,Formal only
+SAL-L2-01,PRO-L2-02,Sales,Product,Formal and informal
+SAL-L2-01,PRO-L2-03,Sales,Product,Formal only
+SAL-L2-01,PRO-L3-03,Sales,Product,Formal only
+SAL-L2-01,PRO-L2-04,Sales,Product,Formal only
+SAL-L2-01,SAL-L4-01,Sales,Sales,Formal and informal
+SAL-L2-01,SAL-L2-02,Sales,Sales,Formal and informal
+SAL-L2-01,SAL-L2-03,Sales,Sales,Formal and informal
+SAL-L2-01,SAL-L2-04,Sales,Sales,Formal and informal
+SAL-L2-01,SAL-L2-05,Sales,Sales,Formal and informal
+SAL-L2-01,SAL-L2-06,Sales,Sales,Formal and informal
+SAL-L2-01,SAL-L3-01,Sales,Sales,Formal and informal
+SAL-L2-01,PEO-L4-01,Sales,People,Formal and informal
+SAL-L2-01,PEO-L2-01,Sales,People,Neither
+SAL-L2-01,PEO-L3-01,Sales,People,Formal and informal
+SAL-L2-01,PEO-L2-02,Sales,People,Neither
+SAL-L2-01,PEO-L2-03,Sales,People,Neither
+SAL-L2-01,PEO-L3-02,Sales,People,Neither
+SAL-L2-01,PEO-L1-01,Sales,People,Neither
+SAL-L2-01,PEO-L2-04,Sales,People,Formal and informal
+SAL-L2-02,FIN-L4-01,Sales,Finance,Neither
+SAL-L2-02,FIN-L3-01,Sales,Finance,Neither
+SAL-L2-02,FIN-L2-01,Sales,Finance,Neither
+SAL-L2-02,FIN-L2-02,Sales,Finance,Neither
+SAL-L2-02,FIN-L3-02,Sales,Finance,Neither
+SAL-L2-02,FIN-L1-01,Sales,Finance,Neither
+SAL-L2-02,FIN-L3-03,Sales,Finance,Not classified (a rating is missing)
+SAL-L2-02,FIN-L2-03,Sales,Finance,Neither
+SAL-L2-02,OPE-L5-01,Sales,Operations,Formal and informal
+SAL-L2-02,OPE-L3-01,Sales,Operations,Neither
+SAL-L2-02,OPE-L1-01,Sales,Operations,Formal and informal
+SAL-L2-02,OPE-L3-02,Sales,Operations,Neither
+SAL-L2-02,OPE-L2-01,Sales,Operations,Neither
+SAL-L2-02,OPE-L3-03,Sales,Operations,Neither
+SAL-L2-02,OPE-L3-04,Sales,Operations,Neither
+SAL-L2-02,OPE-L3-05,Sales,Operations,Neither
+SAL-L2-02,PRO-L4-01,Sales,Product,Formal only
+SAL-L2-02,PRO-L3-01,Sales,Product,Formal only
+SAL-L2-02,PRO-L2-01,Sales,Product,Formal only
+SAL-L2-02,PRO-L3-02,Sales,Product,Formal only
+SAL-L2-02,PRO-L2-02,Sales,Product,Formal and informal
+SAL-L2-02,PRO-L2-03,Sales,Product,Formal only
+SAL-L2-02,PRO-L3-03,Sales,Product,Formal and informal
+SAL-L2-02,PRO-L2-04,Sales,Product,Formal only
+SAL-L2-02,SAL-L4-01,Sales,Sales,Formal and informal
+SAL-L2-02,SAL-L2-01,Sales,Sales,Formal and informal
+SAL-L2-02,SAL-L2-03,Sales,Sales,Formal and informal
+SAL-L2-02,SAL-L2-04,Sales,Sales,Formal and informal
+SAL-L2-02,SAL-L2-05,Sales,Sales,Formal and informal
+SAL-L2-02,SAL-L2-06,Sales,Sales,Formal and informal
+SAL-L2-02,SAL-L3-01,Sales,Sales,Formal and informal
+SAL-L2-02,PEO-L4-01,Sales,People,Neither
+SAL-L2-02,PEO-L2-01,Sales,People,Formal and informal
+SAL-L2-02,PEO-L3-01,Sales,People,Neither
+SAL-L2-02,PEO-L2-02,Sales,People,Informal only
+SAL-L2-02,PEO-L2-03,Sales,People,Neither
+SAL-L2-02,PEO-L3-02,Sales,People,Informal only
+SAL-L2-02,PEO-L1-01,Sales,People,Neither
+SAL-L2-02,PEO-L2-04,Sales,People,Informal only
+SAL-L2-03,FIN-L4-01,Sales,Finance,Neither
+SAL-L2-03,FIN-L3-01,Sales,Finance,Neither
+SAL-L2-03,FIN-L2-01,Sales,Finance,Neither
+SAL-L2-03,FIN-L2-02,Sales,Finance,Neither
+SAL-L2-03,FIN-L3-02,Sales,Finance,Neither
+SAL-L2-03,FIN-L1-01,Sales,Finance,Neither
+SAL-L2-03,FIN-L3-03,Sales,Finance,Neither
+SAL-L2-03,FIN-L2-03,Sales,Finance,Neither
+SAL-L2-03,OPE-L5-01,Sales,Operations,Formal and informal
+SAL-L2-03,OPE-L3-01,Sales,Operations,Neither
+SAL-L2-03,OPE-L1-01,Sales,Operations,Neither
+SAL-L2-03,OPE-L3-02,Sales,Operations,Formal and informal
+SAL-L2-03,OPE-L2-01,Sales,Operations,Neither
+SAL-L2-03,OPE-L3-03,Sales,Operations,Neither
+SAL-L2-03,OPE-L3-04,Sales,Operations,Informal only
+SAL-L2-03,OPE-L3-05,Sales,Operations,Neither
+SAL-L2-03,PRO-L4-01,Sales,Product,Formal only
+SAL-L2-03,PRO-L3-01,Sales,Product,Formal only
+SAL-L2-03,PRO-L2-01,Sales,Product,Formal and informal
+SAL-L2-03,PRO-L3-02,Sales,Product,Formal only
+SAL-L2-03,PRO-L2-02,Sales,Product,Formal and informal
+SAL-L2-03,PRO-L2-03,Sales,Product,Formal and informal
+SAL-L2-03,PRO-L3-03,Sales,Product,Formal only
+SAL-L2-03,PRO-L2-04,Sales,Product,Formal only
+SAL-L2-03,SAL-L4-01,Sales,Sales,Formal and informal
+SAL-L2-03,SAL-L2-01,Sales,Sales,Formal and informal
+SAL-L2-03,SAL-L2-02,Sales,Sales,Formal and informal
+SAL-L2-03,SAL-L2-04,Sales,Sales,Formal and informal
+SAL-L2-03,SAL-L2-05,Sales,Sales,Formal and informal
+SAL-L2-03,SAL-L2-06,Sales,Sales,Formal and informal
+SAL-L2-03,SAL-L3-01,Sales,Sales,Formal and informal
+SAL-L2-03,PEO-L4-01,Sales,People,Formal and informal
+SAL-L2-03,PEO-L2-01,Sales,People,Neither
+SAL-L2-03,PEO-L3-01,Sales,People,Neither
+SAL-L2-03,PEO-L2-02,Sales,People,Neither
+SAL-L2-03,PEO-L2-03,Sales,People,Neither
+SAL-L2-03,PEO-L3-02,Sales,People,Informal only
+SAL-L2-03,PEO-L1-01,Sales,People,Neither
+SAL-L2-03,PEO-L2-04,Sales,People,Formal only
+SAL-L2-04,FIN-L4-01,Sales,Finance,Neither
+SAL-L2-04,FIN-L3-01,Sales,Finance,Neither
+SAL-L2-04,FIN-L2-01,Sales,Finance,Neither
+SAL-L2-04,FIN-L2-02,Sales,Finance,Neither
+SAL-L2-04,FIN-L3-02,Sales,Finance,Neither
+SAL-L2-04,FIN-L1-01,Sales,Finance,Neither
+SAL-L2-04,FIN-L3-03,Sales,Finance,Neither
+SAL-L2-04,FIN-L2-03,Sales,Finance,Neither
+SAL-L2-04,OPE-L5-01,Sales,Operations,Neither
+SAL-L2-04,OPE-L3-01,Sales,Operations,Formal and informal
+SAL-L2-04,OPE-L1-01,Sales,Operations,Formal and informal
+SAL-L2-04,OPE-L3-02,Sales,Operations,Formal and informal
+SAL-L2-04,OPE-L2-01,Sales,Operations,Neither
+SAL-L2-04,OPE-L3-03,Sales,Operations,Neither
+SAL-L2-04,OPE-L3-04,Sales,Operations,Neither
+SAL-L2-04,OPE-L3-05,Sales,Operations,Neither
+SAL-L2-04,PRO-L4-01,Sales,Product,Formal only
+SAL-L2-04,PRO-L3-01,Sales,Product,Formal and informal
+SAL-L2-04,PRO-L2-01,Sales,Product,Formal only
+SAL-L2-04,PRO-L3-02,Sales,Product,Formal and informal
+SAL-L2-04,PRO-L2-02,Sales,Product,Formal and informal
+SAL-L2-04,PRO-L2-03,Sales,Product,Formal and informal
+SAL-L2-04,PRO-L3-03,Sales,Product,Formal only
+SAL-L2-04,PRO-L2-04,Sales,Product,Formal only
+SAL-L2-04,SAL-L4-01,Sales,Sales,Formal and informal
+SAL-L2-04,SAL-L2-01,Sales,Sales,Formal and informal
+SAL-L2-04,SAL-L2-02,Sales,Sales,Formal and informal
+SAL-L2-04,SAL-L2-03,Sales,Sales,Formal and informal
+SAL-L2-04,SAL-L2-05,Sales,Sales,Formal and informal
+SAL-L2-04,SAL-L2-06,Sales,Sales,Formal and informal
+SAL-L2-04,SAL-L3-01,Sales,Sales,Formal and informal
+SAL-L2-04,PEO-L4-01,Sales,People,Neither
+SAL-L2-04,PEO-L2-01,Sales,People,Neither
+SAL-L2-04,PEO-L3-01,Sales,People,Neither
+SAL-L2-04,PEO-L2-02,Sales,People,Formal and informal
+SAL-L2-04,PEO-L2-03,Sales,People,Neither
+SAL-L2-04,PEO-L3-02,Sales,People,Informal only
+SAL-L2-04,PEO-L1-01,Sales,People,Neither
+SAL-L2-04,PEO-L2-04,Sales,People,Informal only
+SAL-L2-05,FIN-L4-01,Sales,Finance,Neither
+SAL-L2-05,FIN-L3-01,Sales,Finance,Neither
+SAL-L2-05,FIN-L2-01,Sales,Finance,Neither
+SAL-L2-05,FIN-L2-02,Sales,Finance,Neither
+SAL-L2-05,FIN-L3-02,Sales,Finance,Not classified (a rating is missing)
+SAL-L2-05,FIN-L1-01,Sales,Finance,Neither
+SAL-L2-05,FIN-L3-03,Sales,Finance,Neither
+SAL-L2-05,FIN-L2-03,Sales,Finance,Neither
+SAL-L2-05,OPE-L5-01,Sales,Operations,Neither
+SAL-L2-05,OPE-L3-01,Sales,Operations,Informal only
+SAL-L2-05,OPE-L1-01,Sales,Operations,Neither
+SAL-L2-05,OPE-L3-02,Sales,Operations,Neither
+SAL-L2-05,OPE-L2-01,Sales,Operations,Neither
+SAL-L2-05,OPE-L3-03,Sales,Operations,Not classified (a rating is missing)
+SAL-L2-05,OPE-L3-04,Sales,Operations,Neither
+SAL-L2-05,OPE-L3-05,Sales,Operations,Informal only
+SAL-L2-05,PRO-L4-01,Sales,Product,Formal only
+SAL-L2-05,PRO-L3-01,Sales,Product,Formal and informal
+SAL-L2-05,PRO-L2-01,Sales,Product,Formal only
+SAL-L2-05,PRO-L3-02,Sales,Product,Formal only
+SAL-L2-05,PRO-L2-02,Sales,Product,Formal only
+SAL-L2-05,PRO-L2-03,Sales,Product,Formal only
+SAL-L2-05,PRO-L3-03,Sales,Product,Formal only
+SAL-L2-05,PRO-L2-04,Sales,Product,Formal and informal
+SAL-L2-05,SAL-L4-01,Sales,Sales,Formal and informal
+SAL-L2-05,SAL-L2-01,Sales,Sales,Formal and informal
+SAL-L2-05,SAL-L2-02,Sales,Sales,Formal and informal
+SAL-L2-05,SAL-L2-03,Sales,Sales,Formal and informal
+SAL-L2-05,SAL-L2-04,Sales,Sales,Formal and informal
+SAL-L2-05,SAL-L2-06,Sales,Sales,Formal and informal
+SAL-L2-05,SAL-L3-01,Sales,Sales,Formal and informal
+SAL-L2-05,PEO-L4-01,Sales,People,Neither
+SAL-L2-05,PEO-L2-01,Sales,People,Formal and informal
+SAL-L2-05,PEO-L3-01,Sales,People,Informal only
+SAL-L2-05,PEO-L2-02,Sales,People,Neither
+SAL-L2-05,PEO-L2-03,Sales,People,Informal only
+SAL-L2-05,PEO-L3-02,Sales,People,Neither
+SAL-L2-05,PEO-L1-01,Sales,People,Not classified (a rating is missing)
+SAL-L2-05,PEO-L2-04,Sales,People,Neither
+SAL-L2-06,FIN-L4-01,Sales,Finance,Neither
+SAL-L2-06,FIN-L3-01,Sales,Finance,Neither
+SAL-L2-06,FIN-L2-01,Sales,Finance,Neither
+SAL-L2-06,FIN-L2-02,Sales,Finance,Neither
+SAL-L2-06,FIN-L3-02,Sales,Finance,Neither
+SAL-L2-06,FIN-L1-01,Sales,Finance,Neither
+SAL-L2-06,FIN-L3-03,Sales,Finance,Neither
+SAL-L2-06,FIN-L2-03,Sales,Finance,Neither
+SAL-L2-06,OPE-L5-01,Sales,Operations,Neither
+SAL-L2-06,OPE-L3-01,Sales,Operations,Neither
+SAL-L2-06,OPE-L1-01,Sales,Operations,Neither
+SAL-L2-06,OPE-L3-02,Sales,Operations,Neither
+SAL-L2-06,OPE-L2-01,Sales,Operations,Informal only
+SAL-L2-06,OPE-L3-03,Sales,Operations,Neither
+SAL-L2-06,OPE-L3-04,Sales,Operations,Neither
+SAL-L2-06,OPE-L3-05,Sales,Operations,Neither
+SAL-L2-06,PRO-L4-01,Sales,Product,Formal and informal
+SAL-L2-06,PRO-L3-01,Sales,Product,Formal only
+SAL-L2-06,PRO-L2-01,Sales,Product,Formal only
+SAL-L2-06,PRO-L3-02,Sales,Product,Formal only
+SAL-L2-06,PRO-L2-02,Sales,Product,Not classified (a rating is missing)
+SAL-L2-06,PRO-L2-03,Sales,Product,Formal and informal
+SAL-L2-06,PRO-L3-03,Sales,Product,Formal and informal
+SAL-L2-06,PRO-L2-04,Sales,Product,Formal only
+SAL-L2-06,SAL-L4-01,Sales,Sales,Formal and informal
+SAL-L2-06,SAL-L2-01,Sales,Sales,Formal and informal
+SAL-L2-06,SAL-L2-02,Sales,Sales,Not classified (a rating is missing)
+SAL-L2-06,SAL-L2-03,Sales,Sales,Formal and informal
+SAL-L2-06,SAL-L2-04,Sales,Sales,Formal and informal
+SAL-L2-06,SAL-L2-05,Sales,Sales,Formal and informal
+SAL-L2-06,SAL-L3-01,Sales,Sales,Formal and informal
+SAL-L2-06,PEO-L4-01,Sales,People,Informal only
+SAL-L2-06,PEO-L2-01,Sales,People,Neither
+SAL-L2-06,PEO-L3-01,Sales,People,Neither
+SAL-L2-06,PEO-L2-02,Sales,People,Neither
+SAL-L2-06,PEO-L2-03,Sales,People,Neither
+SAL-L2-06,PEO-L3-02,Sales,People,Neither
+SAL-L2-06,PEO-L1-01,Sales,People,Neither
+SAL-L2-06,PEO-L2-04,Sales,People,Neither
+SAL-L3-01,FIN-L4-01,Sales,Finance,Not classified (a rating is missing)
+SAL-L3-01,FIN-L3-01,Sales,Finance,Neither
+SAL-L3-01,FIN-L2-01,Sales,Finance,Neither
+SAL-L3-01,FIN-L2-02,Sales,Finance,Not classified (a rating is missing)
+SAL-L3-01,FIN-L3-02,Sales,Finance,Not classified (a rating is missing)
+SAL-L3-01,FIN-L1-01,Sales,Finance,Neither
+SAL-L3-01,FIN-L3-03,Sales,Finance,Not classified (a rating is missing)
+SAL-L3-01,FIN-L2-03,Sales,Finance,Neither
+SAL-L3-01,OPE-L5-01,Sales,Operations,Not classified (a rating is missing)
+SAL-L3-01,OPE-L3-01,Sales,Operations,Not classified (a rating is missing)
+SAL-L3-01,OPE-L1-01,Sales,Operations,Not classified (a rating is missing)
+SAL-L3-01,OPE-L3-02,Sales,Operations,Not classified (a rating is missing)
+SAL-L3-01,OPE-L2-01,Sales,Operations,Not classified (a rating is missing)
+SAL-L3-01,OPE-L3-03,Sales,Operations,Not classified (a rating is missing)
+SAL-L3-01,OPE-L3-04,Sales,Operations,Not classified (a rating is missing)
+SAL-L3-01,OPE-L3-05,Sales,Operations,Formal and informal
+SAL-L3-01,PRO-L4-01,Sales,Product,Formal only
+SAL-L3-01,PRO-L3-01,Sales,Product,Formal and informal
+SAL-L3-01,PRO-L2-01,Sales,Product,Not classified (a rating is missing)
+SAL-L3-01,PRO-L3-02,Sales,Product,Not classified (a rating is missing)
+SAL-L3-01,PRO-L2-02,Sales,Product,Not classified (a rating is missing)
+SAL-L3-01,PRO-L2-03,Sales,Product,Formal only
+SAL-L3-01,PRO-L3-03,Sales,Product,Not classified (a rating is missing)
+SAL-L3-01,PRO-L2-04,Sales,Product,Not classified (a rating is missing)
+SAL-L3-01,SAL-L4-01,Sales,Sales,Not classified (a rating is missing)
+SAL-L3-01,SAL-L2-01,Sales,Sales,Not classified (a rating is missing)
+SAL-L3-01,SAL-L2-02,Sales,Sales,Formal and informal
+SAL-L3-01,SAL-L2-03,Sales,Sales,Not classified (a rating is missing)
+SAL-L3-01,SAL-L2-04,Sales,Sales,Not classified (a rating is missing)
+SAL-L3-01,SAL-L2-05,Sales,Sales,Not classified (a rating is missing)
+SAL-L3-01,SAL-L2-06,Sales,Sales,Not classified (a rating is missing)
+SAL-L3-01,PEO-L4-01,Sales,People,Not classified (a rating is missing)
+SAL-L3-01,PEO-L2-01,Sales,People,Not classified (a rating is missing)
+SAL-L3-01,PEO-L3-01,Sales,People,Formal and informal
+SAL-L3-01,PEO-L2-02,Sales,People,Neither
+SAL-L3-01,PEO-L2-03,Sales,People,Not classified (a rating is missing)
+SAL-L3-01,PEO-L3-02,Sales,People,Not classified (a rating is missing)
+SAL-L3-01,PEO-L1-01,Sales,People,Not classified (a rating is missing)
+SAL-L3-01,PEO-L2-04,Sales,People,Not classified (a rating is missing)
+PEO-L4-01,FIN-L4-01,People,Finance,Neither
+PEO-L4-01,FIN-L3-01,People,Finance,Neither
+PEO-L4-01,FIN-L2-01,People,Finance,Neither
+PEO-L4-01,FIN-L2-02,People,Finance,Neither
+PEO-L4-01,FIN-L3-02,People,Finance,Neither
+PEO-L4-01,FIN-L1-01,People,Finance,Neither
+PEO-L4-01,FIN-L3-03,People,Finance,Neither
+PEO-L4-01,FIN-L2-03,People,Finance,Neither
+PEO-L4-01,OPE-L5-01,People,Operations,Formal and informal
+PEO-L4-01,OPE-L3-01,People,Operations,Neither
+PEO-L4-01,OPE-L1-01,People,Operations,Formal and informal
+PEO-L4-01,OPE-L3-02,People,Operations,Neither
+PEO-L4-01,OPE-L2-01,People,Operations,Neither
+PEO-L4-01,OPE-L3-03,People,Operations,Neither
+PEO-L4-01,OPE-L3-04,People,Operations,Neither
+PEO-L4-01,OPE-L3-05,People,Operations,Neither
+PEO-L4-01,PRO-L4-01,People,Product,Formal and informal
+PEO-L4-01,PRO-L3-01,People,Product,Neither
+PEO-L4-01,PRO-L2-01,People,Product,Not classified (a rating is missing)
+PEO-L4-01,PRO-L3-02,People,Product,Neither
+PEO-L4-01,PRO-L2-02,People,Product,Informal only
+PEO-L4-01,PRO-L2-03,People,Product,Informal only
+PEO-L4-01,PRO-L3-03,People,Product,Neither
+PEO-L4-01,PRO-L2-04,People,Product,Neither
+PEO-L4-01,SAL-L4-01,People,Sales,Formal and informal
+PEO-L4-01,SAL-L2-01,People,Sales,Neither
+PEO-L4-01,SAL-L2-02,People,Sales,Neither
+PEO-L4-01,SAL-L2-03,People,Sales,Neither
+PEO-L4-01,SAL-L2-04,People,Sales,Neither
+PEO-L4-01,SAL-L2-05,People,Sales,Formal and informal
+PEO-L4-01,SAL-L2-06,People,Sales,Informal only
+PEO-L4-01,SAL-L3-01,People,Sales,Neither
+PEO-L4-01,PEO-L2-01,People,People,Formal and informal
+PEO-L4-01,PEO-L3-01,People,People,Not classified (a rating is missing)
+PEO-L4-01,PEO-L2-02,People,People,Formal and informal
+PEO-L4-01,PEO-L2-03,People,People,Formal and informal
+PEO-L4-01,PEO-L3-02,People,People,Formal and informal
+PEO-L4-01,PEO-L1-01,People,People,Formal and informal
+PEO-L4-01,PEO-L2-04,People,People,Formal and informal
+PEO-L2-01,FIN-L4-01,People,Finance,Neither
+PEO-L2-01,FIN-L3-01,People,Finance,Neither
+PEO-L2-01,FIN-L2-01,People,Finance,Not classified (a rating is missing)
+PEO-L2-01,FIN-L2-02,People,Finance,Neither
+PEO-L2-01,FIN-L3-02,People,Finance,Neither
+PEO-L2-01,FIN-L1-01,People,Finance,Neither
+PEO-L2-01,FIN-L3-03,People,Finance,Neither
+PEO-L2-01,FIN-L2-03,People,Finance,Neither
+PEO-L2-01,OPE-L5-01,People,Operations,Neither
+PEO-L2-01,OPE-L3-01,People,Operations,Neither
+PEO-L2-01,OPE-L1-01,People,Operations,Neither
+PEO-L2-01,OPE-L3-02,People,Operations,Formal and informal
+PEO-L2-01,OPE-L2-01,People,Operations,Formal and informal
+PEO-L2-01,OPE-L3-03,People,Operations,Neither
+PEO-L2-01,OPE-L3-04,People,Operations,Informal only
+PEO-L2-01,OPE-L3-05,People,Operations,Neither
+PEO-L2-01,PRO-L4-01,People,Product,Informal only
+PEO-L2-01,PRO-L3-01,People,Product,Informal only
+PEO-L2-01,PRO-L2-01,People,Product,Informal only
+PEO-L2-01,PRO-L3-02,People,Product,Neither
+PEO-L2-01,PRO-L2-02,People,Product,Not classified (a rating is missing)
+PEO-L2-01,PRO-L2-03,People,Product,Not classified (a rating is missing)
+PEO-L2-01,PRO-L3-03,People,Product,Neither
+PEO-L2-01,PRO-L2-04,People,Product,Formal and informal
+PEO-L2-01,SAL-L4-01,People,Sales,Formal and informal
+PEO-L2-01,SAL-L2-01,People,Sales,Neither
+PEO-L2-01,SAL-L2-02,People,Sales,Informal only
+PEO-L2-01,SAL-L2-03,People,Sales,Neither
+PEO-L2-01,SAL-L2-04,People,Sales,Neither
+PEO-L2-01,SAL-L2-05,People,Sales,Neither
+PEO-L2-01,SAL-L2-06,People,Sales,Formal and informal
+PEO-L2-01,SAL-L3-01,People,Sales,Neither
+PEO-L2-01,PEO-L4-01,People,People,Formal and informal
+PEO-L2-01,PEO-L3-01,People,People,Formal and informal
+PEO-L2-01,PEO-L2-02,People,People,Formal and informal
+PEO-L2-01,PEO-L2-03,People,People,Formal and informal
+PEO-L2-01,PEO-L3-02,People,People,Formal and informal
+PEO-L2-01,PEO-L1-01,People,People,Formal and informal
+PEO-L2-01,PEO-L2-04,People,People,Formal and informal
+PEO-L3-01,FIN-L4-01,People,Finance,Neither
+PEO-L3-01,FIN-L3-01,People,Finance,Neither
+PEO-L3-01,FIN-L2-01,People,Finance,Neither
+PEO-L3-01,FIN-L2-02,People,Finance,Neither
+PEO-L3-01,FIN-L3-02,People,Finance,Neither
+PEO-L3-01,FIN-L1-01,People,Finance,Neither
+PEO-L3-01,FIN-L3-03,People,Finance,Neither
+PEO-L3-01,FIN-L2-03,People,Finance,Neither
+PEO-L3-01,OPE-L5-01,People,Operations,Neither
+PEO-L3-01,OPE-L3-01,People,Operations,Formal only
+PEO-L3-01,OPE-L1-01,People,Operations,Neither
+PEO-L3-01,OPE-L3-02,People,Operations,Formal and informal
+PEO-L3-01,OPE-L2-01,People,Operations,Neither
+PEO-L3-01,OPE-L3-03,People,Operations,Neither
+PEO-L3-01,OPE-L3-04,People,Operations,Formal and informal
+PEO-L3-01,OPE-L3-05,People,Operations,Formal and informal
+PEO-L3-01,PRO-L4-01,People,Product,Informal only
+PEO-L3-01,PRO-L3-01,People,Product,Not classified (a rating is missing)
+PEO-L3-01,PRO-L2-01,People,Product,Formal and informal
+PEO-L3-01,PRO-L3-02,People,Product,Formal and informal
+PEO-L3-01,PRO-L2-02,People,Product,Neither
+PEO-L3-01,PRO-L2-03,People,Product,Informal only
+PEO-L3-01,PRO-L3-03,People,Product,Neither
+PEO-L3-01,PRO-L2-04,People,Product,Neither
+PEO-L3-01,SAL-L4-01,People,Sales,Formal and informal
+PEO-L3-01,SAL-L2-01,People,Sales,Formal and informal
+PEO-L3-01,SAL-L2-02,People,Sales,Neither
+PEO-L3-01,SAL-L2-03,People,Sales,Not classified (a rating is missing)
+PEO-L3-01,SAL-L2-04,People,Sales,Informal only
+PEO-L3-01,SAL-L2-05,People,Sales,Formal only
+PEO-L3-01,SAL-L2-06,People,Sales,Formal and informal
+PEO-L3-01,SAL-L3-01,People,Sales,Informal only
+PEO-L3-01,PEO-L4-01,People,People,Formal and informal
+PEO-L3-01,PEO-L2-01,People,People,Formal and informal
+PEO-L3-01,PEO-L2-02,People,People,Formal and informal
+PEO-L3-01,PEO-L2-03,People,People,Formal and informal
+PEO-L3-01,PEO-L3-02,People,People,Formal and informal
+PEO-L3-01,PEO-L1-01,People,People,Formal and informal
+PEO-L3-01,PEO-L2-04,People,People,Formal and informal
+PEO-L2-02,FIN-L4-01,People,Finance,Neither
+PEO-L2-02,FIN-L3-01,People,Finance,Neither
+PEO-L2-02,FIN-L2-01,People,Finance,Neither
+PEO-L2-02,FIN-L2-02,People,Finance,Neither
+PEO-L2-02,FIN-L3-02,People,Finance,Neither
+PEO-L2-02,FIN-L1-01,People,Finance,Neither
+PEO-L2-02,FIN-L3-03,People,Finance,Neither
+PEO-L2-02,FIN-L2-03,People,Finance,Neither
+PEO-L2-02,OPE-L5-01,People,Operations,Neither
+PEO-L2-02,OPE-L3-01,People,Operations,Informal only
+PEO-L2-02,OPE-L1-01,People,Operations,Neither
+PEO-L2-02,OPE-L3-02,People,Operations,Neither
+PEO-L2-02,OPE-L2-01,People,Operations,Neither
+PEO-L2-02,OPE-L3-03,People,Operations,Neither
+PEO-L2-02,OPE-L3-04,People,Operations,Neither
+PEO-L2-02,OPE-L3-05,People,Operations,Neither
+PEO-L2-02,PRO-L4-01,People,Product,Neither
+PEO-L2-02,PRO-L3-01,People,Product,Informal only
+PEO-L2-02,PRO-L2-01,People,Product,Informal only
+PEO-L2-02,PRO-L3-02,People,Product,Informal only
+PEO-L2-02,PRO-L2-02,People,Product,Neither
+PEO-L2-02,PRO-L2-03,People,Product,Not classified (a rating is missing)
+PEO-L2-02,PRO-L3-03,People,Product,Informal only
+PEO-L2-02,PRO-L2-04,People,Product,Informal only
+PEO-L2-02,SAL-L4-01,People,Sales,Formal and informal
+PEO-L2-02,SAL-L2-01,People,Sales,Formal and informal
+PEO-L2-02,SAL-L2-02,People,Sales,Neither
+PEO-L2-02,SAL-L2-03,People,Sales,Informal only
+PEO-L2-02,SAL-L2-04,People,Sales,Neither
+PEO-L2-02,SAL-L2-05,People,Sales,Neither
+PEO-L2-02,SAL-L2-06,People,Sales,Neither
+PEO-L2-02,SAL-L3-01,People,Sales,Informal only
+PEO-L2-02,PEO-L4-01,People,People,Formal and informal
+PEO-L2-02,PEO-L2-01,People,People,Formal and informal
+PEO-L2-02,PEO-L3-01,People,People,Formal and informal
+PEO-L2-02,PEO-L2-03,People,People,Formal and informal
+PEO-L2-02,PEO-L3-02,People,People,Formal and informal
+PEO-L2-02,PEO-L1-01,People,People,Formal and informal
+PEO-L2-02,PEO-L2-04,People,People,Formal and informal
+PEO-L2-03,FIN-L4-01,People,Finance,Not classified (a rating is missing)
+PEO-L2-03,FIN-L3-01,People,Finance,Neither
+PEO-L2-03,FIN-L2-01,People,Finance,Neither
+PEO-L2-03,FIN-L2-02,People,Finance,Neither
+PEO-L2-03,FIN-L3-02,People,Finance,Neither
+PEO-L2-03,FIN-L1-01,People,Finance,Neither
+PEO-L2-03,FIN-L3-03,People,Finance,Neither
+PEO-L2-03,FIN-L2-03,People,Finance,Neither
+PEO-L2-03,OPE-L5-01,People,Operations,Informal only
+PEO-L2-03,OPE-L3-01,People,Operations,Formal only
+PEO-L2-03,OPE-L1-01,People,Operations,Neither
+PEO-L2-03,OPE-L3-02,People,Operations,Neither
+PEO-L2-03,OPE-L2-01,People,Operations,Formal only
+PEO-L2-03,OPE-L3-03,People,Operations,Neither
+PEO-L2-03,OPE-L3-04,People,Operations,Formal and informal
+PEO-L2-03,OPE-L3-05,People,Operations,Neither
+PEO-L2-03,PRO-L4-01,People,Product,Neither
+PEO-L2-03,PRO-L3-01,People,Product,Neither
+PEO-L2-03,PRO-L2-01,People,Product,Formal and informal
+PEO-L2-03,PRO-L3-02,People,Product,Informal only
+PEO-L2-03,PRO-L2-02,People,Product,Neither
+PEO-L2-03,PRO-L2-03,People,Product,Informal only
+PEO-L2-03,PRO-L3-03,People,Product,Not classified (a rating is missing)
+PEO-L2-03,PRO-L2-04,People,Product,Neither
+PEO-L2-03,SAL-L4-01,People,Sales,Informal only
+PEO-L2-03,SAL-L2-01,People,Sales,Neither
+PEO-L2-03,SAL-L2-02,People,Sales,Formal and informal
+PEO-L2-03,SAL-L2-03,People,Sales,Neither
+PEO-L2-03,SAL-L2-04,People,Sales,Formal and informal
+PEO-L2-03,SAL-L2-05,People,Sales,Informal only
+PEO-L2-03,SAL-L2-06,People,Sales,Neither
+PEO-L2-03,SAL-L3-01,People,Sales,Neither
+PEO-L2-03,PEO-L4-01,People,People,Formal and informal
+PEO-L2-03,PEO-L2-01,People,People,Formal and informal
+PEO-L2-03,PEO-L3-01,People,People,Formal and informal
+PEO-L2-03,PEO-L2-02,People,People,Formal and informal
+PEO-L2-03,PEO-L3-02,People,People,Formal and informal
+PEO-L2-03,PEO-L1-01,People,People,Formal and informal
+PEO-L2-03,PEO-L2-04,People,People,Formal and informal
+PEO-L3-02,FIN-L4-01,People,Finance,Neither
+PEO-L3-02,FIN-L3-01,People,Finance,Not classified (a rating is missing)
+PEO-L3-02,FIN-L2-01,People,Finance,Neither
+PEO-L3-02,FIN-L2-02,People,Finance,Neither
+PEO-L3-02,FIN-L3-02,People,Finance,Neither
+PEO-L3-02,FIN-L1-01,People,Finance,Neither
+PEO-L3-02,FIN-L3-03,People,Finance,Neither
+PEO-L3-02,FIN-L2-03,People,Finance,Neither
+PEO-L3-02,OPE-L5-01,People,Operations,Formal and informal
+PEO-L3-02,OPE-L3-01,People,Operations,Informal only
+PEO-L3-02,OPE-L1-01,People,Operations,Informal only
+PEO-L3-02,OPE-L3-02,People,Operations,Formal and informal
+PEO-L3-02,OPE-L2-01,People,Operations,Informal only
+PEO-L3-02,OPE-L3-03,People,Operations,Neither
+PEO-L3-02,OPE-L3-04,People,Operations,Neither
+PEO-L3-02,OPE-L3-05,People,Operations,Formal and informal
+PEO-L3-02,PRO-L4-01,People,Product,Formal and informal
+PEO-L3-02,PRO-L3-01,People,Product,Formal and informal
+PEO-L3-02,PRO-L2-01,People,Product,Formal and informal
+PEO-L3-02,PRO-L3-02,People,Product,Neither
+PEO-L3-02,PRO-L2-02,People,Product,Formal and informal
+PEO-L3-02,PRO-L2-03,People,Product,Neither
+PEO-L3-02,PRO-L3-03,People,Product,Neither
+PEO-L3-02,PRO-L2-04,People,Product,Neither
+PEO-L3-02,SAL-L4-01,People,Sales,Neither
+PEO-L3-02,SAL-L2-01,People,Sales,Neither
+PEO-L3-02,SAL-L2-02,People,Sales,Informal only
+PEO-L3-02,SAL-L2-03,People,Sales,Neither
+PEO-L3-02,SAL-L2-04,People,Sales,Formal and informal
+PEO-L3-02,SAL-L2-05,People,Sales,Not classified (a rating is missing)
+PEO-L3-02,SAL-L2-06,People,Sales,Neither
+PEO-L3-02,SAL-L3-01,People,Sales,Formal and informal
+PEO-L3-02,PEO-L4-01,People,People,Formal and informal
+PEO-L3-02,PEO-L2-01,People,People,Formal and informal
+PEO-L3-02,PEO-L3-01,People,People,Formal and informal
+PEO-L3-02,PEO-L2-02,People,People,Formal and informal
+PEO-L3-02,PEO-L2-03,People,People,Formal and informal
+PEO-L3-02,PEO-L1-01,People,People,Formal and informal
+PEO-L3-02,PEO-L2-04,People,People,Formal and informal
+PEO-L1-01,FIN-L4-01,People,Finance,Neither
+PEO-L1-01,FIN-L3-01,People,Finance,Neither
+PEO-L1-01,FIN-L2-01,People,Finance,Neither
+PEO-L1-01,FIN-L2-02,People,Finance,Neither
+PEO-L1-01,FIN-L3-02,People,Finance,Neither
+PEO-L1-01,FIN-L1-01,People,Finance,Neither
+PEO-L1-01,FIN-L3-03,People,Finance,Neither
+PEO-L1-01,FIN-L2-03,People,Finance,Neither
+PEO-L1-01,OPE-L5-01,People,Operations,Neither
+PEO-L1-01,OPE-L3-01,People,Operations,Neither
+PEO-L1-01,OPE-L1-01,People,Operations,Neither
+PEO-L1-01,OPE-L3-02,People,Operations,Neither
+PEO-L1-01,OPE-L2-01,People,Operations,Neither
+PEO-L1-01,OPE-L3-03,People,Operations,Formal and informal
+PEO-L1-01,OPE-L3-04,People,Operations,Informal only
+PEO-L1-01,OPE-L3-05,People,Operations,Informal only
+PEO-L1-01,PRO-L4-01,People,Product,Neither
+PEO-L1-01,PRO-L3-01,People,Product,Informal only
+PEO-L1-01,PRO-L2-01,People,Product,Informal only
+PEO-L1-01,PRO-L3-02,People,Product,Neither
+PEO-L1-01,PRO-L2-02,People,Product,Neither
+PEO-L1-01,PRO-L2-03,People,Product,Informal only
+PEO-L1-01,PRO-L3-03,People,Product,Neither
+PEO-L1-01,PRO-L2-04,People,Product,Formal and informal
+PEO-L1-01,SAL-L4-01,People,Sales,Neither
+PEO-L1-01,SAL-L2-01,People,Sales,Neither
+PEO-L1-01,SAL-L2-02,People,Sales,Neither
+PEO-L1-01,SAL-L2-03,People,Sales,Neither
+PEO-L1-01,SAL-L2-04,People,Sales,Not classified (a rating is missing)
+PEO-L1-01,SAL-L2-05,People,Sales,Neither
+PEO-L1-01,SAL-L2-06,People,Sales,Neither
+PEO-L1-01,SAL-L3-01,People,Sales,Informal only
+PEO-L1-01,PEO-L4-01,People,People,Formal and informal
+PEO-L1-01,PEO-L2-01,People,People,Formal and informal
+PEO-L1-01,PEO-L3-01,People,People,Formal and informal
+PEO-L1-01,PEO-L2-02,People,People,Formal and informal
+PEO-L1-01,PEO-L2-03,People,People,Formal and informal
+PEO-L1-01,PEO-L3-02,People,People,Formal and informal
+PEO-L1-01,PEO-L2-04,People,People,Formal and informal
+PEO-L2-04,FIN-L4-01,People,Finance,Neither
+PEO-L2-04,FIN-L3-01,People,Finance,Neither
+PEO-L2-04,FIN-L2-01,People,Finance,Neither
+PEO-L2-04,FIN-L2-02,People,Finance,Neither
+PEO-L2-04,FIN-L3-02,People,Finance,Neither
+PEO-L2-04,FIN-L1-01,People,Finance,Neither
+PEO-L2-04,FIN-L3-03,People,Finance,Neither
+PEO-L2-04,FIN-L2-03,People,Finance,Neither
+PEO-L2-04,OPE-L5-01,People,Operations,Neither
+PEO-L2-04,OPE-L3-01,People,Operations,Informal only
+PEO-L2-04,OPE-L1-01,People,Operations,Neither
+PEO-L2-04,OPE-L3-02,People,Operations,Neither
+PEO-L2-04,OPE-L2-01,People,Operations,Formal only
+PEO-L2-04,OPE-L3-03,People,Operations,Informal only
+PEO-L2-04,OPE-L3-04,People,Operations,Neither
+PEO-L2-04,OPE-L3-05,People,Operations,Neither
+PEO-L2-04,PRO-L4-01,People,Product,Neither
+PEO-L2-04,PRO-L3-01,People,Product,Neither
+PEO-L2-04,PRO-L2-01,People,Product,Neither
+PEO-L2-04,PRO-L3-02,People,Product,Neither
+PEO-L2-04,PRO-L2-02,People,Product,Not classified (a rating is missing)
+PEO-L2-04,PRO-L2-03,People,Product,Neither
+PEO-L2-04,PRO-L3-03,People,Product,Formal and informal
+PEO-L2-04,PRO-L2-04,People,Product,Neither
+PEO-L2-04,SAL-L4-01,People,Sales,Formal and informal
+PEO-L2-04,SAL-L2-01,People,Sales,Informal only
+PEO-L2-04,SAL-L2-02,People,Sales,Not classified (a rating is missing)
+PEO-L2-04,SAL-L2-03,People,Sales,Formal and informal
+PEO-L2-04,SAL-L2-04,People,Sales,Formal and informal
+PEO-L2-04,SAL-L2-05,People,Sales,Neither
+PEO-L2-04,SAL-L2-06,People,Sales,Neither
+PEO-L2-04,SAL-L3-01,People,Sales,Neither
+PEO-L2-04,PEO-L4-01,People,People,Formal and informal
+PEO-L2-04,PEO-L2-01,People,People,Formal and informal
+PEO-L2-04,PEO-L3-01,People,People,Formal and informal
+PEO-L2-04,PEO-L2-02,People,People,Formal and informal
+PEO-L2-04,PEO-L2-03,People,People,Formal and informal
+PEO-L2-04,PEO-L3-02,People,People,Formal and informal
+PEO-L2-04,PEO-L1-01,People,People,Formal and informal

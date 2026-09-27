@@ -258,6 +258,11 @@ export class MapController {
     return this.layout.positions;
   }
 
+  /** The view on screen, for the map export: the zoom transform and the canvas size in CSS pixels. */
+  viewport(): { transform: Transform; width: number; height: number } {
+    return { transform: { ...this.transform }, width: this.width, height: this.height };
+  }
+
   screenOf(index: number): Point | null {
     const p = this.layout.positions[index];
     if (!p) return null;
