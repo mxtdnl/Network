@@ -144,6 +144,9 @@ describe('save → load round trip', () => {
 
 describe('schema versions and migrations', () => {
   const v2 = () => JSON.parse(serialiseProject(richProject())) as Record<string, unknown>;
+  // The version 1 and 2 fixtures were written by Graticule 0.2.0, which their
+  // `app` field records; a migration keeps it.
+  const writtenBy = { name: 'Graticule', version: '0.2.0' };
 
   it('has two registered steps, from version 1 to 2 and from 2 to 3', () => {
     expect(MIGRATIONS.map((m) => [m.from, m.to])).toEqual([
@@ -157,7 +160,7 @@ describe('schema versions and migrations', () => {
     const loaded = parseProject(V2_PROJECT);
     expect(loaded.schema_version).toBe(3);
     expect(loaded.surveys).toStrictEqual([]);
-    expect(loaded).toStrictEqual(richProject());
+    expect(loaded).toStrictEqual({ ...richProject(), app: writtenBy });
     expect(loaded.ties.every((t) => t.source === undefined)).toBe(true);
     expect(parseProject(serialiseProject(loaded))).toStrictEqual(loaded);
   });
@@ -166,7 +169,11 @@ describe('schema versions and migrations', () => {
     const loaded = parseProject(V1_PROJECT);
     expect(loaded.schema_version).toBe(3);
     // Everything but the saved views and the version is unchanged.
-    expect({ ...loaded, saved_views: [] }).toStrictEqual({ ...richProject(), saved_views: [] });
+    expect({ ...loaded, saved_views: [] }).toStrictEqual({
+      ...richProject(),
+      app: writtenBy,
+      saved_views: [],
+    });
     expect(loaded.saved_views).toStrictEqual([V1_VIEW_MIGRATED]);
     // And the migrated file round-trips as version 3.
     expect(parseProject(serialiseProject(loaded))).toStrictEqual(loaded);

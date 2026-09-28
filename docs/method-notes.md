@@ -1,6 +1,8 @@
 # Method notes
 
-These notes define every metric Graticule computes: what it means in plain English, the formula the engine evaluates, and the caveats a reader needs. The in-app explanations are drawn from this text. Where Graticule's convention differs from NetworkX, the difference is stated and the reference fixtures apply the same convention (see "Reference values" at the end).
+These notes define every metric Graticule computes: what it means in plain English, the formula the engine evaluates, and the caveats a reader needs. They also state every rule and threshold that shapes a result: the insight rules (section 8), survey collection (section 9), the relationship layers (section 10), and the rules for data, display and exports (section 11). The in-app explanations are drawn from this text, and the notes can be read in Graticule from Help → Method notes. Where Graticule's convention differs from NetworkX, the difference is stated and the reference fixtures apply the same convention (section 7). How to use each measure in practice is in the [user guide](user-guide.md); references are in section 12.
+
+**Design.** Graticule uses a whole-network (roster) design: each member rates every other member on each active relationship variable (layer). Ties are directed: A's rating of B may differ from B's rating of A. For general concepts (nodes, weighted and directed edges, centrality, community structure and stability), see Hevey, D. (2018). Network analysis: a brief overview and tutorial. *Health Psychology and Behavioral Medicine*. Much of that paper concerns networks of psychological variables estimated statistically. Those estimation methods do not apply here, because ties are directly observed ratings between people. Graticule is descriptive, not diagnostic: it reports network structure and does not evaluate individuals.
 
 The analysis engine is `src/engine/`. Formulas below use this notation:
 
@@ -67,6 +69,24 @@ A metric that cannot be computed for a member is shown as "Not defined" with the
 ## 3. Node metrics
 
 Computed for every unsigned layer, the positive sub-layer of each signed layer, and the composite. In the directed view in- and out- versions are reported separately; in the symmetrised view there is one of each.
+
+The app names each metric in plain words; the technical name is given in its explanation (the information button beside it in the member panel).
+
+| Name in the app | Metric | View |
+|---|---|---|
+| Received strength, Given strength | In-strength, out-strength | Directed |
+| Strength | Strength | Mutual (symmetrised) |
+| Connections in, Connections out | In-degree, out-degree | Directed |
+| Connections | Degree | Mutual |
+| Bridging | Betweenness (weighted); "Bridging, every tie counted as 1" is the binary version | Both |
+| Reach from others, Reach to others | Harmonic closeness, incoming and outgoing | Directed |
+| Reach | Harmonic closeness | Mutual |
+| Ties to the well connected | Eigenvector centrality | Both |
+| Constraint | Burt's constraint | Both |
+| Non-redundant contacts | Effective size | Both |
+| Local clustering | Local clustering coefficient | Both |
+
+**Ranks.** The member panel shows each value with its rank among the members: 1 is the highest value. Tied values share a range ("22–24"), and a value that is not defined has no rank ("–"). Rank ranges from resampling (the bootstrap below) replace the single rank of the chosen metric once they have been run; their percentiles are rounded outwards to whole ranks. A rank orders positions in this network on this layer; it is not a score of the person.
 
 ### 3.1 Negative sub-layers
 
@@ -295,7 +315,7 @@ One rule applies to every preset: the layer that defines it has twice the raw we
 | Relationship health | connection strength, benevolence-based trust, interpersonal safety and energy 0.2 each | valence as a multiplier, energy as positive ratings |
 | Custom | the analyst's own slider values; a layer never moved uses its default weight (1) | as chosen |
 
-Why these layers. Formal structure uses the ties created by role or process: formal collaboration (defined in spec §4.2 as required by role, process or reporting line) and workflow dependency. Informal network uses discretionary ties: informal collaboration, advice (the core informal relation in Cross & Parker, 2004) and idea sharing. Neither uses connection strength, so the two presets differ only in what defines them. Relationship health sums relational layers and lets valence, the overall affective quality of the relationship, scale the result, so a negative relationship lowers the composite (by up to half) instead of being scored like a neutral one. It leaves out competence-based trust, which concerns expertise rather than the relationship, and the conflict layers, which are frequencies that the composite could only add, so frequent conflict would raise the score.
+Why these layers. Formal structure uses the ties created by role or process: formal collaboration (defined in spec §4.2 as required by role, process or reporting line) and workflow dependency. Informal network uses discretionary ties: informal collaboration, advice (a core ONA relation: Cross & Parker, 2004, *The Hidden Power of Social Networks*) and idea sharing. Neither uses connection strength, so the two presets differ only in what defines them. Relationship health sums relational layers and lets valence, the overall affective quality of the relationship, scale the result, so a negative relationship lowers the composite (by up to half) instead of being scored like a neutral one. It leaves out competence-based trust, which concerns expertise rather than the relationship, and the conflict layers, which are frequencies that the composite could only add, so frequent conflict would raise the score.
 
 With only the four core layers enabled, Formal structure is formal collaboration alone (1.00), Informal network is informal collaboration alone (1.00), and Relationship health is connection strength (1.00) scaled by valence.
 
@@ -431,4 +451,148 @@ The analyst can also name colleagues every respondent is asked about, whether or
 
 ### Completion-time estimate
 
-Estimated time = 60 s to read the introduction and agree + 5 s per rating + (with selection) 2 s per colleague considered, where ratings = colleagues × questions for a full roster, or, with selection, the larger of the expected number of selections (default 12) and the number of required colleagues, × questions. These are conventions, not measurements; the owner approved them as proposed (CLAUDE.md Q31). The warning limit defaults to 15 minutes.
+Estimated time = 60 s to read the introduction and agree + 5 s per rating + (with selection) 2 s per colleague considered, where ratings = colleagues × questions for a full roster, or, with selection, the larger of the expected number of selections (default 12) and the number of required colleagues, at most the number of colleagues, × questions. The result is rounded up to whole minutes, and is at least 1 minute. These are conventions, not measurements; the owner approved them as proposed (CLAUDE.md Q31). The warning limit defaults to 15 minutes; above it, the setup warns and suggests fewer layers or selection first.
+
+### Survey rules and limits
+
+| Rule | Value |
+|---|---|
+| Link length | A survey link is issued only if it is at most 2,000 characters long. Longer surveys, or every survey when the analyst chooses "Always use a survey file with short links", use a shared survey file (`.graticule-survey`) and a short personal link (about 110 characters) that carries the file's fingerprint; a file that does not match the fingerprint is refused |
+| Passphrase | At least 12 characters, no composition rules; it protects the private key with PBKDF2-HMAC-SHA-256 at 600,000 iterations and a random salt |
+| Key backup | The survey cannot be created until the analyst has downloaded the key backup and opened it again with the passphrase |
+| Texts | A survey cannot be issued without a title, an introduction, a confidentiality statement and return instructions |
+| Tokens | 128 random bits per respondent; survey ids 64 bits |
+| Receipt code | The first 40 bits of the SHA-256 of the encrypted response, as eight characters (`XXXX-XXXX`) |
+| Import order | Unreadable, already imported (same receipt: changes nothing), survey closed, another survey, another key, failed decryption (changed or damaged), unknown version, unknown token, token that does not match the roster position; each rejected file is logged with its reason |
+| Duplicates | Two responses with one token: the later submission time is kept, and its ties replace the earlier response's self-reported ties as a whole |
+| Conflicts | A response never overwrites a rating from another source (an imported file or matrix entry); the conflict is reported in the validation report |
+| Versions | Changing the roster, the questions, their wording or scales, the entry method or the shared attributes after links are issued creates a new version. Earlier links answer their own version; their responses are mapped to the current roster and layers by member id and layer key, and dropped layers, dropped colleagues and colleagues not asked are listed, never guessed |
+| Burden warning | Shown when the estimate exceeds the limit (default 15 minutes) |
+| Blank answers | Respondents must answer every question for every colleague they are asked about; a blank answer from another source is imported as declined (not rated) |
+
+## 10. Relationship layers
+
+A layer is one relationship variable: every member rates every other member on it. Each layer has a key (used in ties files), a label, question wording, a scale, whether it is signed, a default weight and whether it is enabled. The question wording and labels can be edited in the Layers section; the key and scale cannot. Core layers are enabled by default and can be turned off but not deleted; optional layers are disabled by default.
+
+Scale labels: frequency scales run 0 "Never", 1 "Less than monthly", 2 "Monthly", 3 "Weekly", 4 "Several times a week", 5 "Daily"; agreement scales run from 0 "Not at all" to 5 "Completely"; signed scales run from −3 to +3 with 0 "Neutral". Every rated layer has default weight 1.
+
+**Core layers**
+
+| Layer (key) | Scale | Question wording | Meaning |
+|---|---|---|---|
+| Connection strength (`connection_strength`) | 0–5, from "No meaningful working connection" to "Very strong" | How strong is your working connection with this person? | 0 = no meaningful working connection, 5 = very strong |
+| Valence (`valence`) | −3 to +3, signed, "Very negative" to "Very positive" | Overall, how positive or negative is your working relationship with this person? | Overall affective quality of the relationship; 0 = neutral |
+| Informal collaboration (`informal_collaboration`) | 0–5 frequency, never → daily | How often do you collaborate with this person outside formal roles, processes or reporting lines? | Collaboration outside formal roles, processes or reporting lines |
+| Formal collaboration (`formal_collaboration`) | 0–5 frequency, never → daily | How often does your role, a process or a reporting line require you to collaborate with this person? | Collaboration required by role, process or reporting line |
+
+**Optional layers.** The question wording is the suggested wording from the specification; the analyst can edit it.
+
+| Layer (key) | Scale | Question wording | Notes |
+|---|---|---|---|
+| Advice and information seeking (`advice`) | 0–5 frequency | Who do you go to for work-related information or advice? | Directed. A core ONA relation (Cross & Parker, 2004, *The Hidden Power of Social Networks*) |
+| Competence-based trust (`competence_trust`) | 0–5 agreement | I rely on this person's expertise and judgement. | Kept separate from benevolence-based trust. Conceptually drawn from Mayer, Davis & Schoorman (1995) |
+| Benevolence-based trust (`benevolence_trust`) | 0–5 agreement | This person would look out for my interests. | As above |
+| Energy (`energy`) | −3 to +3, signed, "Very draining" to "Very energising" | Interactions with this person typically leave me energised / drained. | Signed. Cross & Parker (2004) |
+| Decision influence (`decision_influence`) | 0–5 agreement | This person's input materially affects my decisions. | Directed |
+| Workflow dependency (`workflow_dependency`) | 0–5 agreement | I cannot complete my work without this person's output. | Directed |
+| Knowledge awareness (`knowledge_awareness`) | 0–5 agreement | I understand what this person knows and can do. | |
+| Idea sharing (`idea_sharing`) | 0–5 agreement | I would take a new or untested idea to this person. | |
+| Interpersonal safety (`interpersonal_safety`) | 0–5 agreement | I can raise a concern or admit a mistake with this person without fear of negative consequences. | An adaptation: a one-to-one (dyadic) adaptation of psychological safety, which Edmondson (1999) defined at team level. Graticule asks it about each colleague, which is not how the construct was defined, and results should be read as such |
+| Conflict: task disagreement (`conflict_task`) | 0–5 frequency | How often do you experience task disagreement with this person? | One of two conflict sub-layers. Distinct from valence |
+| Conflict: personal friction (`conflict_personal`) | 0–5 frequency | How often do you experience personal friction with this person? | As above |
+| Primary channel (`primary_channel`) | Categories: in person, video, chat, email | Which channel do you mainly use with this person? | Categorical, not weighted |
+
+All ties are directed, whatever the layer; the "Directed" notes above repeat the specification's emphasis for relations whose direction matters most in reading them.
+
+The scales the specification leaves open are conventions of this tool (CLAUDE.md D26): the statement layers use a 0–5 agreement scale, advice and both conflict sub-layers a 0–5 frequency scale, and energy the −3 to +3 scale of valence.
+
+**How layers enter the analysis.**
+
+- Signed layers (valence, energy) are split into positive and negative sub-layers (section 1.2) and never passed to path-based metrics with negative weights (section 1.4).
+- The conflict sub-layers are frequencies, not signed: they are analysed like other unsigned layers. The composite presets leave them out (section 6, "Presets").
+- Primary channel is categorical: it is stored, entered and counted in coverage, but not analysed as a network, weighted, or included in multiplexity.
+- Layers that are turned off keep their ratings and are left out of every metric, the composite and coverage until turned on again.
+
+## 11. Rules for data, display and exports
+
+### Import and validation
+
+Members and ties are imported from CSV or XLSX files in the template layout (`public/templates/`). Nothing is coerced silently: every problem is listed with its spreadsheet row number (the header is row 1), and the analyst can import the valid rows and skip the rest, with the number skipped stated.
+
+| Rule | Detail |
+|---|---|
+| Headers | Matched without regard to case; spaces and hyphens read as underscores. Members need `id` and `display_name`; ties need `rater_id`, `ratee_id`, `variable` and `value`, with optional `wave`. Any other members column becomes a member attribute |
+| Unknown ids | A rater or ratee id that is not a member is an error |
+| Self-ratings | A member rating themselves is an error; self-pairs are never recorded |
+| Numbers | Plain decimals only: an optional sign, digits and an optional fraction. Exponents, decimal commas, the Unicode minus sign and words are non-numeric. Cells are trimmed. Decimals inside the range are accepted |
+| Range | A value outside the layer's minimum and maximum is an error |
+| Unknown variables | A `variable` that is not a layer key is an error; a close match is suggested |
+| Duplicates | Every row sharing a rater, ratee, variable and wave with another row is skipped (no "first wins"). A row repeating a rating already in the project is a duplicate, never an overwrite |
+| Empty value | Stored as not rated (`null`), never as 0, and noted |
+| `n/a` | Stored as "does not apply" (section 1.1) |
+| Categories | Matched by key on import (`in_person`, `video`, `chat`, `email`) |
+| Manager ids | `manager_id` must name another imported member; a member cannot be their own manager |
+| Waves | Empty means wave 1; otherwise a whole number from 1. Ratings for later waves are stored, and the analysis uses wave 1 only |
+| Disabled layers | Ratings for a layer that is turned off are imported and noted |
+| XLSX | The first sheet is read and other sheets are named in a note; stored values are read rather than display formats (a cell shown as 50 % is 0.5); a file that is not an XLSX package is refused |
+| Members file | Importing a members file starts a new project; a ties file alone is added to the open project |
+
+Matrix entry follows the same rules: a value is a number in the layer's range, `n/a`, or (for categorical layers) a category's key, label or one-letter code; clearing a cell removes the rating; self-pairs cannot be edited. A block pasted from a spreadsheet is written from the active cell; blank cells clear, and self-pairs, invalid values and cells outside the grid are skipped and reported. A rating edited in the matrix is recorded as entered in the matrix.
+
+Survey responses (section 9) are turned into rows and pass through the same validation.
+
+### Data coverage threshold
+
+Coverage (section 6) is compared with a threshold, 80 % by default, which the analyst can set as a whole percentage from 0 to 100 in the Coverage panel; it is saved with the project. Below it, a persistent warning under the top bar and on the map states that whole-network metrics may be unreliable, the insights panel repeats it, and the PDF report states it with the raters below the threshold. Coverage counts wave 1 on enabled layers.
+
+### Map display rules
+
+These rules change what the map draws, never a metric.
+
+| Rule | Detail |
+|---|---|
+| Ties from | The layer (or the composite) that sets which pairs are drawn, edge width, layout attraction, node size, communities and ranks; the composite by default |
+| Tie strength threshold | "Tie strength at least" (0 to 1 in steps of 0.05, default 0) hides ties below it; the legend states it. Metrics always use every tie |
+| Node size | Area linear between the smallest and largest defined value of the chosen metric, from 4 to 16 px radius; a member whose value is not defined is drawn at 2 px and listed as "Not defined" |
+| Node fill | An attribute's values in category order, at most 8 colours; further values share "Other (n groups)" and missing values "Not recorded", both grey with a dashed outline. Or the Louvain community on the chosen layer |
+| Edge width | Linear in weight, from 1 px to 3 px at weight 1 |
+| Edge colour | Valence in the current view (the directed rating, or the two directions combined by the chosen rule), on a 7-step diverging scale with a grey neutral midpoint. A pair with no valence rating is drawn in dark grey with its own legend entry, so it is never shown as neutral. With valence switched off, colour is not used |
+| Edge style | Only when both formal and informal collaboration are shown: formal only solid, informal only dashed, both solid with a parallel dashed line, neither dotted. Where one of the two is not rated, a known positive rating decides the style; otherwise it is dotted ("Neither, or not rated") |
+| Arrowheads | Directed view only, pointing from rater to rated member |
+| Layer switches | "Keep its ties" (default) only switches the encoding off; "Hide its ties" hides every pair with a tie on a switched-off layer |
+| Filters | Values of one attribute combine with OR, different attributes with AND; filtered members and their ties are hidden without moving anyone |
+| Labels | Every member is named when 60 or fewer are visible; otherwise only highlighted members; labels never overlap |
+| Ego view | The member and everyone within 1 or 2 steps along the ties shown, in either direction, after threshold and filters; applies to every view |
+| Resilience | Removed members are hidden on the map only |
+
+**Layouts.** Force-directed (d3-force): each tie pulls its two members together with strength w / (the smaller of the two members' tie counts), with repulsion between all members; the layout is settled for 300 steps before it is drawn, so nothing moves on load. Grouped: one centre per value of the chosen attribute, with weaker attraction along ties inside a group. Circular: members on a circle, one arc per group, with a gap between groups. Formal hierarchy: managers above their reports, from the formal manager attribute; cycles in reporting lines are broken; offered only when at least one member's manager is another member; informal collaboration ties are drawn over it while node size, fill and ranks still follow "Ties from". A change of layout, layer or weights moves members over 600 ms, and not at all when the system asks for reduced motion. Pinned members stay where they were dragged.
+
+Two thresholds only choose where the work is done and do not change what is drawn: maps with 3,000 or more ties are drawn in a background worker, and force or grouped layouts with 1,500 or more attractions are settled in one after the first layout.
+
+### Saved views and presentation
+
+A saved view captures the weights (preset, weights and signed treatments), the map settings (direction, rule, ties from, node size, fill, threshold, layer switches, filters, layout, grouping, ego view and highlight), every member's position and pin, and the selection (member and subgroup). It does not save the search text, the pointer tool or the zoom: a restored view is fitted to the screen. Restoring ends the explore tools (path, simulation, resampling). Presentation mode steps through the saved views in order, with each caption.
+
+### Anonymisation
+
+"Hide names" replaces every member's name, in every view and every analysis export, with a code: the first three letters of the team (or its initials or other letters, unique per team), the level, and a two-digit number within that team and level in project order, for example FIN-L3-02. A missing team or level is written X. Codes of a team and level with fewer than 3 members may still identify someone; turning names off says how many such codes there are. In free text (view names, captions, the project title in exports) members' full names are replaced as whole words, ignoring case and spacing; a first name or surname on its own is not replaced, and a full name shared by two members becomes "[name]". Member ids are left out of the member CSV while names are hidden, because ids can be names or email addresses. Survey administration files (links for mail merge, non-responders, key backups) identify people by design and are not anonymised.
+
+### Signed-layer exclusion
+
+"Leave out valence, energy and conflict" removes every signed layer and both conflict sub-layers, with all their ratings, from the project before any analysis export is made, and runs the analysis again. Every exported figure is therefore calculated as if those layers had never been collected: the composite (a Relationship health composite loses its valence multiplier), communities, insights, coverage and all metrics. The report leaves out the negative-clusters rule and the method-note sentences about those layers. The setting is saved with the project and applies to every analysis export; the analysis on screen is unchanged.
+
+### Random seed
+
+Louvain and the bootstrap draw from one seeded generator (mulberry32) with the project's random seed (default 1), so the same data, settings and seed always give the same communities and rank ranges.
+
+## 12. References
+
+Cited as they are in the specification (`spec.md` section 3 and the table in section 4.2):
+
+- Hevey, D. (2018). Network analysis: a brief overview and tutorial. *Health Psychology and Behavioral Medicine*. Used for general concepts only (see "Design" above).
+- Cross & Parker, 2004, *The Hidden Power of Social Networks*. Cited for advice and information seeking as a core ONA relation, and for the energy layer (Cross & Parker (2004)).
+- Mayer, Davis & Schoorman (1995). The conceptual source of competence-based trust, kept separate from benevolence-based trust.
+- Edmondson (1999). Psychological safety, defined at team level; the interpersonal safety layer is a one-to-one (dyadic) adaptation of it.
+
+Formulas elsewhere in these notes are attributed to their authors by name where they are used (Onnela et al., 2005, and Fagiolo, 2007, for weighted clustering; Blondel et al., 2008, for the Louvain method; Freeman, 1979, for centralisation; Krackhardt & Stern, 1988, for the E-I index; Heider, and Cartwright & Harary, for structural balance; Borgatti for effective size). These attributions name the method; they are not further sources for this tool's design. The reference values in section 7 come from NetworkX, whose versions each fixture records.
+

@@ -15,7 +15,7 @@
 
 export const SCHEMA_VERSION = 3;
 export const APP_NAME = 'Graticule';
-export const APP_VERSION = '0.2.0';
+export const APP_VERSION = '1.0.0';
 export const PROJECT_FILE_EXTENSION = '.ona.json';
 export const DEFAULT_WAVE = 1;
 

@@ -6,7 +6,7 @@ Graticule is a browser-only organisational network analysis (ONA) tool for teams
 
 `spec.md` is the single source of truth. This file records decisions made during the build. If this file and `spec.md` conflict, stop and ask the owner; do not resolve the conflict silently.
 
-Supporting documents: `docs/plan.md` (architecture, schema, metric definitions), `docs/design-system.md` (tokens and wireframes), `docs/method-notes.md` (every metric's meaning, formula and caveats, and the differences from NetworkX; the in-app explanations are drawn from it). Screenshots of each phase are in `docs/screenshots/phase-N/`.
+Supporting documents: `docs/user-guide.md` (the analyst's guide, with screenshots in `docs/user-guide/`), `docs/respondent-help.md` (one page for survey participants), `docs/plan.md` (architecture, schema, metric definitions), `docs/design-system.md` (tokens and wireframes), `docs/method-notes.md` (every metric's meaning, formula and caveats, and the differences from NetworkX; the in-app explanations are drawn from it). Screenshots of each phase are in `docs/screenshots/phase-N/`.
 
 ## Decisions
 
@@ -148,6 +148,26 @@ The audit, every issue with its fix and before and after figures, the action nam
 
 Open from Phase 8: real-device checks of respondent mode on iOS Safari and Android Chrome, and with VoiceOver and TalkBack (spec §14), could not be done in this environment (no devices or screen readers). Everything was measured in headless Chromium, including phone widths by emulation.
 
+## Phase 9: documentation and release
+
+The owner's Phase 9 brief (2026-09-28): README, user guide with anonymised screenshots, final method notes (citing only the references in spec §3 and the §4.2 table, as written there), documentation in the app's Help menu, a final check of the built site, and release v1.0.0.
+
+| # | Date | Decision | Status | Where |
+|---|---|---|---|---|
+| D115 | 2026-09-28 | In-app help. The Help menu gains User guide, Method notes and Help for respondents above Data and consent notice; each opens one wide Help dialog with a tab per document. The documents are `docs/user-guide.md`, `docs/method-notes.md` and `docs/respondent-help.md` themselves, bundled with `?raw` (as the PDF report already bundles the method notes, D108) and loaded with the dialog, so the help cannot drift from the documents and needs no network. A small Markdown reader (`src/ui/help/markdown.ts`: headings with GitHub-style anchors, paragraphs, flat lists, tables, fenced code, block quotes, images on their own line; inline code, bold, italic, links) builds plain objects that the dialog renders as React elements; no HTML is injected. Links between the three documents switch tab and scroll to the heading; web links open in a new window; links to repository files (source, `CLAUDE.md`) are shown as text. The user guide's screenshots are bundled assets (`import.meta.glob`), loaded lazily from the site's own origin, so the CSP is unchanged. Each document has a contents list of its sections. Closing the help returns focus to the Help button (the menu item that opened it no longer exists) | Proposed | `src/ui/views/HelpDialog.tsx`, `src/ui/help/markdown.ts`, `src/ui/copy/help.ts`, `src/styles/help.css` |
+| D116 | 2026-09-28 | User guide screenshots: `tests/e2e/guide.spec.ts` (`GUIDE_DIR=docs/user-guide npx playwright test tests/e2e/guide.spec.ts`), 28 JPEGs at quality 88 (3.8 MB). Anonymised: analyst screens are taken with Hide names on and checked for every demo name in the page's text and form values; survey and respondent screens use a copy of the demo whose display names are replaced by the same codes, because the respondent route always shows names; the seeded validation files have their placeholder names replaced by "Member n". The same spec checks the Help menu, links from the guide to the method notes and back, the bundled screenshots loading under the CSP, and axe on each document | Proposed | `tests/e2e/guide.spec.ts`, `docs/user-guide/` |
+| D117 | 2026-09-28 | Method notes finalised. Added: a design paragraph (whole-network design, directed ties, Hevey for general concepts only, with the spec's statement that its estimation methods do not apply); the app's plain names for each node metric and the ranking rules (section 3); survey rules and limits (section 9); section 10, the relationship layers with keys, scales, wording and the spec's notes, labelling interpersonal safety as an adaptation of Edmondson's team-level construct; section 11, rules for import and validation, matrix entry, the coverage threshold, map display rules and layouts, saved views, anonymisation, signed-layer exclusion and the random seed; section 12, references. Sections are appended rather than renumbered, because code comments, CLAUDE.md and the report (`methodNotes.ts` reads "## 8. Insight rules" and the section headings) cite the existing numbers. References: only spec §3 and the §4.2 table, as written there; no new reference was added. The earlier in-text attributions of formulas (Onnela et al., Fagiolo, Blondel et al., Freeman, Krackhardt & Stern, Heider, Cartwright & Harary, Borgatti) are kept as names where they are used and are not expanded into references (see Q34). One misquotation was corrected: the presets paragraph called advice "the core informal relation in Cross & Parker, 2004"; the spec says "A core ONA relation (Cross & Parker, 2004, *The Hidden Power of Social Networks*)" | Proposed | `docs/method-notes.md` |
+| D118 | 2026-09-28 | The one-page help for respondents (spec §14) is `docs/respondent-help.md`, written in the respondent route's wording (confidential and named, never "anonymous"), for the analyst to send with the links. It is shown in the analyst's Help dialog. It is not added to the respondent route itself, whose screens already carry the same information step by step, and whose boundary forbids analyst copy (D93) | Proposed | `docs/respondent-help.md` |
+| D119 | 2026-09-28 | Release check: `tests/e2e/release.spec.ts` loads the site in a fresh context and goes through the first-run notice, the demo, every centre view and matrix mode, both comparisons, the four layouts, every right-column tab, an insight on the map, a saved view, presentation, Hide names, the three help documents and the notice, every export (PNG at 1×, 2× and print, SVG, the three CSVs, the report, the exclusion, the table export, Save project) and the respondent route; it fails on any console error, page error, CSP violation or request to another origin. It runs against `vite preview` by default and against a deployed site with `RELEASE_URL=https://mxtdnl.github.io/network/`. From this environment the live site could not be reached (the egress policy answers 403 for `mxtdnl.github.io`), so the check ran against the production build served locally under `/network/`; the live run is for the owner after merging (Q35) | Proposed | `tests/e2e/release.spec.ts` |
+| D120 | 2026-09-28 | Version 1.0.0: `package.json` and `APP_VERSION` (written into project files and the PDF producer). The demo was regenerated, changing only `app.version`; the NetworkX fixtures were regenerated with the pinned versions, changing only the demo file's SHA-256. The two migration tests now expect the `app` field of the version 1 and 2 fixtures (written by 0.2.0) to be kept, rather than to equal the current version | Proposed | `package.json`, `src/data/schema.ts`, `src/demo/`, `tests/fixtures/` |
+
+Open from Phase 9:
+
+- **Q34 (references).** The brief allows only the references in spec §3 and the §4.2 table. The method notes also name the authors of several formulas (listed in D117), inherited from Phases 3–6. They are kept as attributions, not references. Should they stay, be removed, or be expanded into full references (which would add references the spec does not list)?
+- **Q35 (live check).** `RELEASE_URL=https://mxtdnl.github.io/network/ npx playwright test tests/e2e/release.spec.ts` should be run once this branch is merged and deployed; it could not be run here.
+- **Licence.** The repository has no licence file, so Graticule's own code is all rights reserved; the README says so. Choosing a licence is the owner's decision.
+- Real-device checks of respondent mode (Phase 8) remain open.
+
 ## Respondent mode (spec §15)
 
 Added to the spec on 2026-09-26 at the owner's request. The owner approved the spec change and D83–D92 with their proposed defaults (Q29–Q32) on 2026-09-27. D93–D101 record the Phase 6R build. D102–D104 record the owner's answer to Q33 (2026-09-27), which amends D88, D96 and D100.
@@ -192,7 +212,7 @@ Added to the spec on 2026-09-26 at the owner's request. The owner approved the s
 | Survey administration files labelled as personal data and exempt from anonymisation (§11) | 6R builds them; confirmed in Phase 7: they are saved from the Survey tab, never through `src/ui/export/`, so neither export setting applies to them |
 | PDF report coverage section includes survey response rates (§14) | 7 |
 | Real-device checks on iOS Safari and Android Chrome, VoiceOver and TalkBack; phone performance of PBKDF2 and encryption (§14) | 8 (not done: no devices in the build environment; for the owner) |
-| Guide to running a survey; one-page respondent help; README (§14) | 9 |
+| Guide to running a survey; one-page respondent help; README (§14) | 9 (done: `docs/user-guide.md` "Running a roster survey", D118, `README.md`) |
 
 ### Server transport (future, nothing built)
 
@@ -310,7 +330,7 @@ On 2026-09-26 the owner approved `docs/plan.md` §6 Q1–Q17 with their proposed
 
 ## Open questions
 
-None.
+Q34 (references in the method notes) and Q35 (the release check against the live site), under Phase 9.
 
 ## Phase status
 
@@ -326,4 +346,4 @@ None.
 | 6R | Respondent mode (spec §15) | Built; awaiting owner acceptance | — |
 | 7 | Exports (map PNG and SVG, CSV, PDF report; anonymisation and signed-layer exclusion) | Complete | 2026-09-27 |
 | 8 | Design, accessibility and performance pass | Built; awaiting owner acceptance (real-device checks open) | — |
-| 9 | Documentation and release | Not started | — |
+| 9 | Documentation and release | Complete (live Pages check after merge: Q35) | — |

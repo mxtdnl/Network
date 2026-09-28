@@ -1,0 +1,152 @@
+/* In-app help (Help menu): the documents in docs/, read in a wide dialog.
+   Every value comes from tokens.css. Hierarchy by size, weight and space. */
+
+.help .tabs__list {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-inline: 0;
+  padding-bottom: var(--s-2);
+  background: var(--paper);
+}
+
+.help .tabs__panel {
+  padding: var(--s-4) 0 0;
+}
+
+.help__status {
+  color: var(--graphite);
+}
+
+.help__document {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+.help__contents-heading {
+  font-weight: var(--weight-semibold);
+  margin-bottom: var(--s-2);
+}
+
+.help__contents ul {
+  columns: 2;
+  column-gap: var(--s-6);
+  list-style: none;
+}
+
+.help__contents li {
+  break-inside: avoid;
+  padding-block: var(--s-1);
+}
+
+.help__article {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+/* Running text keeps to the measure; tables, code and screenshots use the dialog's width. */
+.help__article > p,
+.help__article > ul,
+.help__article > ol,
+.help__article > .help__quote {
+  max-width: var(--measure);
+}
+
+.help__heading {
+  font-weight: var(--weight-semibold);
+  scroll-margin-top: calc(var(--control-height) + var(--s-5));
+}
+
+.help__heading--2 {
+  font-size: var(--t-2-size);
+  line-height: var(--t-2-line);
+  margin-top: var(--s-5);
+}
+
+.help__heading--3 {
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+  margin-top: var(--s-3);
+}
+
+.help__heading--4,
+.help__heading--5,
+.help__heading--6 {
+  font-size: var(--t-0-size);
+  line-height: var(--t-0-line);
+}
+
+.help__article ul,
+.help__article ol {
+  margin: 0;
+  padding-inline-start: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.help__article code {
+  font-family: var(--font-condensed);
+  font-weight: var(--weight-medium);
+}
+
+.help__code {
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-control);
+  background: var(--field);
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.help__quote {
+  margin: 0;
+  padding-inline-start: var(--s-4);
+  border-inline-start: var(--indicator-width) solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.help__table {
+  overflow-x: auto;
+}
+
+.help__table table {
+  border-collapse: collapse;
+}
+
+.help__table th {
+  text-align: start;
+  vertical-align: bottom;
+  font-weight: var(--weight-medium);
+  color: var(--graphite);
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+  border-bottom: var(--line-width) solid var(--stone);
+  padding: var(--s-1) var(--s-4) var(--s-2) 0;
+}
+
+.help__table td {
+  vertical-align: top;
+  padding: var(--s-1) var(--s-4) var(--s-1) 0;
+}
+
+.help__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: var(--line-width) solid var(--field);
+  border-radius: var(--r-control);
+}
+
+[data-layout='phone'] .help__contents ul {
+  columns: 1;
+}
+
+/* The Help menu's wrapper in the top bar takes no part in its layout. */
+.top-bar__help {
+  display: contents;
+}
