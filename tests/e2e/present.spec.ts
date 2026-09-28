@@ -267,6 +267,8 @@ test('presentation: steps through saved views with captions, keys and Escape, le
   await rightTab(page, 'Views').click();
   await expect(right(page).getByRole('listitem')).toHaveCount(3);
 
+  // Let the workspace map finish drawing first, so only presentation text is recorded.
+  await settled(page);
   await drawnText(page);
   await page.getByRole('banner').getByRole('button', { name: 'Present' }).click();
   const region = page.getByRole('region', { name: 'Potential brokers' });

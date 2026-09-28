@@ -133,6 +133,19 @@ Open for Phase 8:
 - The map in the report keeps the demo's dense composite (873 ties); a report may want the map of a saved view instead. A choice of view could be added to the dialog.
 - Characters outside Fira's Latin files are written out in the method notes ("r = (v − min)…" is fine; "γ" becomes "gamma"). Adding Fira's Greek and symbol subsets would set them as written.
 
+## Phase 8: design, accessibility and performance pass
+
+The audit, every issue with its fix and before and after figures, the action names and the measurements are in `docs/design-audit.md`; screenshots and axe results in `docs/screenshots/phase-8/`.
+
+| # | Date | Decision | Status | Where |
+|---|---|---|---|---|
+| D111 | 2026-09-28 | Large layouts settle in a worker. After the first layout, a force or grouped layout with 1,500 or more attractions is not settled on the main thread: `ForceLayout.prepare` returns a `SettleJob` (starting positions, velocities, pins, radii, attractions), `layoutWorker.ts` runs `settleJob` with the same forces and 300 ticks, and `accept` applies the result, builds the main-thread simulation for dragging at the settled `alpha`, and animates from the drawn positions. Until then the layout keeps its previous key and positions; a result the layout has moved on from is ignored; if the worker fails, the job settles on the main thread. `update` (used by the comparison views and exports) stays synchronous. The first layout also stays synchronous, so nothing moves on load. Result identical to the main thread (unit test). Measured: longest frame of a weight change at 250 members and 10,187 ties 450 → 50 ms. Also: number formatters cached in `copy/map.ts` (about 86 ms per redraw), and `percentile` moved to `engine/metrics/percentile.ts` so graphology leaves the workspace bundle | Proposed | `src/ui/map/layout.ts`, `layoutWorker.ts`, `controller.ts` |
+| D112 | 2026-09-28 | Screen sizes (spec §12). The layout is chosen by script from the tokens `--workspace-desktop` (1280px) and `--workspace-tablet` (720px) and set as `data-layout` on the root (`ui/state/layoutMode.ts`, `styles/layout.css`), because custom properties cannot be used in `@media`. A change applies once the width has held for `--workspace-settle` (300 ms): Chromium briefly reports a 1 px viewport while saving a download, which otherwise switched to the phone layout and lost a survey being set up. Desktop: unchanged. Tablet: controls column beside the view, the view sticky while controls scroll, the detail column full width below (reading and focus order unchanged); the top bar wraps; presentation mode moves its legend under the map. Phone: one column; the controls fold under "Weights and map settings" (a `<details>`); read-only: no import (empty state, Project menu), no Survey tab, no Layers section, no rating entry, views can be shown and presented but not saved, updated, renamed, reordered, deleted or captioned, no "Save as view" on insights, coverage threshold read-only. Exploration (weights, map settings, explore tools, export) stays, as it does not change the project | Proposed | `src/ui/views/Workspace.tsx`, `src/styles/layout.css` |
+| D113 | 2026-09-28 | Ties with no valence rating are drawn in `graphite` instead of `cat-other` (amends D53): `cat-other` is 1.92:1 on the map ground, below 3:1 for data marks. Graphite is 7.14:1 and at least ΔE00 9.7 from every valence step under normal vision and the three simulations (lowest: +3 under protanopia), so a missing rating is still not read as neutral. `ink` (ΔE00 ≥ 17.3) was rejected because it would give missing data the strongest weight on the map and match the shortest-path line. Legend, SVG, PNG and PDF follow. **For owner review:** this changes a data encoding | Proposed | `src/ui/map/scene.ts`, `src/ui/export/document.ts`, `src/styles/map.css` |
+| D114 | 2026-09-28 | Audit fixes that change names or behaviour: one name per action ("Import survey data", "Show ego view", "Simulate removal", confirmations "Open project" and "Load demo", export statuses naming what was exported, "Rename view" with "View renamed"); highlighted map names keep their place in the cached picture (no duplicate names); an insight or view highlight refits the map once the legend has grown; the notice text scrolls under a fixed title and Continue; the map legend can take focus to scroll; Cancel on the validation report; the survey tools and Papa Parse load on demand. Tests: `tests/e2e/audit.spec.ts` (screenshots and axe at 7 sizes, phone read-only, colour-vision simulations, focus indicators, reduced motion, keyboard walkthrough), `tests/e2e/perf.spec.ts`, `tests/unit/contrast.test.ts` (with `colour.ts`), `tests/unit/phase8.test.ts`. Existing tests: `present.spec.ts` waits for the workspace map to settle before recording presentation text (a late workspace redraw was recorded under load), and `map.spec.ts`'s first test has a 60 s timeout (it takes about 27 s alone, on `main` too) | Proposed | `src/ui/`, `tests/` |
+
+Open from Phase 8: real-device checks of respondent mode on iOS Safari and Android Chrome, and with VoiceOver and TalkBack (spec §14), could not be done in this environment (no devices or screen readers). Everything was measured in headless Chromium, including phone widths by emulation.
+
 ## Respondent mode (spec §15)
 
 Added to the spec on 2026-09-26 at the owner's request. The owner approved the spec change and D83–D92 with their proposed defaults (Q29–Q32) on 2026-09-27. D93–D101 record the Phase 6R build. D102–D104 record the owner's answer to Q33 (2026-09-27), which amends D88, D96 and D100.
@@ -176,7 +189,7 @@ Added to the spec on 2026-09-26 at the owner's request. The owner approved the s
 | Method notes: what the encryption does and does not protect; completion-time estimate constants | 6R |
 | Survey administration files labelled as personal data and exempt from anonymisation (§11) | 6R builds them; confirmed in Phase 7: they are saved from the Survey tab, never through `src/ui/export/`, so neither export setting applies to them |
 | PDF report coverage section includes survey response rates (§14) | 7 |
-| Real-device checks on iOS Safari and Android Chrome, VoiceOver and TalkBack; phone performance of PBKDF2 and encryption (§14) | 8 |
+| Real-device checks on iOS Safari and Android Chrome, VoiceOver and TalkBack; phone performance of PBKDF2 and encryption (§14) | 8 (not done: no devices in the build environment; for the owner) |
 | Guide to running a survey; one-page respondent help; README (§14) | 9 |
 
 ### Server transport (future, nothing built)
@@ -310,5 +323,5 @@ None.
 | 6 | Insights, saved views, presentation mode, anonymisation, ethics notice | Built; awaiting owner acceptance | — |
 | 6R | Respondent mode (spec §15) | Built; awaiting owner acceptance | — |
 | 7 | Exports (map PNG and SVG, CSV, PDF report; anonymisation and signed-layer exclusion) | Complete | 2026-09-27 |
-| 8 | Design, accessibility and performance pass | Not started | — |
+| 8 | Design, accessibility and performance pass | Built; awaiting owner acceptance (real-device checks open) | — |
 | 9 | Documentation and release | Not started | — |

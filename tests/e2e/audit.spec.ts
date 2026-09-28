@@ -91,7 +91,13 @@ for (const size of SIZES) {
     const capture = async (state: string) => {
       states.push(state);
       await page.evaluate(() => document.fonts.ready);
-      await page.screenshot({ path: join(screenshotDir, `${size.name}-${state}.png`) });
+      // JPEG keeps some 200 screenshots to a size a repository can carry; the
+      // colour-vision simulations stay PNG, where exact colour matters.
+      await page.screenshot({
+        path: join(screenshotDir, `${size.name}-${state}.jpg`),
+        type: 'jpeg',
+        quality: 85,
+      });
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
         .analyze();
@@ -285,7 +291,12 @@ test('phone: the workspace is read-only and usable at 390 px', async ({ page }) 
   const capture = async (state: string) => {
     states.push(state);
     await page.evaluate(() => document.fonts.ready);
-    await page.screenshot({ path: join(screenshotDir, `phone-390-${state}.png`), fullPage: true });
+    await page.screenshot({
+      path: join(screenshotDir, `phone-390-${state}.jpg`),
+      type: 'jpeg',
+      quality: 85,
+      fullPage: true,
+    });
     // No horizontal scrolling of the page (spec §12).
     const wide = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
@@ -561,4 +572,105 @@ test('reduced motion: no transition or animation runs', async ({ page }) => {
   expect(await page.evaluate(() => (window as unknown as { __moved: boolean }).__moved)).toBe(
     false,
   );
+});
+
+test('keyboard walkthrough: every analyst flow by keyboard alone', async ({ page }) => {
+  test.setTimeout(300_000);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('./');
+  const key = (k: string) => page.keyboard.press(k);
+  const focused = () =>
+    page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      return (el?.getAttribute('aria-label') ?? el?.textContent ?? '').trim();
+    });
+
+  // First-run notice: focus starts on Continue.
+  await expect(page.getByRole('button', { name: 'Continue' })).toBeFocused();
+  await key('Enter');
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+
+  // Project menu: open with Enter, move with arrows, choose with Enter.
+  await page.getByRole('banner').getByRole('button', { name: 'Project' }).focus();
+  await key('Enter');
+  await expect(page.getByRole('menuitem', { name: 'Open project…' })).toBeFocused();
+  await key('Escape');
+  await expect(page.getByRole('banner').getByRole('button', { name: 'Project' })).toBeFocused();
+  await key('ArrowDown');
+  for (let i = 0; i < 3; i++) await key('ArrowDown');
+  expect(await focused()).toBe('Load demo');
+  await key('Enter');
+  await expect(nodes(page)).toHaveCount(40, { timeout: 60_000 });
+  await settled(page);
+
+  // Tabs move with the arrow keys.
+  await centreTab(page, 'Map').focus();
+  await key('ArrowRight');
+  await expect(centreTab(page, 'Matrix')).toBeFocused();
+  await expect(centreTab(page, 'Matrix')).toHaveAttribute('aria-selected', 'true');
+  await key('ArrowLeft');
+
+  // Map: a member by focus, neighbours by arrow keys, the panel by Enter, back by Escape.
+  const first = nodes(page).filter({ hasText: /^Lior Theodolite/ });
+  await first.focus();
+  await key('ArrowRight');
+  expect(await focused()).not.toContain('Lior Theodolite');
+  await key('Enter');
+  await expect(right(page).getByRole('heading', { level: 2 }).first()).toBeVisible();
+  await key('Escape');
+  await key('+');
+  await key('0');
+
+  // Adjacency matrix: arrow keys move, Enter selects the row's member.
+  await centreTab(page, 'Matrix').click();
+  const grid = page.getByRole('grid');
+  await grid.focus();
+  await key('ArrowDown');
+  await key('ArrowRight');
+  await key('Enter');
+  await expect(rightTab(page, 'Member')).toHaveAttribute('aria-selected', 'true');
+
+  // Metrics table: sort by a column header button.
+  await centreTab(page, 'Table').click();
+  await page.getByRole('button', { name: 'Sort by Given strength' }).focus();
+  await key('Enter');
+
+  // Saved views: name and save, then present and step, then leave.
+  await centreTab(page, 'Map').click();
+  await rightTab(page, 'Views').click();
+  await page.getByLabel('Name of the new view').focus();
+  await page.keyboard.type('Keyboard view');
+  await key('Enter');
+  await expect(page.getByRole('status').filter({ hasText: 'View saved' })).toBeVisible();
+  await page.getByRole('banner').getByRole('button', { name: 'Present' }).focus();
+  await key('Enter');
+  await expect(page.locator('.presentation')).toBeVisible();
+  await key('ArrowRight');
+  await key('Escape');
+  await expect(page.locator('.presentation')).toHaveCount(0);
+
+  // Dialogs: Export and Import open by Enter and close by Escape, returning focus.
+  const exportButton = page.getByRole('banner').getByRole('button', { name: 'Export' });
+  await exportButton.focus();
+  await key('Enter');
+  await expect(page.getByRole('dialog', { name: 'Export' })).toBeVisible();
+  await key('Escape');
+  await expect(exportButton).toBeFocused();
+
+  // Explore: ego view chosen from a select and started by keyboard.
+  await rightTab(page, 'Explore').click();
+  await right(page)
+    .getByRole('combobox', { name: 'Member' })
+    .first()
+    .selectOption({ label: 'Lior Theodolite' });
+  await right(page).getByRole('button', { name: 'Show ego view' }).focus();
+  await key('Enter');
+  await expect(page.getByRole('button', { name: 'Show everyone' }).first()).toBeVisible();
+
+  // Help menu reopens the notice.
+  await page.getByRole('banner').getByRole('button', { name: 'Help' }).focus();
+  await key('Enter');
+  await key('Enter');
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await key('Escape');
 });

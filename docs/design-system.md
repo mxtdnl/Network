@@ -317,7 +317,7 @@ Alignment rationale:
 │ Informal collaboration  ▸                │
 │ Valence                 ▸                │
 │                                          │
-│ Show ego network   Remove in simulation  │  text buttons
+│ Show ego view      Simulate removal      │  text buttons
 └─────────────────────────────────────────┘
 ```
 

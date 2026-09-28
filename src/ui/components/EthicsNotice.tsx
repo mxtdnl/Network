@@ -14,11 +14,16 @@ export function EthicsNotice({ open, onClose }: EthicsNoticeProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const introId = useId();
+  const confirmRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
+    if (open && !dialog.open) {
+      dialog.showModal();
+      // The scrolling text can take focus too; the confirm button is where focus starts.
+      confirmRef.current?.focus();
+    }
     if (!open && dialog.open) dialog.close();
   }, [open]);
 
@@ -59,6 +64,7 @@ export function EthicsNotice({ open, onClose }: EthicsNoticeProps) {
       </div>
       <div className="dialog__actions">
         <button
+          ref={confirmRef}
           type="button"
           className="button button--primary"
           onClick={() => {

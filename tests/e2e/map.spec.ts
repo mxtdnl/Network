@@ -84,6 +84,9 @@ const shot = (page: Page, name: string) =>
 test('load demo, map renders, filter, select a member, open the panel, traverse by keyboard', async ({
   page,
 }) => {
+  // Runs about 27 s alone (the same on main before Phase 8), so the default
+  // 30 s left no margin when other tests share the machine.
+  test.setTimeout(60_000);
   await start(page);
   await loadDemo(page);
   const map = page.getByRole('tabpanel', { name: 'Map' });

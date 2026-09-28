@@ -8,7 +8,14 @@ const INITIAL_ROWS = 50;
 
 // One file's section of the validation report (spec §5): counts, then every
 // problem with its row number, then notes on what was read without rejection.
-export function FileReportSection({ report }: { report: FileReport }) {
+export function FileReportSection({
+  report,
+  heading,
+}: {
+  report: FileReport;
+  /** Replaces the file-kind heading, e.g. for survey responses checked as ties. */
+  heading?: string;
+}) {
   const headingId = useId();
   const [showAll, setShowAll] = useState(false);
   const errors = report.issues.filter((i) => i.severity === 'error');
@@ -18,7 +25,7 @@ export function FileReportSection({ report }: { report: FileReport }) {
   return (
     <section className="report__file" aria-labelledby={headingId}>
       <h3 id={headingId} className="report__file-heading">
-        {importCopy.file[report.file]}
+        {heading ?? importCopy.file[report.file]}
         <span className="report__file-name">{report.fileName}</span>
       </h3>
       {report.blocked ? (

@@ -485,7 +485,9 @@ function Collect({ project, survey }: { project: Project; survey: Survey }) {
               </ul>
             </>
           )}
-          {plan.accepted.length > 0 && <FileReportSection report={plan.report} />}
+          {plan.accepted.length > 0 && (
+            <FileReportSection report={plan.report} heading={D.planReportHeading} />
+          )}
           <div className="survey-setup__actions">
             <button
               type="button"

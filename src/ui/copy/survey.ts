@@ -183,6 +183,7 @@ export const surveyCopy = {
     pastedSource: (n: number) => `Pasted text ${String(n)}`,
 
     planHeading: 'Before you import',
+    planReportHeading: 'Survey responses',
     planAccepted: (n: number) => `${plural(n, 'response', 'responses')} to import`,
     planReplaced: (n: number) =>
       `${plural(n, 'earlier response', 'earlier responses')} replaced by a later one`,

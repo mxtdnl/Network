@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { durationToken } from '../durations';
 
 // The analyst workspace by screen width (spec §12, CLAUDE.md D112): desktop
 // from --workspace-desktop (three columns), tablet from --workspace-tablet
@@ -26,13 +27,22 @@ export function useLayoutMode(): LayoutMode {
   useEffect(() => {
     const desktop = query('--workspace-desktop');
     const tablet = query('--workspace-tablet');
+    // A new layout applies once the width has held for --workspace-settle, so a
+    // passing size (a window being dragged, or a browser briefly reporting a
+    // 1 px viewport while it saves a download) does not rebuild the workspace
+    // and lose state such as a survey being set up.
+    let timer = 0;
     const update = () => {
-      setMode(current(desktop, tablet));
+      clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        setMode(current(desktop, tablet));
+      }, durationToken('--workspace-settle'));
     };
     update();
     desktop?.addEventListener('change', update);
     tablet?.addEventListener('change', update);
     return () => {
+      clearTimeout(timer);
       desktop?.removeEventListener('change', update);
       tablet?.removeEventListener('change', update);
     };
