@@ -191,6 +191,9 @@ function ImportFlow({ hasProject, onDone }: { hasProject: boolean; onDone: () =>
           </p>
         )}
         <div className="dialog__actions">
+          <button type="button" className="button button--text" onClick={onDone}>
+            {importCopy.cancel}
+          </button>
           <button
             type="button"
             className="button button--text"

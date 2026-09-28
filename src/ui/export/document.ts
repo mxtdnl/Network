@@ -412,7 +412,7 @@ export function legendPrimitives(
                   box,
                   L.line,
                   section.notRated,
-                )((x, cy) => [edge(x, cy, x + box, cy, t.other, t.edgeMax / 2)]),
+                )((x, cy) => [edge(x, cy, x + box, cy, t.graphite, t.edgeMax / 2)]),
               ]
             : []),
         ];

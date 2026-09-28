@@ -28,6 +28,8 @@ import type { RenderRequest, RenderResponse } from './renderWorker';
 import {
   NO_HIGHLIGHT,
   buildScene,
+  labelAnchors,
+  type LabelAnchor,
   highlightSet,
   insidePolygon,
   type Highlight,
@@ -120,6 +122,8 @@ export class MapController {
   private drag: { index: number; x: number; y: number; moved: boolean; id: number } | null = null;
   private down: { x: number; y: number } | null = null;
   private readonly widths = new Map<string, number>();
+  /** Label positions of the last full picture, so highlighted names are drawn over their faded copies. */
+  private anchors: Map<number, LabelAnchor> = new Map();
   private readonly measure = (text: string): number => {
     let w = this.widths.get(text);
     if (w === undefined) {
@@ -383,14 +387,17 @@ export class MapController {
     }
     if (!Number.isFinite(x0)) return;
     const pad = this.theme.nodeMax * 2 + this.theme.labelSize * 2;
-    // Labels on the circle point outwards, so the circle needs room for names beside it.
-    const padX = this.layoutKind === 'circular' ? pad + this.theme.labelSize * 6 : pad;
+    // Labels on the circle point outwards, so the circle needs room for names
+    // beside it, and for a line of text above and below it.
+    const circular = this.layoutKind === 'circular';
+    const padX = circular ? pad + this.theme.labelSize * 6 : pad;
+    const padY = circular ? pad + this.theme.labelSize * 1.5 : pad;
     const bw = Math.max(x1 - x0, 1);
     const bh = Math.max(y1 - y0, 1);
     const area = this.freeArea(bw, bh);
     const k = Math.min(
       SCALE_EXTENT[1],
-      Math.max(SCALE_EXTENT[0], Math.min((area.w - 2 * padX) / bw, (area.h - 2 * pad) / bh)),
+      Math.max(SCALE_EXTENT[0], Math.min((area.w - 2 * padX) / bw, (area.h - 2 * padY) / bh)),
     );
     const t = zoomIdentity
       .translate(
@@ -464,7 +471,7 @@ export class MapController {
       path: this.highlight.path ?? null,
     };
     const size = { width: this.width, height: this.height };
-    return buildScene(
+    const scene = buildScene(
       model,
       this.layout.positions,
       t,
@@ -475,6 +482,8 @@ export class MapController {
       this.measure,
       this.layout.annotation,
     );
+    this.anchors = labelAnchors(scene);
+    return scene;
   }
 
   /** Brings the full picture up to date: now on the main thread, or by asking the worker. */
@@ -569,6 +578,7 @@ export class MapController {
           'lit',
           this.measure,
           this.layout.annotation,
+          this.anchors,
         ),
         dpr,
       );

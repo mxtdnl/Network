@@ -25,6 +25,7 @@ export function MenuButton({ label, items }: MenuButtonProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const checkable = items.some((item) => item.checked !== undefined);
 
   useEffect(() => {
     if (!open) return;
@@ -125,7 +126,8 @@ export function MenuButton({ label, items }: MenuButtonProps) {
                 item.onSelect();
               }}
             >
-              {item.checked !== undefined && (
+              {/* Every item keeps the check column, so all labels share one left edge. */}
+              {checkable && (
                 <span className="menu__check" aria-hidden="true">
                   {item.checked ? <Icon name="check" /> : null}
                 </span>

@@ -286,7 +286,9 @@ export const MapLegend = forwardRef<
   const headingId = useId();
   const sections = legendSections(model, theme, extras);
   return (
-    <section ref={ref} className="legend" aria-labelledby={headingId}>
+    // The legend scrolls when the map is short, so it can take focus and be scrolled by keyboard.
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+    <section ref={ref} className="legend" aria-labelledby={headingId} tabIndex={0}>
       <h2 id={headingId} className="visually-hidden">
         {mapCopy.legend.heading}
       </h2>

@@ -196,7 +196,7 @@ test('saved views: name, caption, rename, reorder, restore, update and delete; k
   await field.fill('');
   await expect(right(page).getByText('Enter a name for the view.')).toBeVisible();
   await field.fill('Teams in a circle');
-  await right(page).getByRole('button', { name: 'Save name' }).click();
+  await right(page).getByRole('button', { name: 'Rename view' }).click();
   await expect(list.getByText('Teams in a circle')).toBeVisible();
 
   // Reorder: move the circle to the top.

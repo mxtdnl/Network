@@ -7,6 +7,7 @@ import { coverageCopy, percent, persistenceCopy, projectCopy } from '../copy/dat
 import { shellCopy } from '../copy/shell';
 import { clearAllLocalData, setPersistenceOn } from '../state/persistenceSync';
 import { loadDemo, openProjectFile, saveProjectFile } from '../state/projectActions';
+import { useReadOnly } from '../state/layoutMode';
 import { useAppStore } from '../state/store';
 import { useCoverage } from './CoveragePanel';
 import { savedViewsCopy } from '../copy/savedViews';
@@ -31,6 +32,8 @@ export function TopBar() {
   const [exporting, setExporting] = useState(false);
 
   const hasData = project !== null && project.members.length > 0;
+  // Importing changes the project, so the read-only phone layout leaves it out.
+  const phone = useReadOnly();
   function chooseProjectFile() {
     fileRef.current?.click();
   }
@@ -96,13 +99,17 @@ export function TopBar() {
           items={[
             { key: 'open', label: projectCopy.open, onSelect: onOpen },
             { key: 'save', label: projectCopy.save, onSelect: saveProjectFile, disabled: !project },
-            {
-              key: 'import',
-              label: projectCopy.importData,
-              onSelect: () => {
-                setImportOpen(true);
-              },
-            },
+            ...(phone
+              ? []
+              : [
+                  {
+                    key: 'import',
+                    label: projectCopy.importData,
+                    onSelect: () => {
+                      setImportOpen(true);
+                    },
+                  },
+                ]),
             { key: 'demo', label: projectCopy.loadDemo, onSelect: onDemo },
             {
               key: 'keep',

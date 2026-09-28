@@ -2,6 +2,7 @@ import { useId, useMemo, useState } from 'react';
 import { computeCoverage } from '../../data/coverage';
 import { Icon } from '../components/Icon';
 import { coverageCopy, percent } from '../copy/data';
+import { useReadOnly } from '../state/layoutMode';
 import { useMemberNames } from '../state/names';
 import { useAppStore } from '../state/store';
 
@@ -20,6 +21,7 @@ export function CoveragePanel() {
   const tableId = useId();
   const [draft, setDraft] = useState<string | null>(null);
   const names = useMemberNames();
+  const phone = useReadOnly();
 
   if (!project || !coverage || !Number.isFinite(coverage.rate)) {
     return <p className="placeholder">{coverageCopy.noData}</p>;
@@ -74,6 +76,8 @@ export function CoveragePanel() {
             value={shown}
             aria-describedby={`${thresholdId}-help`}
             aria-invalid={!draftValid}
+            // The threshold is saved with the project: on a phone it is shown, not changed.
+            readOnly={phone}
             onChange={(e) => {
               const text = e.currentTarget.value;
               setDraft(text);

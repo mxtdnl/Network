@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { EthicsNotice } from '../components/EthicsNotice';
 import { Tabs, type TabItem } from '../components/Tabs';
 import { coverageCopy } from '../copy/data';
@@ -23,6 +23,7 @@ import { InsightsPanel } from './InsightsPanel';
 import { PresentationView } from './PresentationView';
 import { SavedViewsPanel } from './SavedViewsPanel';
 import { weightsCopy } from '../copy/weights';
+import { ReadOnlyContext, useLayoutMode } from '../state/layoutMode';
 
 // The survey tools are loaded when the Survey tab is first opened.
 const SurveyTab = lazy(() => import('./survey/SurveyTab').then((m) => ({ default: m.SurveyTab })));
@@ -59,7 +60,16 @@ export function Workspace() {
   const setRightPanel = useAppStore((s) => s.setRightPanel);
   const closeNotice = useAppStore((s) => s.closeNotice);
   const hasProject = useAppStore((s) => (s.data.project?.members.length ?? 0) > 0);
-  const showMapControls = hasProject && ui.centreView === 'map';
+  const mode = useLayoutMode();
+  const readOnly = mode === 'phone';
+  // On the root element, so presentation mode follows the same layout (styles/layout.css).
+  useEffect(() => {
+    document.documentElement.dataset.layout = mode;
+  }, [mode]);
+  // The survey tools change the project, so the read-only phone layout leaves them out.
+  const centre = readOnly ? centreItems.filter((item) => item.key !== 'survey') : centreItems;
+  const centreView = readOnly && ui.centreView === 'survey' ? 'map' : ui.centreView;
+  const showMapControls = hasProject && centreView === 'map';
 
   if (ui.presentation) {
     return (
@@ -70,52 +80,71 @@ export function Workspace() {
     );
   }
 
-  return (
-    <div className="workspace">
-      <TopBar />
-      <StatusLine />
-      <aside className="workspace__left" aria-label={shellCopy.regions.left}>
-        {hasProject && (
-          <section className="workspace__section" aria-labelledby="weights-heading">
-            <h2 id="weights-heading" className="panel-heading">
-              {weightsCopy.heading}
-            </h2>
-            <WeightPanel />
-          </section>
-        )}
-        {showMapControls && (
-          <section className="workspace__section" aria-labelledby="map-controls-heading">
-            <h2 id="map-controls-heading" className="panel-heading">
-              {shellCopy.left.map}
-            </h2>
-            <MapControls />
-          </section>
-        )}
-        <section aria-labelledby="layers-heading">
-          <h2 id="layers-heading" className="panel-heading">
-            {shellCopy.left.heading}
+  const controls = (
+    <>
+      {hasProject && (
+        <section className="workspace__section" aria-labelledby="weights-heading">
+          <h2 id="weights-heading" className="panel-heading">
+            {weightsCopy.heading}
           </h2>
-          <LayerPanel />
+          <WeightPanel />
         </section>
-      </aside>
-      <main className="workspace__centre" aria-label={shellCopy.regions.centre}>
-        <Tabs
-          label={shellCopy.regions.centre}
-          items={centreItems}
-          selected={ui.centreView}
-          onSelect={setCentreView}
-        />
-      </main>
-      <aside className="workspace__right" aria-label={shellCopy.regions.right}>
-        <Tabs
-          label={shellCopy.regions.right}
-          items={rightItems}
-          selected={ui.rightPanel}
-          onSelect={setRightPanel}
-        />
-      </aside>
-      <ImportDialog />
-      <EthicsNotice open={ui.noticeOpen} onClose={closeNotice} />
-    </div>
+      )}
+      {showMapControls && (
+        <section className="workspace__section" aria-labelledby="map-controls-heading">
+          <h2 id="map-controls-heading" className="panel-heading">
+            {shellCopy.left.map}
+          </h2>
+          <MapControls />
+        </section>
+      )}
+    </>
+  );
+
+  return (
+    <ReadOnlyContext.Provider value={readOnly}>
+      <div className="workspace" data-layout={mode}>
+        <TopBar />
+        <StatusLine />
+        {readOnly ? (
+          // On a phone the controls fold away above the view, so the view comes first on screen.
+          hasProject && (
+            <details className="workspace__left workspace__fold">
+              <summary className="workspace__fold-summary">{shellCopy.phone.controls}</summary>
+              <div className="workspace__fold-body">{controls}</div>
+            </details>
+          )
+        ) : (
+          <aside className="workspace__left" aria-label={shellCopy.regions.left}>
+            {controls}
+            <section aria-labelledby="layers-heading">
+              <h2 id="layers-heading" className="panel-heading">
+                {shellCopy.left.heading}
+              </h2>
+              <LayerPanel />
+            </section>
+          </aside>
+        )}
+        <main className="workspace__centre" aria-label={shellCopy.regions.centre}>
+          {readOnly && <p className="workspace__read-only">{shellCopy.phone.readOnly}</p>}
+          <Tabs
+            label={shellCopy.regions.centre}
+            items={centre}
+            selected={centreView}
+            onSelect={setCentreView}
+          />
+        </main>
+        <aside className="workspace__right" aria-label={shellCopy.regions.right}>
+          <Tabs
+            label={shellCopy.regions.right}
+            items={rightItems}
+            selected={ui.rightPanel}
+            onSelect={setRightPanel}
+          />
+        </aside>
+        <ImportDialog />
+        <EthicsNotice open={ui.noticeOpen} onClose={closeNotice} />
+      </div>
+    </ReadOnlyContext.Provider>
   );
 }

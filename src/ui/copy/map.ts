@@ -36,9 +36,7 @@ export function formatScale(values: readonly number[]): string[] {
   const max = Math.max(0, ...finite.map(Math.abs));
   const allIntegers = finite.every(Number.isInteger);
   const digits = allIntegers ? 0 : max >= 100 ? 0 : max >= 10 ? 1 : max >= 1 ? 2 : 3;
-  return values.map((v) =>
-    Number.isFinite(v) ? fixed(digits).format(v) : 'Not defined',
-  );
+  return values.map((v) => (Number.isFinite(v) ? fixed(digits).format(v) : 'Not defined'));
 }
 
 /** A 0–1 weight, always with two decimals. */

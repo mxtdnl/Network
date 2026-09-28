@@ -226,6 +226,19 @@ export function MapCanvas({ data, presentation }: MapCanvasProps) {
   useEffect(() => {
     controllerRef.current?.setTool(settings.tool);
   }, [settings.tool]);
+  // An insight or saved view that highlights members adds a line to the
+  // legend; the view is fitted again once the legend has grown, so no member
+  // it names is left under the legend.
+  const highlightKey = settings.highlight.join(' ');
+  useEffect(() => {
+    if (highlightKey === '') return;
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => controllerRef.current?.fit());
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [highlightKey]);
 
   const focusMember = useCallback((index: number) => {
     const el = buttons.current.get(index);
