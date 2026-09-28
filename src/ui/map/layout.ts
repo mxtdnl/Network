@@ -245,6 +245,178 @@ export interface SavedPoint {
   pinned: boolean;
 }
 
+/** Per member in a settle job's state: x, y, vx, vy, fx, fy (NaN when not pinned), radius. */
+const NODE_FIELDS = 7;
+
+/** One attraction per pair of members, as parallel arrays. */
+export interface LayoutLinks {
+  source: Int32Array;
+  target: Int32Array;
+  weight: Float64Array;
+}
+
+/** A force or grouped layout to settle in a worker (see `ForceLayout.prepare`). */
+export interface SettleJob {
+  key: string;
+  spec: LayoutSpec;
+  /** NODE_FIELDS values per member. */
+  state: Float64Array;
+  links: LayoutLinks;
+}
+
+export interface SettleResult {
+  /** x, y, vx, vy per member. */
+  positions: Float64Array;
+  alpha: number;
+}
+
+function layoutLinks(n: number, weights: Float64Array | undefined, spec: LayoutSpec): LayoutLinks {
+  const source: number[] = [];
+  const target: number[] = [];
+  const weight: number[] = [];
+  if (weights && spec.kind !== 'hierarchy' && spec.kind !== 'circular') {
+    // One attraction per pair: the two directions add up.
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        const a = weights[i * n + j] as number;
+        const b = weights[j * n + i] as number;
+        const w = (a > 0 ? a : 0) + (b > 0 ? b : 0);
+        if (w > 0) {
+          source.push(i);
+          target.push(j);
+          weight.push(w);
+        }
+      }
+    }
+  }
+  return {
+    source: Int32Array.from(source),
+    target: Int32Array.from(target),
+    weight: Float64Array.from(weight),
+  };
+}
+
+/** Builds the stopped simulation of a layout over `nodes`; fixed layouts also place them. */
+function configureSimulation(
+  nodes: LayoutNode[],
+  layoutLinks: LayoutLinks,
+  spec: LayoutSpec,
+): Simulation<LayoutNode, LayoutLink> {
+  const n = nodes.length;
+  const links: LayoutLink[] = Array.from(layoutLinks.weight, (weight, k) => ({
+    source: layoutLinks.source[k] as number,
+    target: layoutLinks.target[k] as number,
+    weight,
+  }));
+  const degree = new Array<number>(n).fill(0);
+  for (const l of links) {
+    degree[l.source as number] = (degree[l.source as number] ?? 0) + 1;
+    degree[l.target as number] = (degree[l.target as number] ?? 0) + 1;
+  }
+  const linkStrength = (scale: number) => (l: LayoutLink) =>
+    (scale * ATTRACTION * l.weight) /
+    Math.max(
+      1,
+      Math.min(
+        degree[(l.source as LayoutNode).index] ?? 1,
+        degree[(l.target as LayoutNode).index] ?? 1,
+      ),
+    );
+
+  const sim = forceSimulation(nodes).stop();
+  const targets = targetPositions(spec, n);
+  if (targets) {
+    // Fixed positions: members sit on their targets; a drag moves only the dragged member.
+    nodes.forEach((node, i) => {
+      node.x = targets.x[i];
+      node.y = targets.y[i];
+      node.vx = 0;
+      node.vy = 0;
+    });
+    sim
+      .force('x', forceX<LayoutNode>((d) => targets.x[d.index] ?? 0).strength(1))
+      .force('y', forceY<LayoutNode>((d) => targets.y[d.index] ?? 0).strength(1));
+  } else if (spec.kind === 'grouped') {
+    const centres = groupCentres(spec.group, spec.groups.length);
+    sim
+      .force(
+        'link',
+        forceLink<LayoutNode, LayoutLink>(
+          links.filter((l) => spec.group[l.source as number] === spec.group[l.target as number]),
+        )
+          .distance(LINK_DISTANCE / 2)
+          .strength(linkStrength(0.3)),
+      )
+      .force(
+        'charge',
+        forceManyBody<LayoutNode>()
+          .strength(CHARGE / 6)
+          .distanceMax(LINK_DISTANCE * 2),
+      )
+      .force(
+        'collide',
+        forceCollide<LayoutNode>((d) => d.radius + SPACING / 4),
+      )
+      .force(
+        'x',
+        forceX<LayoutNode>((d) => centres[spec.group[d.index] ?? 0]?.x ?? 0).strength(0.3),
+      )
+      .force(
+        'y',
+        forceY<LayoutNode>((d) => centres[spec.group[d.index] ?? 0]?.y ?? 0).strength(0.3),
+      );
+  } else {
+    sim
+      .force(
+        'link',
+        forceLink<LayoutNode, LayoutLink>(links).distance(LINK_DISTANCE).strength(linkStrength(1)),
+      )
+      .force(
+        'charge',
+        forceManyBody<LayoutNode>()
+          .strength(CHARGE)
+          .distanceMax(LINK_DISTANCE * 8),
+      )
+      .force(
+        'collide',
+        forceCollide<LayoutNode>((d) => d.radius + 4),
+      )
+      // Weak pull to the centre keeps separate components on screen.
+      .force('x', forceX<LayoutNode>(0).strength(0.04))
+      .force('y', forceY<LayoutNode>(0).strength(0.04));
+  }
+  return sim;
+}
+
+/**
+ * Settles a job exactly as `ForceLayout.update` would on the main thread (the
+ * same forces, starting state and number of ticks), for the layout worker.
+ */
+export function settleJob(job: SettleJob): SettleResult {
+  const n = job.state.length / NODE_FIELDS;
+  const nodes: LayoutNode[] = [];
+  for (let i = 0; i < n; i++) {
+    const s = job.state.subarray(i * NODE_FIELDS, (i + 1) * NODE_FIELDS);
+    nodes.push({
+      index: i,
+      x: s[0],
+      y: s[1],
+      vx: s[2],
+      vy: s[3],
+      fx: Number.isNaN(s[4]) ? null : s[4],
+      fy: Number.isNaN(s[5]) ? null : s[5],
+      radius: s[6] as number,
+    });
+  }
+  const sim = configureSimulation(nodes, job.links, job.spec);
+  sim.tick(SETTLE_TICKS);
+  const positions = new Float64Array(n * 4);
+  nodes.forEach((node, i) => {
+    positions.set([node.x ?? 0, node.y ?? 0, node.vx ?? 0, node.vy ?? 0], i * 4);
+  });
+  return { positions, alpha: sim.alpha() };
+}
+
 export class ForceLayout {
   readonly nodes: LayoutNode[] = [];
   private simulation: Simulation<LayoutNode, LayoutLink> | null = null;
@@ -254,6 +426,8 @@ export class ForceLayout {
   /** Positions to apply after the next update (a restored saved view), by member index. */
   private pending: (SavedPoint | null)[] | null = null;
   private restored = false;
+  /** The key of a layout being settled in a worker, or ''. */
+  private awaiting = '';
   annotation: LayoutAnnotation = { kind: 'none' };
 
   /**
@@ -326,14 +500,34 @@ export class ForceLayout {
     radii: readonly number[],
     spec: LayoutSpec = { kind: 'force' },
   ): boolean {
+    return this.prepare(key, n, weights, radii, spec, Infinity).changed;
+  }
+
+  /**
+   * As `update`, but a force or grouped layout with at least `workerMinLinks`
+   * attractions is not settled here: the settling is returned as a job for a
+   * worker (`settleJob`), and `accept` applies its result. Until then the
+   * layout keeps its previous positions and key. Returns `changed` when the
+   * layout was rebuilt here.
+   */
+  prepare(
+    key: string,
+    n: number,
+    weights: Float64Array | undefined,
+    radii: readonly number[],
+    spec: LayoutSpec,
+    workerMinLinks: number,
+  ): { changed: boolean; job: SettleJob | null } {
     if (key === this.key && this.nodes.length === n) {
       this.nodes.forEach((node, i) => {
         node.radius = radii[i] ?? node.radius;
       });
-      return this.applyPending();
+      return { changed: this.applyPending(), job: null };
     }
+    // The same layout is already being settled in a worker.
+    if (key === this.awaiting && this.nodes.length === n) return { changed: false, job: null };
+    this.awaiting = '';
     const kindChanged = this.annotation.kind !== layoutAnnotation(spec, n).kind;
-    this.key = key;
     if (this.nodes.length !== n) {
       this.nodes.length = 0;
       for (let i = 0; i < n; i++) {
@@ -342,102 +536,56 @@ export class ForceLayout {
     }
     // A fixed layout places everyone; pins from a force layout do not carry over.
     if (spec.kind !== 'force' || kindChanged) this.unpinAll();
-    this.annotation = layoutAnnotation(spec, n);
-
-    const links: LayoutLink[] = [];
-    if (weights && spec.kind !== 'hierarchy' && spec.kind !== 'circular') {
-      // One attraction per pair: the two directions add up.
-      for (let i = 0; i < n; i++) {
-        for (let j = i + 1; j < n; j++) {
-          const a = weights[i * n + j] as number;
-          const b = weights[j * n + i] as number;
-          const w = (a > 0 ? a : 0) + (b > 0 ? b : 0);
-          if (w > 0) links.push({ source: i, target: j, weight: w });
-        }
-      }
-    }
-    const degree = new Array<number>(n).fill(0);
-    for (const l of links) {
-      degree[l.source as number] = (degree[l.source as number] ?? 0) + 1;
-      degree[l.target as number] = (degree[l.target as number] ?? 0) + 1;
-    }
-    const linkStrength = (scale: number) => (l: LayoutLink) =>
-      (scale * ATTRACTION * l.weight) /
-      Math.max(
-        1,
-        Math.min(
-          degree[(l.source as LayoutNode).index] ?? 1,
-          degree[(l.target as LayoutNode).index] ?? 1,
-        ),
-      );
+    const links = layoutLinks(n, weights, spec);
 
     this.simulation?.stop();
-    const sim = forceSimulation(this.nodes).stop();
-    const targets = targetPositions(spec, n);
-    if (targets) {
-      // Fixed positions: members sit on their targets; a drag moves only the dragged member.
+    const settles = spec.kind === 'force' || spec.kind === 'grouped';
+    if (settles && links.weight.length >= workerMinLinks) {
+      this.awaiting = key;
+      const state = new Float64Array(n * NODE_FIELDS);
       this.nodes.forEach((node, i) => {
-        node.x = targets.x[i];
-        node.y = targets.y[i];
-        node.vx = 0;
-        node.vy = 0;
-      });
-      sim
-        .force('x', forceX<LayoutNode>((d) => targets.x[d.index] ?? 0).strength(1))
-        .force('y', forceY<LayoutNode>((d) => targets.y[d.index] ?? 0).strength(1));
-    } else if (spec.kind === 'grouped') {
-      const centres = groupCentres(spec.group, spec.groups.length);
-      sim
-        .force(
-          'link',
-          forceLink<LayoutNode, LayoutLink>(
-            links.filter((l) => spec.group[l.source as number] === spec.group[l.target as number]),
-          )
-            .distance(LINK_DISTANCE / 2)
-            .strength(linkStrength(0.3)),
-        )
-        .force(
-          'charge',
-          forceManyBody<LayoutNode>()
-            .strength(CHARGE / 6)
-            .distanceMax(LINK_DISTANCE * 2),
-        )
-        .force(
-          'collide',
-          forceCollide<LayoutNode>((d) => d.radius + SPACING / 4),
-        )
-        .force(
-          'x',
-          forceX<LayoutNode>((d) => centres[spec.group[d.index] ?? 0]?.x ?? 0).strength(0.3),
-        )
-        .force(
-          'y',
-          forceY<LayoutNode>((d) => centres[spec.group[d.index] ?? 0]?.y ?? 0).strength(0.3),
+        state.set(
+          [
+            node.x ?? 0,
+            node.y ?? 0,
+            node.vx ?? 0,
+            node.vy ?? 0,
+            node.fx ?? NaN,
+            node.fy ?? NaN,
+            node.radius,
+          ],
+          i * NODE_FIELDS,
         );
-      sim.tick(SETTLE_TICKS);
-    } else {
-      sim
-        .force(
-          'link',
-          forceLink<LayoutNode, LayoutLink>(links)
-            .distance(LINK_DISTANCE)
-            .strength(linkStrength(1)),
-        )
-        .force(
-          'charge',
-          forceManyBody<LayoutNode>()
-            .strength(CHARGE)
-            .distanceMax(LINK_DISTANCE * 8),
-        )
-        .force(
-          'collide',
-          forceCollide<LayoutNode>((d) => d.radius + 4),
-        )
-        // Weak pull to the centre keeps separate components on screen.
-        .force('x', forceX<LayoutNode>(0).strength(0.04))
-        .force('y', forceY<LayoutNode>(0).strength(0.04));
-      sim.tick(SETTLE_TICKS);
+      });
+      return { changed: false, job: { key, spec, state, links } };
     }
+    this.key = key;
+    this.annotation = layoutAnnotation(spec, n);
+    const sim = configureSimulation(this.nodes, links, spec);
+    if (settles) sim.tick(SETTLE_TICKS);
+    this.simulation = sim;
+    this.applyPending();
+    return { changed: true, job: null };
+  }
+
+  /**
+   * Applies a worker's settled positions for `job`. Returns false, changing
+   * nothing, when the layout has moved on since the job was prepared.
+   */
+  accept(job: SettleJob, settled: SettleResult): boolean {
+    if (job.key !== this.awaiting || settled.positions.length !== this.nodes.length * 4)
+      return false;
+    this.awaiting = '';
+    this.key = job.key;
+    this.annotation = layoutAnnotation(job.spec, this.nodes.length);
+    this.nodes.forEach((node, i) => {
+      node.x = settled.positions[i * 4];
+      node.y = settled.positions[i * 4 + 1];
+      node.vx = settled.positions[i * 4 + 2];
+      node.vy = settled.positions[i * 4 + 3];
+    });
+    // The same forces, already settled: a drag continues from here.
+    const sim = configureSimulation(this.nodes, job.links, job.spec).alpha(settled.alpha);
     this.simulation = sim;
     this.applyPending();
     return true;

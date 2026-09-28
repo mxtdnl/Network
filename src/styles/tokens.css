@@ -183,6 +183,12 @@
   --respond-table-width: 1040px; /* the desktop rating table */
   --respond-gutter: var(--s-4); /* phone side margin (design-system §4.1) */
   --respond-name-width: 240px; /* names column of the desktop rating table */
+
+  /* Phase 8: workspace layout by screen width (spec §12 screen sizes, CLAUDE.md D112),
+     read by script for matchMedia. */
+  --workspace-desktop: 1280px; /* three columns from here */
+  --workspace-settle: 300ms; /* a width must hold this long before the layout changes (not motion) */
+  --workspace-tablet: 720px; /* tablet from here: controls beside the view, details below; narrower is the read-only phone layout */
 }
 
 @media (prefers-reduced-motion: reduce) {

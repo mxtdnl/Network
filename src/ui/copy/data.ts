@@ -10,7 +10,7 @@ export const projectCopy = {
   menu: 'Project',
   open: 'Open project…',
   save: 'Save project',
-  importData: 'Import data…',
+  importData: 'Import survey data…',
   loadDemo: 'Load demo',
   keepLocal: 'Keep a copy in this browser',
   clearLocal: 'Clear local data…',
@@ -22,7 +22,8 @@ export const projectCopy = {
   replaceTitle: 'Replace the open project?',
   replaceBody:
     'The open project will be closed. Changes since you last saved it will be lost unless you save it first.',
-  replaceConfirm: 'Replace project',
+  // The confirmation repeats the verb of the action that asked for it.
+  replaceConfirm: { open: 'Open project', demo: 'Load demo' },
   cancel: 'Cancel',
   noMembers: 'This project has no members yet. Import a members file to add them.',
 };

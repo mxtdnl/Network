@@ -1,0 +1,437 @@
+[
+  {
+    "name": "section LegendNode size Bridging0.0000.2180.437N",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Zoom in",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Zoom out",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Fit to view",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[tab] Member",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "div[tabpanel] Lior TheodoliteTeam or functionOperation",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Close member panel",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Show Ivo Hachure",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Show ego view",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Add to subgroup",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Simulate removal",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "select CompositeConnection strengthInformal col",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button About Received strength",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button About Given strength",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button About Connections in",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button About Connections out",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button About Bridging",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button About Reach from others",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button About Reach to others",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button About Ties to the well connected",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button About Constraint",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button About Non-redundant contacts",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button About Local clustering",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Connection strength",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Valence",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Informal collaboration",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Formal collaboration",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Hide names",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Export",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Project",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Help",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "select Formal structureInformal networkRelation",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "input ",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "input ",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "select Positive ratings, weightedA filter: nega",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "input ",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "input ",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "select Composite of all layersConnection streng",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "input ",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Formal collaboration on the map",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Informal collaboration on the map",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Valence on the map",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "input ",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "input ",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "input ",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "select Received strengthGiven strengthConnectio",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "select Team or functionLevelLocationTenure band",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "select Team or functionLevelLocationTenure band",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "select FinanceOperationsProductSalesPeople",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Add filter",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "input ",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Connection strength",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Connection strength",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Valence",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Valence",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Informal collaboration",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Informal collaboration",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Formal collaboration",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Formal collaboration",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Advice and information seeking",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Advice and information seeking",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Competence-based trust",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Competence-based trust",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Benevolence-based trust",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Benevolence-based trust",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Energy",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Energy",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Decision influence",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Decision influence",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Workflow dependency",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Workflow dependency",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Knowledge awareness",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Knowledge awareness",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Idea sharing",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Idea sharing",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Interpersonal safety",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Interpersonal safety",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Conflict: task disagreement",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Conflict: task disagreement",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Conflict: personal friction",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Conflict: personal friction",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[switch] Primary channel",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Edit Primary channel",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button[tab] Map",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "div[tabpanel] Lasso selectArrow keys move to the neare",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Lasso select",
+    "visible": true,
+    "how": "outline"
+  },
+  {
+    "name": "button Lior Theodolite, Operations, 27 ties sho",
+    "visible": true,
+    "how": "canvas ring"
+  }
+]

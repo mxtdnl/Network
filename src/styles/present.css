@@ -88,7 +88,8 @@
   min-height: var(--target-min);
   padding: 0 var(--s-2);
   border: var(--line-width) solid var(--stone);
-  border-radius: var(--r-chip);
+  /* A button that opens the member panel, not a removable chip (design-system §4.2). */
+  border-radius: var(--r-control);
   background: var(--paper);
   color: var(--ink);
   font: inherit;

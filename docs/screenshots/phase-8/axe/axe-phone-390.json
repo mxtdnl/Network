@@ -1,0 +1,23 @@
+{
+  "size": {
+    "name": "phone-390",
+    "width": 390,
+    "height": 844
+  },
+  "states": [
+    "01-first-run-notice",
+    "02-empty",
+    "03-project-menu",
+    "04-map",
+    "05-settings-open",
+    "06-member-panel",
+    "07-matrix",
+    "08-table",
+    "09-compare",
+    "10-insights",
+    "11-views",
+    "12-coverage"
+  ],
+  "findings": [],
+  "overflow": []
+}

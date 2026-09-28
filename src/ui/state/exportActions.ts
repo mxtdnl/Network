@@ -177,10 +177,10 @@ export async function exportTableFile(kind: TableKind): Promise<string | null> {
           : formalInformalCsv(ctx);
     if (!file) throw new Error(exportCopy.tables.formalInformalUnavailable);
     downloadCsv(file);
-    status(exportCopy.tables.exported(file.fileName));
+    status(exportCopy.tables.exported(kind, file.fileName));
     return file.fileName;
   } catch (e) {
-    status(exportCopy.tables.failed(reason(e)), 'error');
+    status(exportCopy.tables.failed(kind, reason(e)), 'error');
     return null;
   }
 }
@@ -192,7 +192,7 @@ export async function exportMetricsTable(spec: TableSpec): Promise<string | null
     downloadCsv(file);
     return file.fileName;
   } catch (e) {
-    status(exportCopy.tables.failed(reason(e)), 'error');
+    status(exportCopy.tables.failed('table', reason(e)), 'error');
     return null;
   }
 }

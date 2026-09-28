@@ -278,7 +278,7 @@ test('ego view at one and two steps, shared by every view', async ({ page }) => 
   await loadDemo(page);
   await settled(page);
   await selectOnMap(page, 'Hana Isobar');
-  await rightColumn(page).getByRole('button', { name: 'Show ego network' }).click();
+  await rightColumn(page).getByRole('button', { name: 'Show ego view' }).click();
   const map = page.getByRole('tabpanel', { name: 'Map' });
   await expect(map.getByText('Ego view: Hana Isobar and members within one step.')).toBeVisible();
   const one = await nodes(page).count();
@@ -360,7 +360,7 @@ test('resilience: remove members and compare before and after', async ({ page })
   await right.getByLabel('Members to remove').selectOption({ label: 'Farah Easting' });
   await right.getByRole('button', { name: 'Add', exact: true }).click();
   await expect(right.getByRole('button', { name: 'Keep Lior Theodolite' })).toBeVisible();
-  await right.getByRole('button', { name: 'Run simulation' }).click();
+  await right.getByRole('button', { name: 'Simulate removal' }).click();
 
   const table = right.getByTestId('resilience-table');
   await expect(table).toBeVisible();
@@ -392,9 +392,9 @@ test('resilience: remove members and compare before and after', async ({ page })
   await map.getByRole('button', { name: 'End simulation' }).click();
   await expect(table).toHaveCount(0);
 
-  // From the member panel: "Remove in simulation".
+  // From the member panel: "Simulate removal".
   await selectOnMap(page, 'Ivo Hachure');
-  await right.getByRole('button', { name: 'Remove in simulation' }).click();
+  await right.getByRole('button', { name: 'Simulate removal' }).click();
   await expect(right.getByTestId('resilience-table')).toBeVisible();
 });
 
@@ -608,7 +608,7 @@ test('member panel actions and the explore panel pass axe', async ({ page }) => 
   await settled(page);
   await selectOnMap(page, 'Lior Theodolite');
   const right = rightColumn(page);
-  for (const name of ['Show ego network', 'Add to subgroup', 'Remove in simulation']) {
+  for (const name of ['Show ego view', 'Add to subgroup', 'Simulate removal']) {
     await expect(right.getByRole('button', { name })).toBeVisible();
   }
   await right.getByRole('button', { name: 'Add to subgroup' }).click();

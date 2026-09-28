@@ -60,7 +60,7 @@ export const exploreCopy = {
       '−1 means every tie stays inside the subgroup; +1 means every tie reaches outside it. Counts ties, not their strength.',
     notDefined: 'Not defined',
     tooSmall: 'Add at least two members to compare ties inside and outside.',
-    simulate: 'Simulate their removal',
+    simulate: 'Simulate removal',
   },
 
   resilience: {
@@ -71,7 +71,7 @@ export const exploreCopy = {
     addGroup: 'Add the subgroup',
     remove: (name: string) => `Keep ${name}`,
     none: 'No members chosen yet.',
-    run: 'Run simulation',
+    run: 'Simulate removal',
     end: 'End simulation',
     running: 'Simulating…',
     failed: (reason: string) => `The simulation could not run. ${reason}`,

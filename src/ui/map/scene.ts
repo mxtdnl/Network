@@ -63,6 +63,27 @@ export interface LabelMark {
   alpha: number;
   /** Anchor of the text at x; centred when absent. */
   align?: 'center' | 'left' | 'right';
+  /** The member named, for member labels. */
+  index?: number;
+}
+
+/** Where a member's label sits relative to the member, in screen pixels. */
+export interface LabelAnchor {
+  dx: number;
+  dy: number;
+  align: 'center' | 'left' | 'right';
+}
+
+/** Label positions of a full picture, relative to their members (see `buildScene`'s `anchors`). */
+export function labelAnchors(scene: Scene): Map<number, LabelAnchor> {
+  const at = new Map(scene.nodes.map((n) => [n.index, n]));
+  const out = new Map<number, LabelAnchor>();
+  for (const l of scene.labels) {
+    const n = l.index === undefined ? undefined : at.get(l.index);
+    if (n && l.index !== undefined)
+      out.set(l.index, { dx: l.x - n.x, dy: l.y - n.y, align: l.align ?? 'center' });
+  }
+  return out;
 }
 
 export interface Scene {
@@ -142,7 +163,9 @@ export function toScreen(p: Point, t: Transform): Point {
  * Builds the scene. `part` 'all' is the complete picture (used for export and
  * as the interaction cache); 'lit' is only the highlighted members and their
  * ties, at full strength and without background, drawn over a faded copy of
- * the cached picture while something is highlighted.
+ * the cached picture while something is highlighted. `anchors` are the label
+ * positions of that cached picture: a highlighted member keeps its label where
+ * the faded copy has it, so no name appears twice.
  */
 export function buildScene(
   model: MapModel,
@@ -154,6 +177,7 @@ export function buildScene(
   part: 'all' | 'lit' = 'all',
   measure: (text: string) => number = (text) => text.length * theme.labelSize * 0.5,
   annotation: LayoutAnnotation = { kind: 'none' },
+  anchors?: ReadonlyMap<number, LabelAnchor>,
 ): Scene {
   const lit = highlightSet(model, h);
   const onlyLit = part === 'lit' && lit !== null;
@@ -198,7 +222,9 @@ export function buildScene(
   const valenceCache = new Map<number, string>();
   const colourFor = (v: number) => {
     if (!model.valenceShown) return theme.stone;
-    if (Number.isNaN(v)) return theme.other;
+    // No valence rating: graphite, which reaches 3:1 on paper and stays apart
+    // from every valence step, including the grey neutral (D113).
+    if (Number.isNaN(v)) return theme.graphite;
     const q = Math.round(v * 10) / 10;
     let c = valenceCache.get(q);
     if (c === undefined) {
@@ -421,7 +447,11 @@ export function buildScene(
   }
 
   const nodes: NodeMark[] = [];
-  const candidates: (LabelMark & { priority: number; alternatives: LabelPlace[] })[] = [];
+  const candidates: (LabelMark & {
+    index: number;
+    priority: number;
+    alternatives: LabelPlace[];
+  })[] = [];
   const visibleCount = model.nodes.filter((n) => n.visible).length;
   const order = model.nodes.filter((n) => n.visible && (!onlyLit || lit.has(n.index)));
   if (lit) order.sort((p, q) => Number(lit.has(p.index)) - Number(lit.has(q.index)));
@@ -481,14 +511,25 @@ export function buildScene(
               { x: p.x - side, y: mid, align: 'right' },
             ]
           : [];
+      // Over the faded picture, a name goes where the picture already has it.
+      const anchor = onlyLit ? anchors?.get(node.index) : undefined;
+      if (anchor) {
+        alternatives.unshift(place);
+        place = { x: p.x + anchor.dx, y: p.y + anchor.dy, align: anchor.align };
+      }
       candidates.push({
         ...place,
         alternatives,
         text: node.name,
         alpha,
-        // The member in focus first, then highlighted members, then larger members.
+        index: node.index,
+        // Anchored names first (they cleared each other in the full picture),
+        // then the member in focus, then highlighted members, then larger members.
         priority:
-          (own ? 2e6 : 0) + (lit?.has(node.index) === true && alpha === 1 ? 1e6 : 0) + node.radius,
+          (anchor ? 4e6 : 0) +
+          (own ? 2e6 : 0) +
+          (lit?.has(node.index) === true && alpha === 1 ? 1e6 : 0) +
+          node.radius,
       });
     }
   }
@@ -505,7 +546,14 @@ export function buildScene(
       if (placed.some((b) => box.x0 < b.x1 && box.x1 > b.x0 && box.y0 < b.y1 && box.y1 > b.y0))
         continue;
       placed.push(box);
-      labels.push({ x: at.x, y: at.y, text: c.text, alpha: c.alpha, align: at.align });
+      labels.push({
+        x: at.x,
+        y: at.y,
+        text: c.text,
+        alpha: c.alpha,
+        align: at.align,
+        index: c.index,
+      });
       break;
     }
   }

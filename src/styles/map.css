@@ -178,7 +178,7 @@
 }
 
 .legend__edge--not-rated {
-  stroke: var(--cat-other);
+  stroke: var(--graphite); /* as on the map (D113) */
 }
 
 .legend__arrow {

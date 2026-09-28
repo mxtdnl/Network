@@ -196,7 +196,7 @@ test('saved views: name, caption, rename, reorder, restore, update and delete; k
   await field.fill('');
   await expect(right(page).getByText('Enter a name for the view.')).toBeVisible();
   await field.fill('Teams in a circle');
-  await right(page).getByRole('button', { name: 'Save name' }).click();
+  await right(page).getByRole('button', { name: 'Rename view' }).click();
   await expect(list.getByText('Teams in a circle')).toBeVisible();
 
   // Reorder: move the circle to the top.
@@ -246,7 +246,7 @@ test('saved views: name, caption, rename, reorder, restore, update and delete; k
   await page.getByRole('button', { name: 'Project' }).click();
   await page.getByRole('menuitem', { name: 'Open project…' }).click();
   const chooser = page.waitForEvent('filechooser');
-  await page.getByRole('button', { name: 'Replace project' }).click();
+  await page.getByRole('button', { name: 'Open project', exact: true }).click();
   await (await chooser).setFiles(file);
   await rightTab(page, 'Views').click();
   await expect(list.getByRole('listitem')).toHaveCount(3);
@@ -267,6 +267,8 @@ test('presentation: steps through saved views with captions, keys and Escape, le
   await rightTab(page, 'Views').click();
   await expect(right(page).getByRole('listitem')).toHaveCount(3);
 
+  // Let the workspace map finish drawing first, so only presentation text is recorded.
+  await settled(page);
   await drawnText(page);
   await page.getByRole('banner').getByRole('button', { name: 'Present' }).click();
   const region = page.getByRole('region', { name: 'Potential brokers' });

@@ -3,6 +3,7 @@ import type { SavedView } from '../../data/schema';
 import { ConfirmDialog } from '../components/Dialog';
 import { Icon } from '../components/Icon';
 import { savedViewsCopy as V } from '../copy/savedViews';
+import { useReadOnly } from '../state/layoutMode';
 import { useMemberNames } from '../state/names';
 import { startPresentation } from '../state/presentation';
 import {
@@ -25,6 +26,8 @@ export function SavedViewsPanel() {
   const project = useAppStore((s) => s.data.project);
   const hasResult = useAppStore((s) => s.results.current !== null);
   const names = useMemberNames();
+  // On a phone views can be shown and presented, not saved or edited.
+  const phone = useReadOnly();
   const [draft, setDraft] = useState('');
   const [pendingDelete, setPendingDelete] = useState<SavedView | null>(null);
   const nameId = useId();
@@ -39,31 +42,33 @@ export function SavedViewsPanel() {
   return (
     <div className="views">
       <p className="views__intro">{V.intro}</p>
-      <form
-        className="views__new"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (saveCurrentView(draft)) setDraft('');
-        }}
-      >
-        <label htmlFor={nameId} className="field__label">
-          {V.nameLabel}
-        </label>
-        <div className="views__new-row">
-          <input
-            id={nameId}
-            className="text-input views__name-input"
-            value={draft}
-            placeholder={V.defaultName(views.length + 1)}
-            onChange={(e) => {
-              setDraft(e.currentTarget.value);
-            }}
-          />
-          <button type="submit" className="button button--secondary" disabled={!hasResult}>
-            {V.save}
-          </button>
-        </div>
-      </form>
+      {!phone && (
+        <form
+          className="views__new"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (saveCurrentView(draft)) setDraft('');
+          }}
+        >
+          <label htmlFor={nameId} className="field__label">
+            {V.nameLabel}
+          </label>
+          <div className="views__new-row">
+            <input
+              id={nameId}
+              className="text-input views__name-input"
+              value={draft}
+              placeholder={V.defaultName(views.length + 1)}
+              onChange={(e) => {
+                setDraft(e.currentTarget.value);
+              }}
+            />
+            <button type="submit" className="button button--secondary" disabled={!hasResult}>
+              {V.save}
+            </button>
+          </div>
+        </form>
+      )}
 
       <div className="views__list-heading">
         <h3 id={listId} className="views__heading">
@@ -96,7 +101,8 @@ export function SavedViewsPanel() {
               helpId={helpId}
               index={i}
               count={views.length}
-              readOnly={names.anonymised}
+              readOnly={names.anonymised || phone}
+              phone={phone}
               shown={(s) => names.text(s)}
               onDelete={() => {
                 setPendingDelete(view);
@@ -130,11 +136,13 @@ interface ItemProps {
   index: number;
   count: number;
   readOnly: boolean;
+  /** The read-only phone layout: show only. */
+  phone: boolean;
   shown: (s: string) => string;
   onDelete: () => void;
 }
 
-function ViewItem({ view, helpId, index, count, readOnly, shown, onDelete }: ItemProps) {
+function ViewItem({ view, helpId, index, count, readOnly, phone, shown, onDelete }: ItemProps) {
   const setStatus = useAppStore((s) => s.setStatus);
   const [renaming, setRenaming] = useState<string | null>(null);
   const [caption, setCaption] = useState<string | null>(null);
@@ -151,32 +159,34 @@ function ViewItem({ view, helpId, index, count, readOnly, shown, onDelete }: Ite
               <span className="views__position num">{V.position(index + 1, count)}</span>
               <span>{name}</span>
             </p>
-            <div className="views__order" role="group" aria-label={V.order(name)}>
-              <button
-                type="button"
-                className="views__move"
-                aria-label={V.moveUp(name)}
-                title={V.moveUp(name)}
-                disabled={index === 0}
-                onClick={() => {
-                  moveView(view.id, -1);
-                }}
-              >
-                <Icon name="chevron-up" />
-              </button>
-              <button
-                type="button"
-                className="views__move"
-                aria-label={V.moveDown(name)}
-                title={V.moveDown(name)}
-                disabled={index === count - 1}
-                onClick={() => {
-                  moveView(view.id, 1);
-                }}
-              >
-                <Icon name="chevron-down" />
-              </button>
-            </div>
+            {!phone && (
+              <div className="views__order" role="group" aria-label={V.order(name)}>
+                <button
+                  type="button"
+                  className="views__move"
+                  aria-label={V.moveUp(name)}
+                  title={V.moveUp(name)}
+                  disabled={index === 0}
+                  onClick={() => {
+                    moveView(view.id, -1);
+                  }}
+                >
+                  <Icon name="chevron-up" />
+                </button>
+                <button
+                  type="button"
+                  className="views__move"
+                  aria-label={V.moveDown(name)}
+                  title={V.moveDown(name)}
+                  disabled={index === count - 1}
+                  onClick={() => {
+                    moveView(view.id, 1);
+                  }}
+                >
+                  <Icon name="chevron-down" />
+                </button>
+              </div>
+            )}
           </>
         ) : (
           <form
@@ -240,36 +250,40 @@ function ViewItem({ view, helpId, index, count, readOnly, shown, onDelete }: Ite
         >
           {V.restore}
         </button>
-        <button
-          type="button"
-          className="button button--text"
-          aria-label={V.updateLabel(name)}
-          onClick={() => {
-            updateView(view.id);
-            setStatus({ text: V.updated(name), tone: 'info' });
-          }}
-        >
-          {V.update}
-        </button>
-        <button
-          type="button"
-          className="button button--text"
-          aria-label={V.renameLabel(name)}
-          disabled={readOnly || renaming !== null}
-          onClick={() => {
-            setRenaming(view.name);
-          }}
-        >
-          {V.rename}
-        </button>
-        <button
-          type="button"
-          className="button button--text views__delete"
-          aria-label={V.deleteLabel(name)}
-          onClick={onDelete}
-        >
-          {V.delete}
-        </button>
+        {!phone && (
+          <>
+            <button
+              type="button"
+              className="button button--text"
+              aria-label={V.updateLabel(name)}
+              onClick={() => {
+                updateView(view.id);
+                setStatus({ text: V.updated(name), tone: 'info' });
+              }}
+            >
+              {V.update}
+            </button>
+            <button
+              type="button"
+              className="button button--text"
+              aria-label={V.renameLabel(name)}
+              disabled={readOnly || renaming !== null}
+              onClick={() => {
+                setRenaming(view.name);
+              }}
+            >
+              {V.rename}
+            </button>
+            <button
+              type="button"
+              className="button button--text views__delete"
+              aria-label={V.deleteLabel(name)}
+              onClick={onDelete}
+            >
+              {V.delete}
+            </button>
+          </>
+        )}
       </div>
 
       <div className="field views__caption">

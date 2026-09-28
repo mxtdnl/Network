@@ -1,0 +1,162 @@
+/* Phase 8: the workspace and presentation mode below the desktop width (spec §12
+   screen sizes, CLAUDE.md D112). Desktop (from --workspace-desktop) is the
+   three-column layout of design-system §5.1. The layout is chosen by script
+   from the width tokens and set as data-layout on the root element, because
+   custom properties cannot be used inside @media.
+
+   Tablet: the controls column beside the view, which stays in view (sticky)
+   while the controls scroll with the page; the detail column (member,
+   insights, views, coverage) runs full width below. The reading and focus
+   order follows the page: controls, view, details.
+
+   Phone: one column and read-only. The controls fold away above the view;
+   the details follow it. */
+
+:root[data-layout='tablet'] .workspace,
+:root[data-layout='phone'] .workspace {
+  grid-template-rows: auto auto auto auto;
+  height: auto;
+}
+
+:root[data-layout='tablet'] .workspace {
+  grid-template-columns: var(--col-left) minmax(0, 1fr);
+}
+
+:root[data-layout='phone'] .workspace {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+:root[data-layout='tablet'] .workspace__left,
+:root[data-layout='phone'] .workspace__left {
+  overflow: visible;
+}
+
+:root[data-layout='tablet'] .workspace__centre {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: calc(100vh - var(--bar-height));
+}
+
+:root[data-layout='phone'] .workspace__centre {
+  height: 80vh;
+}
+
+:root[data-layout='tablet'] .workspace__right,
+:root[data-layout='phone'] .workspace__right {
+  grid-column: 1 / -1;
+  overflow: visible;
+}
+
+/* The detail column keeps its reading width, beginning at the page's left edge. */
+:root[data-layout='tablet'] .workspace__right > .tabs {
+  max-width: var(--dialog-width-wide);
+}
+
+/* Top bar: the actions wrap under the name when the width runs out. */
+:root[data-layout='tablet'] .top-bar,
+:root[data-layout='phone'] .top-bar {
+  flex-wrap: wrap;
+  row-gap: 0;
+  column-gap: var(--s-5);
+  min-height: var(--bar-height);
+}
+
+:root[data-layout='phone'] .top-bar {
+  padding-inline: var(--s-4);
+}
+
+:root[data-layout='phone'] .top-bar__actions {
+  margin-inline-start: 0;
+  flex-wrap: wrap;
+  column-gap: var(--s-4);
+}
+
+:root[data-layout='phone'] .status-line,
+:root[data-layout='phone'] .workspace__left,
+:root[data-layout='phone'] .tabs__list,
+:root[data-layout='phone'] .tabs__panel {
+  padding-inline: var(--s-4);
+}
+
+/* Phone: the controls fold away above the view. */
+.workspace__fold {
+  padding-block: var(--s-2);
+}
+
+.workspace__fold-summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--control-height);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+.workspace__fold-summary:focus-visible {
+  outline-offset: calc(var(--focus-width) * -1);
+}
+
+.workspace__fold-body {
+  padding-block: var(--s-4);
+}
+
+.workspace__read-only {
+  padding: var(--s-3) var(--s-4) 0;
+  color: var(--graphite);
+  font-size: var(--t--1-size);
+  line-height: var(--t--1-line);
+}
+
+/* Tabs scroll sideways rather than wrap when five do not fit. */
+:root[data-layout='phone'] .tabs__list {
+  gap: var(--s-4);
+  overflow-x: auto;
+}
+
+:root[data-layout='phone'] .tabs__tab {
+  flex: none;
+}
+
+/* Presentation on a tablet or phone: the legend moves under the map. */
+:root[data-layout='tablet'] .presentation__body,
+:root[data-layout='phone'] .presentation__body {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+:root[data-layout='tablet'] .presentation__legend,
+:root[data-layout='phone'] .presentation__legend {
+  max-height: 30vh;
+}
+
+:root[data-layout='tablet'] .presentation__legend .legend,
+:root[data-layout='phone'] .presentation__legend .legend {
+  grid-template-columns: repeat(auto-fill, minmax(var(--map-legend-column), 1fr));
+  font-size: var(--t-0-size);
+  line-height: var(--t-0-line);
+}
+
+:root[data-layout='phone'] .presentation {
+  padding: var(--s-4);
+}
+
+:root[data-layout='phone'] .presentation__title {
+  font-size: var(--t-3-size);
+  line-height: var(--t-3-line);
+  margin-bottom: var(--s-4);
+}
+
+:root[data-layout='phone'] .presentation__caption {
+  font-size: var(--t-1-size);
+  line-height: var(--t-1-line);
+}
+
+/* The map fills its panel edge to edge at the phone's narrower gutter. */
+:root[data-layout='phone'] .map {
+  height: calc(100% + var(--s-4) * 2);
+  margin: calc(var(--s-4) * -1);
+}
+
+:root[data-layout='phone'] .legend {
+  max-height: 40%;
+}

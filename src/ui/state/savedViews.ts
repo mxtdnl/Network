@@ -142,6 +142,10 @@ export function renameView(id: string, name: string): boolean {
   const clean = name.trim();
   if (clean === '') return false;
   setViews((views) => views.map((v) => (v.id === id ? { ...v, name: clean } : v)));
+  useAppStore.getState().setStatus({
+    text: savedViewsCopy.renamed(currentNames().text(clean)),
+    tone: 'info',
+  });
   return true;
 }
 

@@ -13,6 +13,7 @@ import { mapCopy } from '../copy/map';
 import { focusMapMember } from '../map/focus';
 import { refLabel } from '../map/model';
 import { saveInsightAsView, showInsight } from '../state/insights';
+import { useReadOnly } from '../state/layoutMode';
 import { useMemberNames } from '../state/names';
 import { useAppStore } from '../state/store';
 
@@ -121,6 +122,7 @@ function ObservationItem({
   ctx: InsightContext;
 }) {
   const names = useMemberNames();
+  const readOnly = useReadOnly();
   const selectMember = useAppStore((s) => s.selectMember);
   const setRightPanel = useAppStore((s) => s.setRightPanel);
   const listId = useId();
@@ -162,16 +164,18 @@ function ObservationItem({
         >
           {I.show}
         </button>
-        <button
-          type="button"
-          className="button button--text"
-          aria-label={I.saveViewLabel(label)}
-          onClick={() => {
-            saveInsightAsView(o, ctx);
-          }}
-        >
-          {I.saveView}
-        </button>
+        {!readOnly && (
+          <button
+            type="button"
+            className="button button--text"
+            aria-label={I.saveViewLabel(label)}
+            onClick={() => {
+              saveInsightAsView(o, ctx);
+            }}
+          >
+            {I.saveView}
+          </button>
+        )}
       </div>
     </div>
   );

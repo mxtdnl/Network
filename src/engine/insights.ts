@@ -8,7 +8,7 @@
 // Quantiles use linear interpolation between order statistics (NumPy's
 // default), over the members whose value is defined.
 
-import { percentile } from './metrics/bootstrap';
+import { percentile } from './metrics/percentile';
 import {
   COMPOSITE,
   FI_CLASS,

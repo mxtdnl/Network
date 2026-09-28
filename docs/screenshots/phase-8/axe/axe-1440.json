@@ -1,0 +1,43 @@
+{
+  "size": {
+    "name": "1440",
+    "width": 1440,
+    "height": 900
+  },
+  "states": [
+    "01-first-run-notice",
+    "02-empty",
+    "03-project-menu",
+    "04-survey-no-members",
+    "05-import-dialog",
+    "06-import-errors",
+    "07-open-error",
+    "08-loading",
+    "09-low-coverage-250",
+    "10-map",
+    "11-member-panel",
+    "12-explore",
+    "13-insights",
+    "14-insight-on-map",
+    "15-views-empty",
+    "16-views",
+    "17-coverage",
+    "18-layout-grouped",
+    "18-layout-circular",
+    "18-layout-formal-hierarchy",
+    "19-matrix",
+    "20-matrix-entry",
+    "21-table",
+    "22-compare-layers",
+    "23-compare-formal-informal",
+    "24-survey",
+    "25-export-dialog",
+    "26-anonymised-map",
+    "27-anonymised-table",
+    "28-presentation",
+    "29-presentation-controls",
+    "30-presentation-anonymised",
+    "31-notice-reopened"
+  ],
+  "findings": []
+}

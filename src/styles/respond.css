@@ -355,7 +355,7 @@
 /* A segmented row: joined options fit seven 48px targets on a 390px phone. */
 .scale__options:not(.scale__options--list) .scale__option {
   flex: 1 0 var(--respond-target);
-  border-radius: 0;
+  border-radius: var(--r-none);
 }
 
 .scale__options:not(.scale__options--list) .scale__option + .scale__option {

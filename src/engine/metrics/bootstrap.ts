@@ -10,6 +10,7 @@ import { mulberry32 } from '../rng';
 import { Scheduler, type RunControl } from '../schedule';
 import type { BootstrapOptions, BootstrapResult } from '../types';
 import { singleNodeMetric } from './node';
+import { percentile } from './percentile';
 
 /** Ranks, 1 = highest; ties share their average rank; NaN values are unranked. */
 export function rankDescending(values: Float64Array): { ranks: Float64Array; defined: number } {
@@ -29,16 +30,7 @@ export function rankDescending(values: Float64Array): { ranks: Float64Array; def
   return { ranks, defined: idx.length };
 }
 
-/** Linear-interpolation percentile (numpy's default), q in 0..1. */
-export function percentile(sorted: readonly number[], q: number): number {
-  if (sorted.length === 0) return NaN;
-  const pos = (sorted.length - 1) * q;
-  const lo = Math.floor(pos);
-  const hi = Math.ceil(pos);
-  const a = sorted[lo] as number;
-  const b = sorted[hi] as number;
-  return a + (b - a) * (pos - lo);
-}
+export { percentile };
 
 function toFullScale(rank: number, defined: number, n: number): number {
   return defined > 1 ? 1 + ((rank - 1) * (n - 1)) / (defined - 1) : 1;

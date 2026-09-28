@@ -85,7 +85,8 @@ export function MiniMap({ data, model, label }: { data: MapData; model: MapModel
         positions,
         size.width,
         size.height,
-        theme.nodeMax + theme.labelSize,
+        // Names are centred under their members: room for about ten characters either side.
+        theme.nodeMax + theme.labelSize * 5,
         theme.nodeMax + theme.labelSize,
       ),
     [model, positions, size, theme],

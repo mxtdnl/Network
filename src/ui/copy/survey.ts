@@ -11,7 +11,8 @@ export const surveyCopy = {
   needMembers: {
     heading: 'Add the people you will survey',
     body: 'A survey asks every member of the project about their colleagues. Import a members file first: it lists each person’s id and name, and can include an email column for sending links.',
-    action: 'Import members',
+    // The same action, and name, as the empty state's and the Project menu's.
+    action: 'Import survey data',
   },
   intro: {
     heading: 'Run a survey',
@@ -182,6 +183,7 @@ export const surveyCopy = {
     pastedSource: (n: number) => `Pasted text ${String(n)}`,
 
     planHeading: 'Before you import',
+    planReportHeading: 'Survey responses',
     planAccepted: (n: number) => `${plural(n, 'response', 'responses')} to import`,
     planReplaced: (n: number) =>
       `${plural(n, 'earlier response', 'earlier responses')} replaced by a later one`,

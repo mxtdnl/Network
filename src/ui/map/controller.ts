@@ -16,12 +16,20 @@ import { select, type Selection } from 'd3-selection';
 import { zoom, zoomIdentity, type D3ZoomEvent, type ZoomBehavior } from 'd3-zoom';
 import { parseDuration } from '../durations';
 import { paint } from './canvas';
-import { parseEasing, type ForceLayout } from './layout';
+import {
+  parseEasing,
+  settleJob as settleOnMainThread,
+  type ForceLayout,
+  type SettleJob,
+} from './layout';
 import type { MapModel } from './model';
+import type { LayoutWorkerRequest, LayoutWorkerResponse } from './layoutWorker';
 import type { RenderRequest, RenderResponse } from './renderWorker';
 import {
   NO_HIGHLIGHT,
   buildScene,
+  labelAnchors,
+  type LabelAnchor,
   highlightSet,
   insidePolygon,
   type Highlight,
@@ -49,6 +57,12 @@ const ZOOM_STEP = 1.5;
 const SCALE_EXTENT: [number, number] = [0.05, 12];
 /** Below this many ties the full picture is drawn on the main thread: it takes a few milliseconds. */
 const WORKER_MIN_TIES = 3000;
+/**
+ * From this many attractions a force or grouped layout after the first is
+ * settled in a worker (D111): on the main thread 250 members and 5,000 pairs
+ * took ~400 ms and stalled the page after every change of weights.
+ */
+const LAYOUT_WORKER_MIN_LINKS = 1500;
 
 interface Base {
   image: HTMLCanvasElement | ImageBitmap;
@@ -57,6 +71,14 @@ interface Base {
 }
 
 const sameTransform = (a: Transform, b: Transform) => a.x === b.x && a.y === b.y && a.k === b.k;
+
+function createLayoutWorker(): Worker | null {
+  try {
+    return new Worker(new URL('./layoutWorker.ts', import.meta.url), { type: 'module' });
+  } catch {
+    return null;
+  }
+}
 
 function createRenderWorker(): Worker | null {
   if (typeof OffscreenCanvas === 'undefined') return null;
@@ -73,6 +95,9 @@ export class MapController {
   private readonly offscreen = document.createElement('canvas');
   private readonly localCtx: CanvasRenderingContext2D;
   private worker: Worker | null = null;
+  private layoutWorker: Worker | null = null;
+  private layoutJob: { id: number; job: SettleJob } | null = null;
+  private layoutId = 0;
   private base: Base | null = null;
   /** Incremented whenever the picture changes other than by pan and zoom. */
   private version = 0;
@@ -97,6 +122,8 @@ export class MapController {
   private drag: { index: number; x: number; y: number; moved: boolean; id: number } | null = null;
   private down: { x: number; y: number } | null = null;
   private readonly widths = new Map<string, number>();
+  /** Label positions of the last full picture, so highlighted names are drawn over their faded copies. */
+  private anchors: Map<number, LabelAnchor> = new Map();
   private readonly measure = (text: string): number => {
     let w = this.widths.get(text);
     if (w === undefined) {
@@ -133,6 +160,24 @@ export class MapController {
       };
     }
 
+    this.layoutWorker = createLayoutWorker();
+    if (this.layoutWorker) {
+      this.layoutWorker.onmessage = (event: MessageEvent<LayoutWorkerResponse>) => {
+        this.settled(event.data);
+      };
+      // If the worker cannot run, settle layouts on the main thread instead.
+      this.layoutWorker.onerror = () => {
+        this.layoutWorker?.terminate();
+        this.layoutWorker = null;
+        const pending = this.layoutJob;
+        this.layoutJob = null;
+        if (pending && this.model) {
+          this.layout.stop();
+          this.settled({ id: pending.id, result: settleOnMainThread(pending.job) });
+        }
+      };
+    }
+
     this.zoomBehaviour = zoom<HTMLCanvasElement, unknown>()
       .scaleExtent(SCALE_EXTENT)
       .filter((event: Event) => {
@@ -163,6 +208,9 @@ export class MapController {
   dispose(): void {
     this.worker?.terminate();
     this.worker = null;
+    this.layoutWorker?.terminate();
+    this.layoutWorker = null;
+    this.layoutJob = null;
     if (this.base?.image instanceof ImageBitmap) this.base.image.close();
     cancelAnimationFrame(this.frame);
     clearTimeout(this.idleTimer);
@@ -192,9 +240,43 @@ export class MapController {
     const radii = model.nodes.map((n) => n.radius);
     const first = this.layout.nodes.length !== model.n || this.layoutKind === '';
     const before = first ? null : this.layout.positions.map((p) => ({ x: p.x, y: p.y }));
-    const changed = this.layout.update(request.key, model.n, request.weights, radii, request.spec);
-    const kindChanged = this.layoutKind !== '' && this.layoutKind !== request.spec.kind;
-    this.layoutKind = request.spec.kind;
+    // The first layout is settled here, so nothing moves on load (spec §12).
+    const { changed, job } = this.layout.prepare(
+      request.key,
+      model.n,
+      request.weights,
+      radii,
+      request.spec,
+      first || !this.layoutWorker ? Infinity : LAYOUT_WORKER_MIN_LINKS,
+    );
+    if (job && this.layoutWorker) {
+      const id = ++this.layoutId;
+      this.layoutJob = { id, job };
+      const message: LayoutWorkerRequest = { id, job };
+      this.layoutWorker.postMessage(message);
+    } else if (!job) {
+      this.layoutJob = null;
+    }
+    this.laidOut(changed, before, request.spec.kind);
+  }
+
+  /** A worker's settled layout: members move to it from where they are drawn now. */
+  private settled({ id, result }: LayoutWorkerResponse): void {
+    const pending = this.layoutJob;
+    if (!pending || pending.id !== id) return;
+    this.layoutJob = null;
+    const before = this.layout.positions.map((p) => ({ x: p.x, y: p.y }));
+    const changed = this.layout.accept(pending.job, result);
+    this.laidOut(changed, before, pending.job.spec.kind);
+  }
+
+  private laidOut(
+    changed: boolean,
+    before: { x: number; y: number }[] | null,
+    kind: LayoutRequest['spec']['kind'],
+  ): void {
+    const kindChanged = this.layoutKind !== '' && this.layoutKind !== kind;
+    this.layoutKind = kind;
     if (changed && before && this.fitted) {
       const style = getComputedStyle(document.documentElement);
       const duration = reducedMotion() ? 0 : parseDuration(style.getPropertyValue('--m-layout'));
@@ -305,14 +387,17 @@ export class MapController {
     }
     if (!Number.isFinite(x0)) return;
     const pad = this.theme.nodeMax * 2 + this.theme.labelSize * 2;
-    // Labels on the circle point outwards, so the circle needs room for names beside it.
-    const padX = this.layoutKind === 'circular' ? pad + this.theme.labelSize * 6 : pad;
+    // Labels on the circle point outwards, so the circle needs room for names
+    // beside it, and for a line of text above and below it.
+    const circular = this.layoutKind === 'circular';
+    const padX = circular ? pad + this.theme.labelSize * 6 : pad;
+    const padY = circular ? pad + this.theme.labelSize * 1.5 : pad;
     const bw = Math.max(x1 - x0, 1);
     const bh = Math.max(y1 - y0, 1);
     const area = this.freeArea(bw, bh);
     const k = Math.min(
       SCALE_EXTENT[1],
-      Math.max(SCALE_EXTENT[0], Math.min((area.w - 2 * padX) / bw, (area.h - 2 * pad) / bh)),
+      Math.max(SCALE_EXTENT[0], Math.min((area.w - 2 * padX) / bw, (area.h - 2 * padY) / bh)),
     );
     const t = zoomIdentity
       .translate(
@@ -386,7 +471,7 @@ export class MapController {
       path: this.highlight.path ?? null,
     };
     const size = { width: this.width, height: this.height };
-    return buildScene(
+    const scene = buildScene(
       model,
       this.layout.positions,
       t,
@@ -397,6 +482,8 @@ export class MapController {
       this.measure,
       this.layout.annotation,
     );
+    this.anchors = labelAnchors(scene);
+    return scene;
   }
 
   /** Brings the full picture up to date: now on the main thread, or by asking the worker. */
@@ -460,8 +547,8 @@ export class MapController {
       // One more frame after the last, at the settled positions.
       this.requestPaint();
     }
-    // Exposed for tests and assistive tooling: whether members are moving.
-    const moving = this.layout.animating ? 'running' : 'idle';
+    // Exposed for tests and assistive tooling: whether members are moving or about to.
+    const moving = this.layout.animating || this.layoutJob ? 'running' : 'idle';
     if (this.canvas.dataset.transition !== moving) this.canvas.dataset.transition = moving;
     const base = this.base;
     const idle = this.idleSince() >= this.idleMs;
@@ -491,6 +578,7 @@ export class MapController {
           'lit',
           this.measure,
           this.layout.annotation,
+          this.anchors,
         ),
         dpr,
       );
