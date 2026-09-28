@@ -165,6 +165,7 @@ Open from Phase 9:
 
 - **Q34 (references).** The brief allows only the references in spec §3 and the §4.2 table. The method notes also name the authors of several formulas (listed in D117), inherited from Phases 3–6. They are kept as attributions, not references. Should they stay, be removed, or be expanded into full references (which would add references the spec does not list)?
 - **Q35 (live check).** `RELEASE_URL=https://mxtdnl.github.io/network/ npx playwright test tests/e2e/release.spec.ts` should be run once this branch is merged and deployed; it could not be run here.
+- **Tag v1.0.0.** The annotated tag (message: `docs/release-notes/v1.0.0.md`) was created but could not be pushed from this environment: the git proxy disconnects on a tag push, and the GitHub tools available here cannot create tags or releases. The owner tags the merge commit on `main` after the live check (Q35): `git tag -a v1.0.0 -F docs/release-notes/v1.0.0.md <merge commit> && git push origin v1.0.0`, and creates the GitHub release from the same notes.
 - **Licence.** The repository has no licence file, so Graticule's own code is all rights reserved; the README says so. Choosing a licence is the owner's decision.
 - Real-device checks of respondent mode (Phase 8) remain open.
 
