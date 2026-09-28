@@ -246,7 +246,7 @@ test('saved views: name, caption, rename, reorder, restore, update and delete; k
   await page.getByRole('button', { name: 'Project' }).click();
   await page.getByRole('menuitem', { name: 'Open project…' }).click();
   const chooser = page.waitForEvent('filechooser');
-  await page.getByRole('button', { name: 'Replace project' }).click();
+  await page.getByRole('button', { name: 'Open project', exact: true }).click();
   await (await chooser).setFiles(file);
   await rightTab(page, 'Views').click();
   await expect(list.getByRole('listitem')).toHaveCount(3);

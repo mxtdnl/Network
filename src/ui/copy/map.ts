@@ -1,7 +1,23 @@
 // Wording for the map, its controls, legend and member panel (spec §8).
 // Sentence case, plain language; technical names live in the method notes.
 
-const num = (value: number) => value.toLocaleString('en-GB');
+// Number formatters are cached: building one per call (toLocaleString with
+// options) cost ~90 ms per redraw of the 250-member map's accessible names.
+const plain = new Intl.NumberFormat('en-GB');
+const formatters = new Map<number, Intl.NumberFormat>();
+function fixed(digits: number): Intl.NumberFormat {
+  let f = formatters.get(digits);
+  if (!f) {
+    f = new Intl.NumberFormat('en-GB', {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    });
+    formatters.set(digits, f);
+  }
+  return f;
+}
+
+const num = (value: number) => plain.format(value);
 const count = (value: number, one: string, many: string) =>
   `${num(value)} ${value === 1 ? one : many}`;
 
@@ -11,10 +27,7 @@ export function formatValue(value: number): string {
   if (Number.isInteger(value)) return num(value);
   const abs = Math.abs(value);
   const digits = abs >= 100 ? 0 : abs >= 10 ? 1 : abs >= 1 ? 2 : 3;
-  return value.toLocaleString('en-GB', {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits,
-  });
+  return fixed(digits).format(value);
 }
 
 /** Values on one scale share their number of decimals, e.g. 0, 0.218, 0.437 → 0.000, 0.218, 0.437. */
@@ -24,9 +37,7 @@ export function formatScale(values: readonly number[]): string[] {
   const allIntegers = finite.every(Number.isInteger);
   const digits = allIntegers ? 0 : max >= 100 ? 0 : max >= 10 ? 1 : max >= 1 ? 2 : 3;
   return values.map((v) =>
-    Number.isFinite(v)
-      ? v.toLocaleString('en-GB', { minimumFractionDigits: digits, maximumFractionDigits: digits })
-      : 'Not defined',
+    Number.isFinite(v) ? fixed(digits).format(v) : 'Not defined',
   );
 }
 
@@ -200,10 +211,10 @@ export const mapCopy = {
       `Rank 1 is the highest value of ${num(n)} members; a range means tied values. Rank ranges from resampling are calculated on request in the metrics table.`,
     rankIntervalNote: (metric: string, replicates: number) =>
       `The rank of ${metric} is the range from resampling (95 %, ${num(replicates)} resamples); other ranks are single ranks, and a range there means tied values.`,
-    showEgo: 'Show ego network',
+    showEgo: 'Show ego view',
     joinGroup: 'Add to subgroup',
     leaveGroup: 'Take out of subgroup',
-    simulateRemoval: 'Remove in simulation',
+    simulateRemoval: 'Simulate removal',
     about: (label: string) => `About ${label}`,
     technical: (name: string) => `Technical name: ${name}.`,
     ties: 'Ties by layer',

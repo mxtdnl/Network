@@ -15,7 +15,7 @@ const rowList = (rows: number[] | undefined) =>
 const quote = (v: string | null) => `“${v ?? ''}”`;
 
 export const importCopy = {
-  title: 'Import data',
+  title: 'Import survey data',
   intro:
     'Choose a members file and, if you have one, a ties file. Both can be CSV or XLSX. The files are checked before anything is imported.',
   membersLabel: 'Members file',

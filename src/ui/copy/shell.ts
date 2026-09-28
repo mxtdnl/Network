@@ -6,6 +6,7 @@ export const shellCopy = {
   hideNames: 'Hide names',
   present: 'Present',
   help: 'Help',
+  loadingSurvey: 'Loading the survey tools…',
   helpMenu: {
     notice: 'Data and consent notice',
   },

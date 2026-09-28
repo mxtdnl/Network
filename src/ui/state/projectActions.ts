@@ -1,7 +1,6 @@
 // File actions: open and save .ona.json projects, load the demo, and read
 // import files into tables. Everything happens in the browser.
 
-import { parseCsv } from '../../data/import/csv';
 import type { RawTable } from '../../data/import/table';
 import { parseProject, projectFileName, serialiseProject } from '../../data/projectFile';
 import { importCopy } from '../copy/import';
@@ -57,7 +56,11 @@ export class ImportReadError extends Error {}
 /** Reads a CSV or XLSX file into a table of text cells. */
 export async function readImportFile(file: File): Promise<RawTable> {
   const lower = file.name.toLowerCase();
-  if (lower.endsWith('.csv')) return parseCsv(file.name, await file.text());
+  // Papa Parse and SheetJS are loaded only when a file of their kind is imported.
+  if (lower.endsWith('.csv')) {
+    const { parseCsv } = await import('../../data/import/csv');
+    return parseCsv(file.name, await file.text());
+  }
   if (lower.endsWith('.xlsx')) {
     const { parseXlsx } = await import('../../data/import/xlsx');
     return parseXlsx(file.name, await file.arrayBuffer());

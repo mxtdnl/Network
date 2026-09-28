@@ -143,7 +143,7 @@ export function TopBar() {
         open={pending !== null}
         title={projectCopy.replaceTitle}
         body={projectCopy.replaceBody}
-        confirm={projectCopy.replaceConfirm}
+        confirm={projectCopy.replaceConfirm[pending ?? 'open']}
         cancel={projectCopy.cancel}
         onCancel={() => {
           setPending(null);

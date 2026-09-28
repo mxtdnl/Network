@@ -30,7 +30,7 @@ const shot = (page: Page, name: string) =>
 test('import the templates, read the validation report and open the matrix', async ({ page }) => {
   await start(page);
   await page.getByRole('button', { name: 'Import survey data' }).click();
-  const dialog = page.getByRole('dialog', { name: 'Import data' });
+  const dialog = page.getByRole('dialog', { name: 'Import survey data' });
   await expect(dialog).toBeVisible();
 
   await dialog.getByLabel('Members file').setInputFiles(join(templates, 'members.csv'));
@@ -115,7 +115,7 @@ test('import the XLSX templates under the production CSP', async ({ page }) => {
   });
   await start(page);
   await page.getByRole('button', { name: 'Import survey data' }).click();
-  const dialog = page.getByRole('dialog', { name: 'Import data' });
+  const dialog = page.getByRole('dialog', { name: 'Import survey data' });
   await dialog.getByLabel('Members file').setInputFiles(join(templates, 'members.xlsx'));
   await dialog.getByLabel('Ties file').setInputFiles(join(templates, 'ties.xlsx'));
   await dialog.getByRole('button', { name: 'Check files' }).click();
@@ -129,7 +129,7 @@ test('import the XLSX templates under the production CSP', async ({ page }) => {
 test('the validation report lists every seeded error with its row', async ({ page }) => {
   await start(page);
   await page.getByRole('button', { name: 'Import survey data' }).click();
-  const dialog = page.getByRole('dialog', { name: 'Import data' });
+  const dialog = page.getByRole('dialog', { name: 'Import survey data' });
   await dialog.getByLabel('Members file').setInputFiles({
     name: 'members-with-errors.csv',
     mimeType: 'text/csv',
@@ -257,7 +257,7 @@ test('demo, layer manager, coverage, project files and local persistence', async
   await page.getByRole('menuitem', { name: 'Open project…' }).click();
   await page
     .getByRole('dialog', { name: 'Replace the open project?' })
-    .getByRole('button', { name: 'Replace project' })
+    .getByRole('button', { name: 'Open project', exact: true })
     .click();
   await (
     await chooser

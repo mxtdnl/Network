@@ -6,6 +6,14 @@ const num = (value: number) => value.toLocaleString('en-GB');
 const count = (value: number, one: string, many: string) =>
   `${num(value)} ${value === 1 ? one : many}`;
 
+export type TableExportKind = 'members' | 'network' | 'formalInformal' | 'table';
+const tableNoun: Record<TableExportKind, string> = {
+  members: 'Member metrics',
+  network: 'Network metrics',
+  formalInformal: 'Formal and informal ties',
+  table: 'Table',
+};
+
 export const exportCopy = {
   menu: 'Export',
   dialogTitle: 'Export',
@@ -56,8 +64,10 @@ export const exportCopy = {
     formalInformalHelp: 'Every pair classified as formal only, informal only, both or neither.',
     formalInformalUnavailable:
       'Needs both the formal and the informal collaboration layers. Enable them in the layer list.',
-    exported: (file: string) => `Table exported as ${file}.`,
-    failed: (reason: string) => `The table could not be exported. ${reason}`,
+    // The status names what its button exported: "Export member metrics" → "Member metrics exported".
+    exported: (kind: TableExportKind, file: string) => `${tableNoun[kind]} exported as ${file}.`,
+    failed: (kind: TableExportKind, reason: string) =>
+      `${tableNoun[kind]} could not be exported. ${reason}`,
   },
 
   report: {

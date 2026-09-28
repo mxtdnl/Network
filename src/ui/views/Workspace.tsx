@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { EthicsNotice } from '../components/EthicsNotice';
 import { Tabs, type TabItem } from '../components/Tabs';
 import { coverageCopy } from '../copy/data';
@@ -22,14 +23,24 @@ import { InsightsPanel } from './InsightsPanel';
 import { PresentationView } from './PresentationView';
 import { SavedViewsPanel } from './SavedViewsPanel';
 import { weightsCopy } from '../copy/weights';
-import { SurveyTab } from './survey/SurveyTab';
+
+// The survey tools are loaded when the Survey tab is first opened.
+const SurveyTab = lazy(() => import('./survey/SurveyTab').then((m) => ({ default: m.SurveyTab })));
 
 const centreItems: readonly TabItem<CentreView>[] = [
   { key: 'map', label: shellCopy.centreTabs.map, panel: <MapView /> },
   { key: 'matrix', label: shellCopy.centreTabs.matrix, panel: <MatrixTab /> },
   { key: 'table', label: shellCopy.centreTabs.table, panel: <TableView /> },
   { key: 'compare', label: shellCopy.centreTabs.compare, panel: <CompareView /> },
-  { key: 'survey', label: shellCopy.centreTabs.survey, panel: <SurveyTab /> },
+  {
+    key: 'survey',
+    label: shellCopy.centreTabs.survey,
+    panel: (
+      <Suspense fallback={<p className="placeholder">{shellCopy.loadingSurvey}</p>}>
+        <SurveyTab />
+      </Suspense>
+    ),
+  },
 ];
 
 const rightItems: readonly TabItem<RightPanel>[] = [
