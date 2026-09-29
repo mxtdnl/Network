@@ -2,7 +2,7 @@
 
 These notes define every metric Graticule computes: what it means in plain English, the formula the engine evaluates, and the caveats a reader needs. They also state every rule and threshold that shapes a result: the insight rules (section 8), survey collection (section 9), the relationship layers (section 10), and the rules for data, display and exports (section 11). The in-app explanations are drawn from this text, and the notes can be read in Graticule from Help → Method notes. Where Graticule's convention differs from NetworkX, the difference is stated and the reference fixtures apply the same convention (section 7). How to use each measure in practice is in the [user guide](user-guide.md); references are in section 12.
 
-**Design.** Graticule uses a whole-network (roster) design: each member rates every other member on each active relationship variable (layer). Ties are directed: A's rating of B may differ from B's rating of A. For general concepts (nodes, weighted and directed edges, centrality, community structure and stability), see Hevey, D. (2018). Network analysis: a brief overview and tutorial. *Health Psychology and Behavioral Medicine*. Much of that paper concerns networks of psychological variables estimated statistically. Those estimation methods do not apply here, because ties are directly observed ratings between people. Graticule is descriptive, not diagnostic: it reports network structure and does not evaluate individuals.
+**Design.** Graticule uses a whole-network (roster) design: each member rates every other member on each active relationship variable (layer). Ties are directed: A's rating of B may differ from B's rating of A. For general concepts (nodes, weighted and directed edges, centrality, community structure and stability), see Hevey (2018). Much of that paper concerns networks of psychological variables estimated statistically. Those estimation methods do not apply here, because ties are directly observed ratings between people. Graticule is descriptive, not diagnostic: it reports network structure and does not evaluate individuals.
 
 The analysis engine is `src/engine/`. Formulas below use this notation:
 
@@ -112,7 +112,7 @@ Negative sub-layers get strength, degree and clustering only. Betweenness, harmo
 
 **Meaning.** How often a member lies on the shortest routes between other members. High betweenness marks someone who connects parts of the network that are otherwise far apart.
 
-**Formula.** B_i = Σ over pairs s ≠ i ≠ t of σ_st(i) / σ_st, where σ_st is the number of shortest paths from s to t and σ_st(i) the number passing through i, with tie length 1/w. Normalised so values run from 0 to 1: divided by (n − 1)(n − 2) for ordered pairs in the directed view, and by (n − 1)(n − 2)/2 for unordered pairs in the symmetrised view.
+**Formula.** Freeman (1977), computed with Brandes' (2001) algorithm, as graphology and NetworkX do: B_i = Σ over pairs s ≠ i ≠ t of σ_st(i) / σ_st, where σ_st is the number of shortest paths from s to t and σ_st(i) the number passing through i, with tie length 1/w. Normalised so values run from 0 to 1: divided by (n − 1)(n − 2) for ordered pairs in the directed view, and by (n − 1)(n − 2)/2 for unordered pairs in the symmetrised view.
 
 **Caveats.** Assumes that things travel along shortest paths only. Sensitive to single ties: one extra tie can move a member's value a great deal. Paths of exactly equal length are compared by floating-point equality, so two paths whose lengths differ only by rounding are not both counted. A binary version (every tie length 1) is also computed, for centralisation.
 
@@ -120,7 +120,7 @@ Negative sub-layers get strength, degree and clustering only. Betweenness, harmo
 
 **Meaning.** How easily a member can be reached from everyone else ("reachability from others"). The outgoing version measures how easily the member reaches everyone else.
 
-**Formula.** H_i = (1 / (n − 1)) Σ_{j ≠ i} 1 / d_ji, where 1/d = 0 when there is no path. The outgoing version uses d_ij.
+**Formula.** Harmonic closeness (Marchiori & Latora, 2000): H_i = (1 / (n − 1)) Σ_{j ≠ i} 1 / d_ji, where 1/d = 0 when there is no path. The outgoing version uses d_ij.
 
 **Caveats.** Unlike classic closeness, it stays defined when the network is split into separate groups: unreachable members simply add nothing. Divided by (n − 1), so with 0–1 weights the value is at most 1. NetworkX's `harmonic_centrality` returns the undivided sum and uses incoming distances; Graticule follows its direction and divides.
 
@@ -128,7 +128,7 @@ Negative sub-layers get strength, degree and clustering only. Betweenness, harmo
 
 **Meaning.** A member is central if they are tied to members who are themselves central. It rewards being well connected to the well connected.
 
-**Formula.** The principal eigenvector x of the weighted adjacency matrix: λ x_i = Σ_j w_ji x_j, found by power iteration (on A + I, which avoids oscillation), scaled so that Σ x_i² = 1. Converged when the summed change is below n × 10⁻¹².
+**Formula.** Bonacich (1972): the principal eigenvector x of the weighted adjacency matrix: λ x_i = Σ_j w_ji x_j, found by power iteration (on A + I, which avoids oscillation), scaled so that Σ x_i² = 1. Converged when the summed change is below n × 10⁻¹².
 
 **Where defined.** Only on the largest strongly connected group (directed view) or connected group (symmetrised view): a set of members who can all reach each other. Everyone outside it is "Not defined", because a member who cannot be reached from the core has no well-defined score. If two groups tie for largest, the one containing the earliest member in the member list is used. If the largest group has fewer than two members, or the iteration does not converge within 10,000 steps, the metric is not defined for anyone.
 
@@ -138,7 +138,7 @@ Negative sub-layers get strength, degree and clustering only. Betweenness, harmo
 
 **Meaning.** How much a member's contacts are tied to each other. High constraint means a closed, redundant network in which the member has few independent options; low constraint means contacts in separate circles.
 
-**Formula.** With mutual weight M_ij = w_ij + w_ji and proportional tie p_ij = M_ij / Σ_k M_ik:
+**Formula.** Burt (1992). With mutual weight M_ij = w_ij + w_ji and proportional tie p_ij = M_ij / Σ_k M_ik:
 
 c_i = Σ_{j ∈ N(i)} (p_ij + Σ_{q ∈ N(i), q ≠ i, j} p_iq p_qj)².
 
@@ -148,11 +148,11 @@ c_i = Σ_{j ∈ N(i)} (p_ij + Σ_{q ∈ N(i), q ≠ i, j} p_iq p_qj)².
 
 **Meaning.** The number of a member's contacts who are not redundant: the size of their network after discounting contacts who are tied to each other.
 
-**Formula.** With p as above and m_jq = M_jq / max_k M_jk (the tie from j to q relative to j's strongest tie):
+**Formula.** Burt (1992). With p as above and m_jq = M_jq / max_k M_jk (the tie from j to q relative to j's strongest tie):
 
 ES_i = Σ_{j ∈ N(i)} (1 − Σ_{q ∈ N(i), q ≠ j} p_iq m_jq).
 
-**Caveats.** At most the number of contacts. Not defined for a member with no ties. For unweighted undirected data this equals Borgatti's simpler formula, n − 2t/n. NetworkX 3.6.1's `effective_size` has a defect when SciPy is installed: its matrix code divides by the strongest tie of q instead of j, and disagrees with its own per-node code and its documentation by up to 0.74 on the reference cases. Graticule follows the documented formula, and the reference values are computed with NetworkX's per-node code (section 7).
+**Caveats.** At most the number of contacts. Not defined for a member with no ties. For unweighted undirected data this equals Borgatti's (1997) simpler formula, n − 2t/n. NetworkX 3.6.1's `effective_size` has a defect when SciPy is installed: its matrix code divides by the strongest tie of q instead of j, and disagrees with its own per-node code and its documentation by up to 0.74 on the reference cases. Graticule follows the documented formula, and the reference values are computed with NetworkX's per-node code (section 7).
 
 ### Local clustering
 
@@ -201,7 +201,7 @@ A member with fewer than two contacts, or no closed triangle, has clustering 0 a
 
 Q = (1 / 2m) Σ_ij [w_ij − γ s_i s_j / 2m] δ(c_i, c_j),
 
-with m the total tie weight, s_i the strength of i, and γ = 1 (the resolution). Communities are found on the symmetrised graph of the layer, combined by the chosen rule, in both views. The search visits members in a random order, so it is run ten times from one stream seeded with the project's random seed, and the partition with the highest modularity is kept; the same data and seed always give the same result. Each run uses classic local moving (every member is reconsidered on every sweep, as in NetworkX). Communities are numbered in order of their earliest member.
+the modularity of Newman & Girvan (2004), with m the total tie weight, s_i the strength of i, and γ = 1 (the resolution). Communities are found on the symmetrised graph of the layer, combined by the chosen rule, in both views. The search visits members in a random order, so it is run ten times from one stream seeded with the project's random seed, and the partition with the highest modularity is kept; the same data and seed always give the same result. Each run uses classic local moving (every member is reconsidered on every sweep, as in NetworkX). Communities are numbered in order of their earliest member.
 
 **Caveats.** Louvain is a heuristic: it finds a good partition, not necessarily the best, and a different node order or seed can give a different one of similar quality. Graticule uses graphology's implementation, whose partitions can differ from NetworkX's; on every reference case its modularity is equal to or higher than NetworkX's. With a single run, or with graphology's default fast local moving, it fell up to 0.015 short. Modularity around 0.3 or above is usually read as clear community structure; values near 0 mean none. The resolution γ = 1 is the same default as NetworkX; larger values find smaller communities.
 
@@ -245,7 +245,7 @@ with m the total tie weight, s_i the strength of i, and γ = 1 (the resolution).
 
 ### Structural balance
 
-**Meaning.** Whether trios of members are in a stable pattern. Balance theory (Heider; Cartwright & Harary) holds that "my friend's friend is my friend" (+++) and "my enemy's enemy is my friend" (+−−) are stable, while a trio with one negative pair (++−) or three (−−−) is under strain.
+**Meaning.** Whether trios of members are in a stable pattern. Balance theory (Heider, 1946; Cartwright & Harary, 1956) holds that "my friend's friend is my friend" (+++) and "my enemy's enemy is my friend" (+−−) are stable, while a trio with one negative pair (++−) or three (−−−) is under strain.
 
 **Formula.** On the signed layer symmetrised by the chosen rule, every trio whose three pairs all carry a sign is counted: balanced if the product of the three signs is positive (+++, +−−), unbalanced otherwise (++−, −−−). The balance ratio is balanced / (balanced + unbalanced).
 
@@ -325,7 +325,7 @@ With only the four core layers enabled, Formal structure is formal collaboration
 
 **Meaning.** The strongest route between two members: the chain of ties along which the total distance is smallest.
 
-**Formula.** Dijkstra's algorithm with tie length 1/w in the current view (following tie direction in the directed view). The result gives the members along one shortest path, its distance (Σ 1/w), its number of steps, and how many different paths share that shortest distance. When several do, the one whose members, read back from the destination, come earliest in the member list is shown.
+**Formula.** Dijkstra's (1959) algorithm with tie length 1/w in the current view (following tie direction in the directed view). The result gives the members along one shortest path, its distance (Σ 1/w), its number of steps, and how many different paths share that shortest distance. When several do, the one whose members, read back from the destination, come earliest in the member list is shown.
 
 **Caveats.** A shortest path is one route among possibly several; the count of equally short paths says how many. Paths of equal length are detected by floating-point equality, as in NetworkX. Not computed on negative sub-layers.
 
@@ -367,11 +367,11 @@ With only the four core layers enabled, Formal structure is formal collaboration
 
 ## 7. Reference values and differences from NetworkX
 
-`scripts/generate_fixtures.py` computes reference values with NetworkX and writes them to `tests/fixtures/`:
+`scripts/generate_fixtures.py` computes reference values with NetworkX (Hagberg, Schult & Swart, 2008) and writes them to `tests/fixtures/`:
 
 | File | Case |
 |---|---|
-| `karate-unweighted.json` | Zachary's karate club, every tie rated 1 in both directions |
+| `karate-unweighted.json` | Zachary's karate club (Zachary, 1977), every tie rated 1 in both directions |
 | `karate-weighted.json` | Zachary's karate club with Zachary's interaction counts (1–7) as ratings on a 0–7 scale |
 | `karate-directed.json` | Karate club ties with four deterministic, asymmetric layers (strength, valence, informal and formal collaboration), including rated zeros and missing directions |
 | `demo.json` | The demo project's four core layers and the composite; the file's SHA-256 is recorded and checked |
@@ -587,12 +587,28 @@ Louvain and the bootstrap draw from one seeded generator (mulberry32) with the p
 
 ## 12. References
 
-Cited as they are in the specification (`spec.md` section 3 and the table in section 4.2):
+References follow APA style (7th edition) and were checked against the publishers' records or a library index on 2026-09-29. The specification (`spec.md` section 3 and the table in section 4.2) cites Hevey, Cross & Parker, Mayer, Davis & Schoorman, and Edmondson in short form; they are given in full here. The others are the original sources of the methods these notes describe.
 
-- Hevey, D. (2018). Network analysis: a brief overview and tutorial. *Health Psychology and Behavioral Medicine*. Used for general concepts only (see "Design" above).
-- Cross & Parker, 2004, *The Hidden Power of Social Networks*. Cited for advice and information seeking as a core ONA relation, and for the energy layer (Cross & Parker (2004)).
-- Mayer, Davis & Schoorman (1995). The conceptual source of competence-based trust, kept separate from benevolence-based trust.
-- Edmondson (1999). Psychological safety, defined at team level; the interpersonal safety layer is a one-to-one (dyadic) adaptation of it.
+- Blondel, V. D., Guillaume, J.-L., Lambiotte, R., & Lefebvre, E. (2008). Fast unfolding of communities in large networks. *Journal of Statistical Mechanics: Theory and Experiment*, *2008*(10), P10008. https://doi.org/10.1088/1742-5468/2008/10/P10008
+- Bonacich, P. (1972). Factoring and weighting approaches to status scores and clique identification. *Journal of Mathematical Sociology*, *2*(1), 113–120. https://doi.org/10.1080/0022250X.1972.9989806
+- Borgatti, S. P. (1997). Structural holes: Unpacking Burt's redundancy measures. *Connections*, *20*(1), 35–38.
+- Brandes, U. (2001). A faster algorithm for betweenness centrality. *Journal of Mathematical Sociology*, *25*(2), 163–177. https://doi.org/10.1080/0022250X.2001.9990249
+- Burt, R. S. (1992). *Structural holes: The social structure of competition*. Harvard University Press.
+- Cartwright, D., & Harary, F. (1956). Structural balance: A generalization of Heider's theory. *Psychological Review*, *63*(5), 277–293. https://doi.org/10.1037/h0046049
+- Cross, R., & Parker, A. (2004). *The hidden power of social networks: Understanding how work really gets done in organizations*. Harvard Business School Press.
+- Dijkstra, E. W. (1959). A note on two problems in connexion with graphs. *Numerische Mathematik*, *1*, 269–271. https://doi.org/10.1007/BF01386390
+- Edmondson, A. (1999). Psychological safety and learning behavior in work teams. *Administrative Science Quarterly*, *44*(2), 350–383. https://doi.org/10.2307/2666999
+- Fagiolo, G. (2007). Clustering in complex directed networks. *Physical Review E*, *76*(2), 026107. https://doi.org/10.1103/PhysRevE.76.026107
+- Freeman, L. C. (1977). A set of measures of centrality based on betweenness. *Sociometry*, *40*(1), 35–41. https://doi.org/10.2307/3033543
+- Freeman, L. C. (1979). Centrality in social networks: Conceptual clarification. *Social Networks*, *1*(3), 215–239. https://doi.org/10.1016/0378-8733(78)90021-7
+- Hagberg, A. A., Schult, D. A., & Swart, P. J. (2008). Exploring network structure, dynamics, and function using NetworkX. In G. Varoquaux, T. Vaught, & J. Millman (Eds.), *Proceedings of the 7th Python in Science Conference (SciPy2008)* (pp. 11–15).
+- Heider, F. (1946). Attitudes and cognitive organization. *The Journal of Psychology*, *21*(1), 107–112. https://doi.org/10.1080/00223980.1946.9917275
+- Hevey, D. (2018). Network analysis: A brief overview and tutorial. *Health Psychology and Behavioral Medicine*, *6*(1), 301–328. https://doi.org/10.1080/21642850.2018.1521283
+- Krackhardt, D., & Stern, R. N. (1988). Informal networks and organizational crises: An experimental simulation. *Social Psychology Quarterly*, *51*(2), 123–140. https://doi.org/10.2307/2786835
+- Marchiori, M., & Latora, V. (2000). Harmony in the small-world. *Physica A: Statistical Mechanics and Its Applications*, *285*(3–4), 539–546. https://doi.org/10.1016/S0378-4371(00)00311-3
+- Mayer, R. C., Davis, J. H., & Schoorman, F. D. (1995). An integrative model of organizational trust. *Academy of Management Review*, *20*(3), 709–734. https://doi.org/10.5465/amr.1995.9508080335
+- Newman, M. E. J., & Girvan, M. (2004). Finding and evaluating community structure in networks. *Physical Review E*, *69*(2), 026113. https://doi.org/10.1103/PhysRevE.69.026113
+- Onnela, J.-P., Saramäki, J., Kertész, J., & Kaski, K. (2005). Intensity and coherence of motifs in weighted complex networks. *Physical Review E*, *71*(6), 065103. https://doi.org/10.1103/PhysRevE.71.065103
+- Zachary, W. W. (1977). An information flow model for conflict and fission in small groups. *Journal of Anthropological Research*, *33*(4), 452–473. https://doi.org/10.1086/jar.33.4.3629752
 
-Formulas elsewhere in these notes are attributed to their authors by name where they are used (Onnela et al., 2005, and Fagiolo, 2007, for weighted clustering; Blondel et al., 2008, for the Louvain method; Freeman, 1979, for centralisation; Krackhardt & Stern, 1988, for the E-I index; Heider, and Cartwright & Harary, for structural balance; Borgatti for effective size). These attributions name the method; they are not further sources for this tool's design. The reference values in section 7 come from NetworkX, whose versions each fixture records.
-
+**Where each is used.** Hevey (2018): general concepts only (see "Design" at the top). Cross & Parker (2004): advice seeking as a core ONA relation, and the energy layer. Mayer, Davis & Schoorman (1995): competence-based trust, kept separate from benevolence-based trust. Edmondson (1999): psychological safety, defined at team level; the interpersonal safety layer is a one-to-one (dyadic) adaptation of it. The method sources are cited where each method is described (sections 3 to 7). Library software used by the tool itself (graphology and the other dependencies) is credited, with its licence, in `README.md` and `public/THIRD-PARTY-NOTICES.txt`.

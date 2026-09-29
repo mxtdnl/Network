@@ -4,12 +4,14 @@ import { Tabs } from '../components/Tabs';
 import { helpCopy, type HelpDoc } from '../copy/help';
 import { parseMarkdown, type Block, type Inline } from '../help/markdown';
 
-// In-app help (Help menu): the user guide, the method notes and the help for
-// respondents, read from docs/ as written. Each document is bundled as text
+// In-app help (Help menu): the user guide, the method notes, the help for
+// respondents and the licence, read from the repository as written. Each document is bundled as text
 // and loaded when first opened; the user guide's screenshots are bundled
 // assets, so nothing is fetched from anywhere but this site (CSP, spec §10).
 
-const SOURCES: Record<HelpDoc, () => Promise<{ default: string }>> = {
+type MarkdownDoc = Exclude<HelpDoc, 'licence'>;
+
+const SOURCES: Record<MarkdownDoc, () => Promise<{ default: string }>> = {
   guide: () => import('../../../docs/user-guide.md?raw'),
   method: () => import('../../../docs/method-notes.md?raw'),
   respondent: () => import('../../../docs/respondent-help.md?raw'),
@@ -30,7 +32,7 @@ const IMAGES = import.meta.glob('../../../docs/user-guide/*.{png,jpg}', {
 });
 const imageUrl = (src: string) => IMAGES[`../../../docs/${src.replace(/^\.\//, '')}`];
 
-const ORDER: readonly HelpDoc[] = ['guide', 'method', 'respondent'];
+const ORDER: readonly HelpDoc[] = ['guide', 'method', 'respondent', 'licence'];
 
 interface Target {
   doc: HelpDoc;
@@ -83,7 +85,12 @@ export function HelpDialog({ open, doc, onDoc, onClose }: HelpDialogProps) {
           items={ORDER.map((key) => ({
             key,
             label: helpCopy.menu[key],
-            panel: <HelpDocument doc={key} anchor={anchor} onNavigate={go} />,
+            panel:
+              key === 'licence' ? (
+                <LicenceDocument />
+              ) : (
+                <HelpDocument doc={key} anchor={anchor} onNavigate={go} />
+              ),
           }))}
         />
       </div>
@@ -91,14 +98,88 @@ export function HelpDialog({ open, doc, onDoc, onClose }: HelpDialogProps) {
   );
 }
 
-const cache = new Map<HelpDoc, Block[]>();
+// The licence statement is plain text wrapped at 78 characters, with numbered
+// sections and lettered items. It is reflowed for reading, never reworded: a
+// single-line paragraph "1. Scope" becomes a heading, "(a) …" starts an item,
+// and wrapped lines are joined. The third-party notices are a file served
+// with the site (public/THIRD-PARTY-NOTICES.txt), opened in a new window.
+export function licenceParagraphs(text: string): { heading: boolean; text: string }[] {
+  const out: { heading: boolean; text: string }[] = [];
+  for (const block of text
+    .replace(/\r\n?/g, '\n')
+    .trim()
+    .split(/\n\s*\n/)) {
+    const lines = block.split('\n').map((l) => l.trim());
+    if (lines.length === 1 && /^\d+\. \S/.test(lines[0] ?? '')) {
+      out.push({ heading: true, text: lines[0] ?? '' });
+      continue;
+    }
+    let current: string[] = [];
+    const flush = () => {
+      if (current.length > 0) out.push({ heading: false, text: current.join(' ') });
+      current = [];
+    };
+    for (const line of lines) {
+      if (/^\([a-z]\) /.test(line)) flush();
+      current.push(line);
+    }
+    flush();
+  }
+  return out;
+}
+
+function LicenceDocument() {
+  const [text, setText] = useState<{ ok: true; text: string } | { ok: false } | null>(null);
+  useEffect(() => {
+    let live = true;
+    import('../../../LICENSE?raw')
+      .then((m) => {
+        if (live) setText({ ok: true, text: m.default });
+      })
+      .catch(() => {
+        if (live) setText({ ok: false });
+      });
+    return () => {
+      live = false;
+    };
+  }, []);
+  if (text === null) return <p className="help__status">{helpCopy.loading}</p>;
+  if (!text.ok) return <p className="help__status">{helpCopy.failed}</p>;
+  const [title, ...rest] = licenceParagraphs(text.text);
+  return (
+    <div className="help__document">
+      <div className="help__article">
+        <h3 className="help__heading help__heading--2">{title?.text}</h3>
+        {rest.map((p, i) =>
+          p.heading ? (
+            <h4 key={i} className="help__heading help__heading--3">
+              {p.text}
+            </h4>
+          ) : (
+            <p key={i}>{p.text}</p>
+          ),
+        )}
+        <h3 className="help__heading help__heading--2">{helpCopy.thirdParty}</h3>
+        <p>{helpCopy.thirdPartyBody}</p>
+        <p>
+          <a href="THIRD-PARTY-NOTICES.txt" target="_blank" rel="noreferrer noopener">
+            {helpCopy.thirdPartyLink}
+            <span className="visually-hidden"> {helpCopy.newWindow}</span>
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+const cache = new Map<MarkdownDoc, Block[]>();
 
 function HelpDocument({
   doc,
   anchor,
   onNavigate,
 }: {
-  doc: HelpDoc;
+  doc: MarkdownDoc;
   anchor: { id: string | null };
   onNavigate: (target: Target) => void;
 }) {

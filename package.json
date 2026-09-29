@@ -19,7 +19,8 @@
     "fonts": "node scripts/copy-fonts.mjs",
     "demo": "tsx scripts/generate-demo.ts",
     "templates": "tsx scripts/make-templates.ts",
-    "fixtures": "python3 scripts/generate_fixtures.py"
+    "fixtures": "python3 scripts/generate_fixtures.py",
+    "notices": "node scripts/third-party-notices.mjs"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "1.1.1",
@@ -65,5 +66,7 @@
     "typescript-eslint": "^8.70.1",
     "vite": "^8.3.1",
     "vitest": "^5.0.2"
-  }
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Maxted Neal"
 }

@@ -1,8 +1,8 @@
 // Wording for the in-app help (Help menu). The documents themselves are
-// docs/user-guide.md, docs/method-notes.md and docs/respondent-help.md, shown
-// as written.
+// docs/user-guide.md, docs/method-notes.md, docs/respondent-help.md and the
+// repository's LICENSE, shown as written.
 
-export type HelpDoc = 'guide' | 'method' | 'respondent';
+export type HelpDoc = 'guide' | 'method' | 'respondent' | 'licence';
 
 export const helpCopy = {
   title: 'Help',
@@ -10,6 +10,7 @@ export const helpCopy = {
     guide: 'User guide',
     method: 'Method notes',
     respondent: 'Help for respondents',
+    licence: 'Licence',
   } satisfies Record<HelpDoc, string>,
   tabsLabel: 'Help documents',
   contents: 'Contents',
@@ -19,4 +20,8 @@ export const helpCopy = {
   imageMissing: (alt: string) => `Screenshot not available: ${alt}`,
   tableLabel: 'Table',
   newWindow: '(opens in a new window)',
+  thirdParty: 'Third-party software and fonts',
+  thirdPartyBody:
+    'Graticule includes open-source libraries and the Fira fonts, each under its own licence. Their copyright notices and licence texts are in the third-party notices.',
+  thirdPartyLink: 'Read the third-party notices',
 } as const;

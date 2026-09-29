@@ -1,0 +1,64 @@
+Graticule licence statement
+
+Copyright (c) 2026 Maxted Neal. All rights reserved.
+
+1. Scope
+
+This statement applies to Graticule: the source code, documentation, design,
+text, images, demo data and every other file in this repository, and the web
+application built from them (together, "the Software"), except the
+third-party components listed in public/THIRD-PARTY-NOTICES.txt (also served
+with the web application), which are licensed under their own terms.
+
+2. No licence is granted by publication
+
+The Software is proprietary. Publishing the source code in a public repository
+does not grant any licence to it. You may not use, copy, modify, merge,
+publish, distribute, sublicense, host, sell or create derivative works from
+the Software, in whole or in part, except as this statement or a written
+licence from the copyright holder allows.
+
+3. What is permitted without a licence
+
+(a) Viewing. You may view the source code and documentation on GitHub, and use
+    the features GitHub's Terms of Service provide for public repositories,
+    only as those Terms allow.
+
+(b) Evaluation. You may use the copy of the web application published by the
+    copyright holder at https://mxtdnl.github.io/network/ to evaluate whether
+    Graticule meets your needs. Evaluation does not include use in the course
+    of an organisation's operations, such as analysing its staff, reporting
+    to its management or running a survey of its members.
+
+4. Free licences for charities and non-commercial research
+
+The copyright holder intends to grant free licences, on request, to:
+
+(a) registered charities, for use in their charitable work; and
+(b) individuals and institutions carrying out non-commercial research or
+    teaching, whose results are not used for a commercial purpose.
+
+Each request is decided individually, and a licence exists only when it has
+been granted in writing. A free licence may carry conditions, such as
+attribution or limits on redistribution.
+
+5. Commercial and public-sector use
+
+Use by or for a business, a public-sector body or government, or any other
+use not covered by a written licence, requires a paid licence from the
+copyright holder.
+
+6. Requests
+
+Requests for a licence, and questions about this statement, should be sent
+to: Maxted Neal, maxtedneal@gmail.com.
+
+7. No warranty and limitation of liability
+
+To the fullest extent permitted by law, the Software is provided "as is",
+without warranty of any kind, express or implied, including the warranties
+of merchantability, fitness for a particular purpose and non-infringement,
+and the copyright holder is not liable for any claim, damages or other
+liability arising from, out of or in connection with the Software or its
+use. Nothing in this statement limits liability that cannot be limited by
+law.

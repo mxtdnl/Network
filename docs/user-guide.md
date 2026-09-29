@@ -337,6 +337,8 @@ Your data stays in the browser: Graticule has no server, and its Content Securit
 
 ## Getting help
 
-Help → User guide, Method notes and Help for respondents open these documents inside Graticule; Help → Data and consent notice reopens the first-run notice.
+Help → User guide, Method notes and Help for respondents open these documents inside Graticule; Help → Licence shows Graticule's licence statement and links to the third-party notices; Help → Data and consent notice reopens the first-run notice.
+
+Graticule is not open source: it is copyright Maxted Neal, all rights reserved. You may use the published site to evaluate it. Registered charities, and non-commercial research and teaching, can ask for a free licence, and businesses and public-sector bodies for a paid one, at maxtedneal@gmail.com.
 
 ![The in-app help open at the method notes, with a contents list](user-guide/help.jpg)

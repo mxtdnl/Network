@@ -25,6 +25,7 @@ Graticule maps working relationships in a team or organisation of about 5 to 250
 - **It does not make responses anonymous.** Survey responses are confidential: the analyst sees who gave which ratings, because the whole-network method needs it.
 - **It does not prove who answered a survey.** Tokens detect duplicates; without a server, a forwarded link can be answered by someone else (see `docs/method-notes.md`, section 9).
 - **It does not estimate statistical networks** of psychological variables, and does not compare waves over time (ratings carry a wave number; only wave 1 is analysed in v1).
+- **It is not open source.** See [Licences](#licences).
 - **It does not host a collection service.** Responses travel as encrypted files or text; the transport is isolated so a server could be added later.
 
 ## Documentation
@@ -96,7 +97,15 @@ To release: merge to `main`, wait for the deploy workflow to finish, check the l
 
 ## Licences
 
-Graticule's own code has no licence file in this repository; until one is added, all rights are reserved by the owner.
+**Graticule is not open source.** Copyright (c) 2026 Maxted Neal. All rights reserved. The terms are in [`LICENSE`](LICENSE), and in the app under Help → Licence. In short:
+
+- publishing the code here grants no licence to use, copy, modify, host or redistribute it;
+- you may view it on GitHub, and use the published site at <https://mxtdnl.github.io/network/> to evaluate Graticule, but not in an organisation's operations;
+- registered charities, and non-commercial research and teaching, can ask for a free licence;
+- businesses and public-sector bodies need a paid licence;
+- requests go to Maxted Neal, maxtedneal@gmail.com.
+
+Third-party components keep their own licences. Their copyright notices and licence texts are in [`public/THIRD-PARTY-NOTICES.txt`](public/THIRD-PARTY-NOTICES.txt), which is served with the site as `THIRD-PARTY-NOTICES.txt` and regenerated with `npm run notices`; a unit test fails if it falls out of date with the installed dependencies.
 
 **Fonts.** Fira Sans and Fira Sans Condensed 4.203 (Copyright 2012–2016, The Mozilla Foundation and Telefonica S.A.), self-hosted from @fontsource 5.3.0 under the SIL Open Font License 1.1; the licence is in `src/assets/fonts/OFL.txt`, and the fonts are embedded in exported SVG and PDF files under the same licence.
 
