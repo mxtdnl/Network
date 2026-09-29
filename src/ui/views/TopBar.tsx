@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { lazy, Suspense, useRef, useState } from 'react';
 import { ConfirmDialog } from '../components/Dialog';
 import { Icon } from '../components/Icon';
 import { MenuButton } from '../components/MenuButton';
@@ -15,6 +15,10 @@ import { setNamesHidden } from '../state/names';
 import { startPresentation } from '../state/presentation';
 import { exportCopy } from '../copy/export';
 import { ExportDialog } from './ExportDialog';
+import { helpCopy, type HelpDoc } from '../copy/help';
+
+// The help documents are loaded with the dialog, on first use.
+const HelpDialog = lazy(() => import('./HelpDialog').then((m) => ({ default: m.HelpDialog })));
 
 type Pending = 'open' | 'demo' | null;
 
@@ -30,6 +34,15 @@ export function TopBar() {
   const [pending, setPending] = useState<Pending>(null);
   const [confirmClear, setConfirmClear] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [help, setHelp] = useState<HelpDoc | null>(null);
+  const [helpDoc, setHelpDoc] = useState<HelpDoc>('guide');
+  // The help opens from a menu item that is gone once the menu closes, so
+  // closing the help returns focus to the Help button itself.
+  const helpMenuRef = useRef<HTMLDivElement>(null);
+  const openHelp = (doc: HelpDoc) => {
+    setHelpDoc(doc);
+    setHelp(doc);
+  };
 
   const hasData = project !== null && project.members.length > 0;
   // Importing changes the project, so the read-only phone layout leaves it out.
@@ -128,10 +141,21 @@ export function TopBar() {
             },
           ]}
         />
-        <MenuButton
-          label={shellCopy.help}
-          items={[{ key: 'notice', label: shellCopy.helpMenu.notice, onSelect: openNotice }]}
-        />
+        <div ref={helpMenuRef} className="top-bar__help">
+          <MenuButton
+            label={shellCopy.help}
+            items={[
+              ...(['guide', 'method', 'respondent'] as const).map((doc) => ({
+                key: doc,
+                label: helpCopy.menu[doc],
+                onSelect: () => {
+                  openHelp(doc);
+                },
+              })),
+              { key: 'notice', label: shellCopy.helpMenu.notice, onSelect: openNotice },
+            ]}
+          />
+        </div>
       </div>
       <input
         ref={fileRef}
@@ -162,6 +186,22 @@ export function TopBar() {
           else if (action === 'demo') void loadDemo();
         }}
       />
+      {help !== null && (
+        <Suspense fallback={null}>
+          <HelpDialog
+            open
+            doc={helpDoc}
+            onDoc={setHelpDoc}
+            onClose={() => {
+              setHelp(null);
+              // After the dialog has gone: until then the rest of the page is inert.
+              requestAnimationFrame(() => {
+                helpMenuRef.current?.querySelector('button')?.focus();
+              });
+            }}
+          />
+        </Suspense>
+      )}
       <ExportDialog
         open={exporting}
         onClose={() => {
