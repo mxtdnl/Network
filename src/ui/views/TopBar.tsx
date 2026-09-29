@@ -145,7 +145,7 @@ export function TopBar() {
           <MenuButton
             label={shellCopy.help}
             items={[
-              ...(['guide', 'method', 'respondent'] as const).map((doc) => ({
+              ...(['guide', 'method', 'respondent', 'licence'] as const).map((doc) => ({
                 key: doc,
                 label: helpCopy.menu[doc],
                 onSelect: () => {

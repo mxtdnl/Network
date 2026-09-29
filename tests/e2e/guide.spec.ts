@@ -418,6 +418,7 @@ test('the Help menu opens the user guide, method notes and respondent help, link
     'User guide',
     'Method notes',
     'Help for respondents',
+    'Licence',
     'Data and consent notice',
   ]);
   await page.keyboard.press('Escape');
@@ -459,6 +460,26 @@ test('the Help menu opens the user guide, method notes and respondent help, link
   await dialog.getByRole('tab', { name: 'Help for respondents' }).click();
   await expect(dialog.getByRole('heading', { name: 'Who will see your answers' })).toBeVisible();
   await expectNoAxeViolations(page, 'respondent help');
+
+  // The licence statement, and the third-party notices served with the site.
+  await dialog.getByRole('tab', { name: 'Licence' }).click();
+  await expect(
+    dialog.getByText('Copyright (c) 2026 Maxted Neal. All rights reserved.'),
+  ).toBeVisible();
+  await expect(
+    dialog.getByRole('heading', { name: '7. No warranty and limitation of liability' }),
+  ).toBeVisible();
+  await expect(
+    dialog.getByText(
+      /^\(b\) Evaluation\. You may use the copy of the web application published by the copyright holder at/,
+    ),
+  ).toBeVisible();
+  const notices = dialog.getByRole('link', { name: /Read the third-party notices/ });
+  const href = await notices.getAttribute('href');
+  const response = await page.request.get(new URL(href ?? '', page.url()).toString());
+  expect(response.status()).toBe(200);
+  expect(await response.text()).toContain('SIL OPEN FONT LICENSE');
+  await expectNoAxeViolations(page, 'licence');
   await dialog.getByRole('button', { name: 'Close' }).click();
   await expect(dialog).toHaveCount(0);
   await expect(page.getByRole('banner').getByRole('button', { name: 'Help' })).toBeFocused();

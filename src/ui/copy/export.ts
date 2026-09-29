@@ -250,7 +250,7 @@ export const reportCopy = {
   },
   method: {
     intro:
-      'Drawn from Graticule’s method notes, which give every formula in full. Only the measures used in this report are included.',
+      'Drawn from Graticule’s method notes, which give every formula in full with its references. Only the measures used in this report are included.',
     meaning: 'Meaning',
     caveats: 'Caveats',
   },
